@@ -243,23 +243,3 @@ Le projet CETUD doit répondre à des questions de transport urbain multi-théma
 
 ---
 
-## 8. À retenir et questions de soutenance
-
-> 📌 **À retenir (synthèse)**
-> - Le DW du projet CETUD est un modèle en **constellation** : 4 faits (Comptage, Déplacement, Accessibilité, IndividuMénage) et 10 dimensions.
-> - `Dim_Geographie` est la dimension la plus transversale, partagée par 3 des 4 faits — c'est l'axe d'analyse géographique commun du projet.
-> - `Dim_Temps` est partagée entre `Fait_Comptage` et `Fait_Deplacement`.
-> - Chaque fait a sa propre granularité naturelle : couple ménage-service, déplacement individuel, relevé de comptage, ou profil individuel.
-> - Le choix de la constellation plutôt que l'étoile simple est justifié par la diversité des sujets d'analyse métier (mobilité, accessibilité, trafic, démographie) du projet CETUD.
-
-> 🎓 **Questions possibles en soutenance**
-> 1. Qu'est-ce qui différencie un modèle en étoile d'un modèle en constellation ? Donnez un exemple concret tiré de votre projet.
-> 2. Pourquoi `Dim_Geographie` est-elle reliée à trois faits différents ? Quel type d'analyse cela permet-il ?
-> 3. Quelle est la granularité de `Fait_Accessibilite` ? Pourquoi n'est-ce pas "1 ligne par ménage" mais "1 ligne par ménage et par service" ?
-> 4. `Dim_Mode` et `Dim_Transport` semblent avoir des colonnes similaires (`pk_id_transport`/`code_transport`) : s'agit-il de la même dimension physique partagée entre deux faits, ou de deux dimensions distinctes ? Comment le vérifieriez-vous techniquement ?
-> 5. Pourquoi `Fait_IndividuMenage` contient-il une mesure déjà agrégée (`nb_deplacements`) plutôt que de laisser cette agrégation être calculée à la volée depuis `Fait_Deplacement` ?
-> 6. Quels inconvénients aurait eu un modèle en étoile unique pour ce projet, comparé à la constellation retenue ?
-> 7. Comment garantiriez-vous la cohérence entre `Dim_Temps` utilisée par `Fait_Comptage` (granularité heure) et celle potentiellement utilisée par `Fait_Deplacement` ?
-> 8. Si le CETUD voulait ajouter une cinquième thématique d'analyse (par exemple la sécurité routière), comment l'intégreriez-vous dans cette constellation existante ?
-
-> Information non disponible dans les sources fournies : le type exact de clé technique (entier auto-incrémenté, séquence PostgreSQL...) utilisé pour les clés primaires des dimensions, ainsi que la taille réelle du Data Warehouse (nombre de lignes par table) et la fréquence d'actualisation du DW, ne sont pas précisés dans le SQL, le dictionnaire de données ni les captures fournies.
