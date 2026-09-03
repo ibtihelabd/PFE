@@ -1,0 +1,67 @@
+\chapter{Contexte général du projet}
+\label{ch:contexte}
+
+\section{Introduction}
+Ce chapitre situe le projet dans son contexte organisationnel et technique. Il présente l'organisme d'accueil, la problématique à l'origine du projet, les objectifs poursuivis, la méthodologie de conduite de projet retenue ainsi que la planification adoptée.
+
+\section{Organisme d'accueil}
+Le CETUD (Conseil Exécutif des Transports Urbains de Dakar) est l'autorité organisatrice des transports urbains pour la région de Dakar. Sa mission consiste à planifier, organiser et réguler l'offre de transport public sur le territoire de l'agglomération dakaroise, en coordonnant les différents opérateurs (bus, cars rapides, transport informel) et en veillant à l'amélioration continue de l'accessibilité et de la qualité de service offerte aux usagers.
+
+Dans le cadre de ses missions de planification, le CETUD réalise et exploite des enquêtes de grande ampleur, notamment l'Enquête Ménages-Déplacements (EMD), ainsi que des campagnes de comptage de trafic sur les principaux axes et points névralgiques du réseau. Ces données constituent un patrimoine informationnel considérable, mais dont l'exploitation reste aujourd'hui largement manuelle et ponctuelle.
+
+\section{Problématique}
+La problématique générale ayant motivé ce projet peut être formulée ainsi~:
+
+\begin{quote}
+\textit{Comment exploiter efficacement un grand volume de données hétérogènes issues du système de transport urbain afin de fournir une vision globale, pertinente et en temps réel des flux de transport, et ainsi améliorer la prise de décision et l'optimisation du réseau de transport urbain~?}
+\end{quote}
+
+Cette problématique se décline en plusieurs questions opérationnelles~:
+\begin{itemize}
+\item Comment garantir la qualité, la fiabilité et la cohérence de données collectées depuis des sources multiples et hétérogènes (enquêtes terrain, comptages automatiques)~?
+\item Comment structurer ces données pour qu'elles soient directement exploitables dans des indicateurs décisionnels~?
+\item Comment restituer ces indicateurs de façon claire et actionnable aux différents profils de décideurs du CETUD~?
+\item Comment aller au-delà du simple reporting descriptif, en exploitant les données pour anticiper (segmentation des usagers, détection d'anomalies, prédiction des zones à risque)~?
+\end{itemize}
+
+\section{Objectifs du projet}
+Pour répondre à cette problématique, le projet poursuit les objectifs suivants~:
+
+\begin{enumerate}
+\item \textbf{Compréhension métier et données}~: analyser les sources de données disponibles (EMD, comptages de trafic) et identifier les besoins des différents profils de décideurs du CETUD.
+\item \textbf{Modélisation décisionnelle}~: concevoir un modèle multidimensionnel (schéma en constellation) capable de répondre aux besoins analytiques identifiés.
+\item \textbf{Mise en œuvre de l'ETL}~: industrialiser la collecte, le nettoyage et le chargement des données dans l'entrepôt de données à l'aide de Talend.
+\item \textbf{Implémentation de l'entrepôt de données}~: déployer un entrepôt de données sous PostgreSQL conforme au modèle décisionnel conçu.
+\item \textbf{Visualisation et restitution}~: développer des tableaux de bord interactifs avec Knowage BI permettant le suivi des indicateurs clés.
+\item \textbf{Enrichissement par le Machine Learning}~: développer des modèles prédictifs et de segmentation pour aller au-delà du reporting descriptif.
+\item \textbf{Intégration applicative}~: exposer l'ensemble de la solution à travers une application web destinée aux usagers et aux décideurs.
+\end{enumerate}
+
+\section{Méthodologie de conduite de projet}
+La conduite du projet s'est appuyée sur la méthodologie GIMSI (Generalized Indicator for Management of Strategic Information), une démarche structurée en quatre étapes destinée à la construction de systèmes de tableaux de bord~: identification, conception, mise en œuvre et amélioration permanente. Cette méthodologie a guidé en particulier la démarche de définition des indicateurs en partant de l'identification des décideurs et de leurs objectifs métier, plutôt que de partir directement des données disponibles.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.55\textwidth]{gimsi.png}
+\caption{Méthodologie GIMSI appliquée à la construction du système décisionnel}
+\label{fig:gimsi}
+\end{figure}
+
+Sur le plan du développement logiciel, une approche itérative inspirée de Scrum a été adoptée~: le projet a été découpé en cycles courts correspondant chacun à une brique de la chaîne décisionnelle (analyse, modélisation, ETL, entrepôt, restitution, Machine Learning, application web), avec des points d'avancement réguliers avec l'encadrant professionnel du CETUD.
+
+\section{Planification du projet}
+Le projet s'est déroulé sur une période de six mois, structurée selon le planning prévisionnel suivant~:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{gantt.png}
+\caption{Diagramme de Gantt du projet}
+\label{fig:gantt}
+\end{figure}
+
+Cette planification distingue huit grandes phases~: l'analyse métier et données, la définition des décideurs et des KPIs, la conception de l'architecture Big Data / BI, la modélisation des données, l'implémentation de l'ETL, la visualisation et l'analyse BI, les corrections et la validation finale, et enfin la clôture du projet.
+
+\section{Conclusion}
+Ce chapitre a permis de poser le cadre général du projet~: l'organisme d'accueil, la problématique traitée, les objectifs visés et la démarche méthodologique suivie. Le chapitre suivant présente en détail l'environnement de travail technique mobilisé pour la réalisation de ce projet.
+
+\clearpage
