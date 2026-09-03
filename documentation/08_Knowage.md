@@ -283,8 +283,6 @@ Les sources fournies pour cette tâche (PDF, markdown, fichiers HTML) ne décriv
 
 **Information non disponible dans les sources fournies :** la chaîne de connexion réelle entre Knowage et la base de données du Data Warehouse CETUD (type de connecteur, requêtes SQL des datasets, fréquence de rafraîchissement, mécanisme de mise à jour automatique des widgets HTML à partir des données vivantes du DW).
 
-📌 **À retenir : dans l'état des sources disponibles, le lien "widget Knowage → Data Warehouse" repose sur le principe général de tout outil BI (dataset = requête sur la base, widget = restitution visuelle de ce dataset), mais la configuration technique précise propre au projet CETUD n'a pas été documentée dans les fichiers remis pour cette tâche.** Il est donc honnête, en soutenance, de présenter le principe général tout en reconnaissant que le détail de l'implémentation (datasets Knowage, requêtes) reste à documenter/clarifier si la question est creusée.
-
 Réponse honnête à donner : "Le principe général d'un outil BI comme Knowage est de définir des datasets connectés au Data Warehouse, que l'on associe ensuite à des widgets. Dans la version observée de nos sheets HTML, les valeurs sont intégrées directement dans le code du widget (par exemple les hauteurs de barres en pourcentage). La configuration précise de la connexion entre Knowage et notre Data Warehouse (requêtes, datasets nommés) n'est pas formalisée dans la documentation que j'ai sous la main actuellement — c'est un point que je peux approfondir si nécessaire."
 
 ---
