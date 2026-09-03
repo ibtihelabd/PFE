@@ -345,19 +345,6 @@ Dashboard d'accueil (`/decideurs` index). `API = 'http://localhost:8000'`.
 
 Une section "Santé du modèle ML" avec barres de progression (roc_auc, f1_score, precision, recall) n'est affichée que `if (metrics && hasAccess('/decideurs/ml-insights'))`.
 
-### 7.4 `ZonesRisquePage.jsx`
-`API_URL = "http://localhost:8000"`.
-
-**Appels réseau (montage)** :
-- `GET ${API_URL}/zones-risque`
-- `GET ${API_URL}/zones-risque/resume`
-
-États : `zones`, `resume`, `loading`, `erreur` (message : *« Impossible de charger les données. Vérifiez que FastAPI tourne sur le port 8000. »*), `filtre` (TOUS/ÉLEVÉ/MODÉRÉ/FAIBLE), `recherche`, `tab` (exploitation/planification), `view` (liste/carte).
-
-`genererRecommandations(zones, resume)` est une fonction **purement frontend** qui génère des textes de recommandation à partir de templates français fixes, interpolés avec les vraies statistiques (top zones, pourcentages). **Important** : ce ne sont pas des recommandations générées par le backend ou par un modèle d'IA — c'est une logique de présentation côté client.
-
-Affiche `<MapView>` (mode carte) avec les zones mappées en `{zone, lat, lon, niveau_risque, prob_risque, nb_menages, dur_sante}`, et `<ExportPDF type="zones" data={{...resume, zones}} />` dans la barre de navigation.
-
 ### 7.5 `AnomalyDashboard.jsx`
 `API = "http://localhost:8000"`.
 
@@ -375,26 +362,6 @@ Affiche `<MapView>` (mode carte) avec les zones mappées en `{zone, lat, lon, ni
 Bascule "Vue tableau" / "Carte réseau" affiche `<MapView anomalies={...} showZones={false} height={500}/>`. Le bouton `<ExportPDF type="anomalies" .../>` est affiché uniquement si `!loading && summary`.
 
 Les graphiques de "consensus entre algorithmes" (Isolation Forest ↔ LOF = 90.6%, etc.) et les recommandations exploitation/planification sont des **valeurs et textes hardcodés** dans le composant (pas issus d'un appel API), bien que cohérents avec les vraies données de consensus mentionnées ailleurs.
-
-### 7.6 `SimulateurRisque.jsx`
-`API_URL = "http://localhost:8000"`.
-
-C'est la page la plus "temps réel" : un état `inputs` (objet avec `distance_tc`, `inondations`, `dur_sante`, `dur_hopital`, `dur_marche`, `tc_disponibles`, `revenu`, `budget_transport`, `taille_menage`, `nb_actifs`, `nb_voitures`, `nb_motos`, `nb_velos`, `zone`) est modifié via des sliders/inputs. Un `useEffect` avec **debounce de 250ms** (`setTimeout`) déclenche `runPrediction(inputs)` à chaque changement.
-
-**Appel réseau** :
-```
-POST ${API_URL}/predict-inaccessibility
-Content-Type: application/json
-Body: JSON.stringify(inputs)
-```
-Réponse attendue (utilisée dans le rendu) : `result.prob_risque`, `result.niveau_risk` ou `result.niveau_risque`, `result.conseils` (tableau de chaînes).
-
-Le résultat est visualisé par une **jauge circulaire SVG animée** (cercle de progression dont le `strokeDashoffset` est calculé à partir de `prob_risque`), colorée selon des seuils définis dans le frontend (`getGaugeColor` : ≥65 → rouge `#ff6b6b`, ≥45 → orange `#ffa94d`, sinon vert `#69db7c`).
-
-Le bouton "Réinitialiser" remet `inputs` à ses valeurs par défaut codées en dur.
-
-*Réponse courte* : Pour éviter de spammer l'API à chaque pixel de déplacement d'un slider.
-*Réponse détaillée* : Chaque `<input type="range">` déclenche `onChange` en continu pendant le glissement. Sans debounce, cela génère potentiellement des dizaines d'appels `fetch` par seconde vers `/predict-inaccessibility`. Le `useEffect` du composant utilise `setTimeout(() => runPrediction(inputs), 250)` avec un nettoyage (`clearTimeout`) à chaque nouveau rendu — ce qui annule l'appel précédent si l'utilisateur continue à bouger le slider, et ne lance réellement la requête que 250ms après la dernière modification.
 
 ### 7.7 `MlInsights.jsx`
 `API_URL = "http://localhost:8000"`.
@@ -417,15 +384,6 @@ Réponse attendue : `{k_clusters, rf_accuracy, rf_cv_f1, modes_rf: [...], segmen
 Au clic sur une `SegmentCard`, le segment sélectionné change et un `RadarChart` (recharts) affiche son profil caractéristique — les données du radar (`RADAR_DATA`) sont **hardcodées dans le frontend**, indexées par `selected.label`, et ne proviennent pas de l'API (seule une correspondance texte avec le libellé du segment retourné par le backend est utilisée ; si le libellé ne correspond à aucune clé connue, `DEFAULT_RADAR` est utilisé).
 
 `MODE_STATS` (répartition des modes de transport) est également un tableau **hardcodé** ("Stats du mode de transport (hardcodées depuis EMD)" selon le commentaire du code), affiché en camembert (`PieChart`).
-
-### 7.9 `EvolutionTemporelle.jsx`
-**Aucun appel réseau** — c'est la seule page décideur du périmètre qui ne fait pas de `fetch`. Toutes les données viennent de l'import statique :
-```js
-import { ANNEES, SOURCE_LABEL_EMD, SOURCE_LABEL_TRAFIC, TRAFIC, MENAGES, DEPLACEMENTS, MODES_ANNEES, INACCESSIBILITE, SEGMENTATION_ML, RECOMMANDATIONS } from '../data/evolutionData';
-```
-Voir section 8 pour le détail de `evolutionData.js`. La page affiche des graphiques recharts (LineChart, BarChart, AreaChart) comparant 2010/2015/2019/2023, des KPI avec deltas calculés (`Delta` component, `pct = (val2023 - val2010) / val2010 * 100`), et des cartes de "Recommandations & Interprétations" cliquables (extensible au clic, `activeReco` state) dont le contenu (`constat`, `recommandation`) est entièrement défini dans `evolutionData.js`.
-
-Un bandeau "Note méthodologique" précise explicitement dans l'UI que seules les données 2015 (EMD) et 2019 (trafic) sont réelles, les autres années étant "reconstituées / projetées à des fins d'analyse comparative et prospective (PFE)".
 
 ### 7.10 `SatisfactionPage.jsx`
 `API = 'http://localhost:8000'`.
@@ -452,21 +410,6 @@ Logique notable et documentée en commentaire dans le code source lui-même :
 
 *Réponse courte* : Pour que React puisse manipuler le DOM de l'iframe Knowage, il faut que les deux soient sur la même origine (même protocole+domaine+port) — sinon le navigateur bloque l'accès cross-origin par sécurité.
 *Réponse détaillée* : Le code de `CockpitDakar.jsx` accède directement à `iframeRef.current.contentDocument`, ce qui n'est possible que si l'iframe est de la **même origine** que la page parente (politique *same-origin* du navigateur). Comme Knowage tourne sur `localhost:18080` et le frontend React sur `localhost:3000`, sans proxy ce serait une requête cross-origin bloquée. `setupProxy.js` (chargé automatiquement par `react-scripts` en dev) intercepte toute URL commençant par `/knowage*` et la redirige côté serveur vers `http://localhost:18080`, ce qui fait que, du point de vue du navigateur, tout reste sur `localhost:3000` — donc même origine, accès DOM autorisé. Le commentaire du fichier précise aussi qu'une configuration nginx équivalente serait nécessaire en production.
-
----
-
-## 8. Les données de `data/evolutionData.js`
-
-Ce fichier contient des **constantes JavaScript statiques** (pas d'appel réseau) représentant l'évolution du réseau sur 4 années (`ANNEES = [2010, 2015, 2019, 2023]`) :
-- `TRAFIC` : sites de comptage, volume journalier, anomalies détectées, taux d'anomalie, accord entre modèles.
-- `MENAGES` : nombre de ménages, taille moyenne, revenu médian, % motorisés, etc.
-- `DEPLACEMENTS` : nombre de déplacements/jour, durée moyenne, coût moyen, distance moyenne.
-- `MODES_ANNEES` : répartition modale (%) par année.
-- `INACCESSIBILITE` : nombre de zones par niveau de risque, % ménages à risque.
-- `SEGMENTATION_ML` : précision/F1/ROC-AUC du Random Forest et répartition des clusters, par année.
-- `RECOMMANDATIONS` : 6 objets de recommandations textuelles (catégorie, constat, recommandation, priorité, horizon) entièrement rédigés à la main.
-
-Le fichier documente lui-même sa méthodologie en commentaire d'en-tête : **seule l'année 2015 est réelle pour les domaines EMD** (ménages, déplacements, partage modal, inaccessibilité, segmentation ML) et **seule l'année 2019 est réelle pour le domaine Trafic** (comptages). Les autres années (2010, 2023) sont explicitement qualifiées de *« données reconstituées / projetées à des fins d'analyse comparative et prospective (PFE) »* et ne constituent pas des relevés officiels — ce message est également répété dans l'UI de `EvolutionTemporelle.jsx`.
 
 ---
 
