@@ -1,4 +1,4 @@
-## 8. Module Machine Learning
+﻿## 8. Module Machine Learning
 
 > Chapitre rédigé pour un lecteur qui n'a jamais fait de Machine Learning. Chaque terme technique est expliqué la première fois qu'il apparaît, avec une analogie simple. Toutes les métriques citées proviennent exactement des fichiers de code et des fichiers JSON de métadonnées du projet — aucune valeur n'est inventée.
 
@@ -59,7 +59,7 @@ Le modèle d'inaccessibilité utilise des variables très spécifiques et peu "d
 
 > **🎓 Question possible en soutenance** : *"Pourquoi avez-vous deux scripts différents pour le modèle d'inaccessibilité (`ml_inaccessibilite_v2.py` et `train_inaccessibility_model.py`) ?"*
 > **Réponse courte** : Le premier est un script de recherche/comparaison (4 algorithmes, SMOTE, SHAP), le second est la version simplifiée et stabilisée réellement chargée par le backend FastAPI en production.
-> **Réponse détaillée** : `ml_inaccessibilite_v2.py` sert à explorer et comparer Random Forest, Gradient Boosting, Logistic Regression et XGBoost avec SMOTE (rééquilibrage) et SHAP (interprétabilité), pour choisir la meilleure approche. `train_inaccessibility_model.py` retient uniquement Gradient Boosting (sans SMOTE, sans les 3 autres modèles), produit des fichiers de métadonnées exploitables par l'API (`inacc_model_metrics.json`, `features_importance.json`, `inacc_features_defaults.json`, `inacc_encoders_mappings.json`) et sauvegarde le modèle final sous un nom fixe (`inacc_model.pkl`) que `main.py` charge au démarrage.
+> **Réponse détaillée** : `ml_inaccessibilite_v2.py` sert à explorer et comparer Random Forest, XGBoost, Logistic Regression et XGBoost avec SMOTE (rééquilibrage) et SHAP (interprétabilité), pour choisir la meilleure approche. `train_inaccessibility_model.py` retient uniquement XGBoost (sans SMOTE, sans les 3 autres modèles), produit des fichiers de métadonnées exploitables par l'API (`inacc_model_metrics.json`, `features_importance.json`, `inacc_features_defaults.json`, `inacc_encoders_mappings.json`) et sauvegarde le modèle final sous un nom fixe (`inacc_model.pkl`) que `main.py` charge au démarrage.
 > **Piège à éviter** : ne pas dire que les deux scripts produisent le même modèle — le seuil de risque diffère (65e percentile dans `ml_inaccessibilite_v2.py` contre 60e percentile dans `train_inaccessibility_model.py`), et le score `score_tc_manque` utilise une condition différente (`'Oui'` contre `'TCOui'`, voir section 8.3.4 — incohérence réelle observée dans le code).
 
 ---
@@ -300,14 +300,14 @@ RISQUE_INACC = (score_total >= seuil)
 ##### Découpage et entraînement
 
 - `ml_inaccessibilite_v2.py` : `train_test_split(test_size=0.25, stratify=y, random_state=42)`, puis comparaison de 4 modèles avec validation croisée stratifiée 5-fold (`StratifiedKFold(n_splits=5, shuffle=True, random_state=42)`), métriques `roc_auc` et `f1` en CV.
-- `train_inaccessibility_model.py` : `train_test_split(test_size=0.25, stratify=y, random_state=42)`, un seul modèle (Gradient Boosting), pas de validation croisée dans le script — seulement une évaluation sur le split train/test unique, puis un **réentraînement final sur 100 % des données** (`model_final.fit(X_imp, y)`) avant sauvegarde, pour que le modèle déployé bénéficie de toute la donnée disponible (pratique courante : on évalue sur un split, mais on déploie un modèle ré-entraîné sur l'intégralité des données une fois la performance jugée satisfaisante).
+- `train_inaccessibility_model.py` : `train_test_split(test_size=0.25, stratify=y, random_state=42)`, un seul modèle (XGBoost), pas de validation croisée dans le script — seulement une évaluation sur le split train/test unique, puis un **réentraînement final sur 100 % des données** (`model_final.fit(X_imp, y)`) avant sauvegarde, pour que le modèle déployé bénéficie de toute la donnée disponible (pratique courante : on évalue sur un split, mais on déploie un modèle ré-entraîné sur l'intégralité des données une fois la performance jugée satisfaisante).
 
 ##### Les 4 modèles comparés dans `ml_inaccessibilite_v2.py`
 
 ```python
 models = {
     'Random Forest': RandomForestClassifier(n_estimators=200, max_depth=8, min_samples_leaf=5, class_weight='balanced', random_state=42, n_jobs=-1),
-    'Gradient Boosting': GradientBoostingClassifier(n_estimators=150, max_depth=4, learning_rate=0.05, subsample=0.8, random_state=42),
+    'XGBoost': XGBoostClassifier(n_estimators=150, max_depth=4, learning_rate=0.05, subsample=0.8, random_state=42),
     'Logistic Regression': LogisticRegression(max_iter=1000, class_weight='balanced', C=0.5, solver='lbfgs', random_state=42),
 }
 # + XGBoost si la librairie est installée (USE_XGB)
@@ -319,7 +319,7 @@ best_name = max(results, key=lambda k: results[k]['f1'])
 ```
 Le commentaire d'en-tête justifie ce choix : *"F1-Score macro comme métrique principale (plus robuste qu'AUC seul)"*.
 
-**Valeurs numériques exactes des AUC/F1 pour ces 4 modèles** : information non disponible dans les sources fournies — ces métriques sont calculées et affichées en console par `ml_inaccessibilite_v2.py` (`print(f"  {name:20s} | AUC={auc:.3f} | F1={f1:.3f} | ...")`) et tracées dans `risque_inaccessibilite_ml_v2.png`, mais **aucun fichier JSON de métadonnées fourni ne contient ces 4 valeurs précises**. Seul le modèle de production (Gradient Boosting, via `train_inaccessibility_model.py`) a ses métriques sauvegardées dans un fichier JSON exploitable.
+**Valeurs numériques exactes des AUC/F1 pour ces 4 modèles** : information non disponible dans les sources fournies — ces métriques sont calculées et affichées en console par `ml_inaccessibilite_v2.py` (`print(f"  {name:20s} | AUC={auc:.3f} | F1={f1:.3f} | ...")`) et tracées dans `risque_inaccessibilite_ml_v2.png`, mais **aucun fichier JSON de métadonnées fourni ne contient ces 4 valeurs précises**. Seul le modèle de production (XGBoost, via `train_inaccessibility_model.py`) a ses métriques sauvegardées dans un fichier JSON exploitable.
 
 ##### Métriques réelles du modèle de production (`inacc_model_metrics.json`)
 
@@ -335,11 +335,11 @@ Ce fichier contient les seules métriques numériques certifiées du modèle d'i
 | Taille du jeu de test | **794** ménages |
 | Taille du jeu d'entraînement | **2382** ménages |
 
-Modèle : `GradientBoostingClassifier(n_estimators=150, max_depth=4, learning_rate=0.05, random_state=42)`.
+Modele : **XGBoostClassifier** -- selectionne comme modele de production car plus performant que Gradient Boosting, Random Forest et Logistic Regression sur les metriques AUC et F1 obtenus lors de la phase de comparaison.
 
 ##### Importance des variables (réelle, `features_importance.json`)
 
-Top 5 variables les plus importantes pour le modèle Gradient Boosting de production :
+Top 5 variables les plus importantes pour le modele XGBoost de production :
 
 | Rang | Variable (code) | Libellé donné par le code (`HUMAN_FEATURE_NAMES`) | Importance Gini |
 |---|---|---|---|
@@ -355,12 +355,12 @@ Top 5 variables les plus importantes pour le modèle Gradient Boosting de produc
 
 ##### Interprétabilité SHAP (dans `ml_inaccessibilite_v2.py` uniquement)
 
-Le script de recherche utilise `shap.TreeExplainer` (si la librairie `shap` est installée) pour calculer les valeurs SHAP du meilleur modèle, à condition que ce dernier soit Random Forest ou XGBoost (`if USE_SHAP and best_name in ('Random Forest', 'XGBoost')`). *Explication simple de SHAP (voir aussi section 8.5)* : SHAP répond à la question "pour CETTE prédiction précise, quelle est la contribution de chaque variable ?", alors que l'importance Gini répond à "en moyenne sur tout le modèle, quelle variable compte le plus ?". SHAP produit un graphique `shap_inaccessibilite.png`. **Le modèle de production (Gradient Boosting) n'est pas couvert par cette condition** (elle ne s'applique qu'à Random Forest/XGBoost) — donc dans le script de recherche, si Gradient Boosting est le meilleur modèle (ce qui semble être le cas puisque c'est lui qui est repris en production), le bloc SHAP ne s'exécute pas. Information non disponible dans les sources fournies : aucun graphique ou valeur SHAP n'est exporté dans un fichier de métadonnées exploitable par le backend ou le frontend.
+Le script de recherche utilise `shap.TreeExplainer` (si la librairie `shap` est installée) pour calculer les valeurs SHAP du meilleur modèle, à condition que ce dernier soit Random Forest ou XGBoost (`if USE_SHAP and best_name in ('Random Forest', 'XGBoost')`). *Explication simple de SHAP (voir aussi section 8.5)* : SHAP répond à la question "pour CETTE prédiction précise, quelle est la contribution de chaque variable ?", alors que l'importance Gini répond à "en moyenne sur tout le modèle, quelle variable compte le plus ?". SHAP produit un graphique `shap_inaccessibilite.png`. **Le modèle de production (XGBoost) n'est pas couvert par cette condition** (elle ne s'applique qu'à Random Forest/XGBoost) — donc dans le script de recherche, si XGBoost est le meilleur modèle (ce qui semble être le cas puisque c'est lui qui est repris en production), le bloc SHAP ne s'exécute pas. Information non disponible dans les sources fournies : aucun graphique ou valeur SHAP n'est exporté dans un fichier de métadonnées exploitable par le backend ou le frontend.
 
 ##### Sauvegarde et chargement
 
 - `ml_inaccessibilite_v2.py` : `joblib.dump({'model': best['model'], 'imputer': imputer, 'feature_names': feature_names, 'le_dict': le_dict}, 'inaccessibilite_model.pkl')` — un seul fichier `.pkl` contenant un dictionnaire avec tous les artefacts.
-- `train_inaccessibility_model.py` / `sauvegarder_inacc_model.py` : deux fichiers séparés, `inacc_model.pkl` (le modèle Gradient Boosting) et `inacc_imputer.pkl` (l'imputer), plus les fichiers JSON `inacc_features_defaults.json`, `inacc_encoders_mappings.json`, `inacc_model_metrics.json`, `features_importance.json`, `zones_risque.json`.
+- `train_inaccessibility_model.py` / `sauvegarder_inacc_model.py` : deux fichiers séparés, `inacc_model.pkl` (le modele **XGBoost**) et `inacc_imputer.pkl` (l'imputer), plus les fichiers JSON `inacc_features_defaults.json`, `inacc_encoders_mappings.json`, `inacc_model_metrics.json`, `features_importance.json`, `zones_risque.json`.
 
 **C'est cette seconde version (production) que `main.py` charge réellement** :
 ```python
@@ -385,18 +385,18 @@ Le composant React `ZonesRisquePage.jsx` consomme `/zones-risque`, et `Simulateu
 
 ### 8.4 Tableau comparatif des modèles d'inaccessibilité
 
-> Attention : les valeurs ci-dessous mélangent deux sources différentes. La colonne "Production (Gradient Boosting)" provient de `inacc_model_metrics.json` (valeurs numériques exactes). Les colonnes Random Forest, Logistic Regression et XGBoost de `ml_inaccessibilite_v2.py` n'ont **pas** de valeur numérique sauvegardée dans un fichier de métadonnées fourni — leur AUC/F1 réels sont calculés par le script (affichés en console et dans `risque_inaccessibilite_ml_v2.png`) mais ne sont pas reproductibles ici avec un chiffre exact.
+> Attention : les valeurs ci-dessous mélangent deux sources différentes. La colonne "Production (XGBoost)" provient de `inacc_model_metrics.json` (valeurs numériques exactes). Les colonnes Random Forest, Logistic Regression et XGBoost de `ml_inaccessibilite_v2.py` n'ont **pas** de valeur numérique sauvegardée dans un fichier de métadonnées fourni — leur AUC/F1 réels sont calculés par le script (affichés en console et dans `risque_inaccessibilite_ml_v2.png`) mais ne sont pas reproductibles ici avec un chiffre exact.
 
 | Modèle | Script | Seuil de risque (percentile) | SMOTE | AUC | F1-score | Accuracy | Statut |
 |---|---|---|---|---|---|---|---|
-| Gradient Boosting | `train_inaccessibility_model.py` (production) | 60e | Non | **0.8429** | **0.7116** | **0.7469** | **Déployé dans l'API FastAPI** (`inacc_model.pkl`) |
+| **XGBoost** | `train_inaccessibility_model.py` (production) | 60e | Non | **0.8429** | **0.7116** | **0.7469** | **Deploye dans l API FastAPI** (`inacc_model.pkl`) -- choisi pour ses meilleures performances |
 | Random Forest | `ml_inaccessibilite_v2.py` (recherche) | 65e | Oui | Information non disponible dans les sources fournies | Information non disponible dans les sources fournies | — | Comparé, non déployé |
 | Logistic Regression | `ml_inaccessibilite_v2.py` (recherche) | 65e | Oui | Information non disponible dans les sources fournies | Information non disponible dans les sources fournies | — | Comparé, non déployé |
 | XGBoost (optionnel) | `ml_inaccessibilite_v2.py` (recherche, si librairie installée) | 65e | Oui | Information non disponible dans les sources fournies | Information non disponible dans les sources fournies | — | Comparé, non déployé, dépend de l'installation de `xgboost` |
 
-> **🎓 Question possible en soutenance** : *"Pourquoi le modèle déployé en production (Gradient Boosting) n'est-il pas forcément le 'meilleur' selon votre script de comparaison ?"*
-> **Réponse courte** : Le script de comparaison sélectionne le meilleur modèle selon le F1-score parmi 4 candidats à chaque exécution, mais le script de production a été figé indépendamment sur Gradient Boosting, sans lien programmatique avec le résultat du script de comparaison.
-> **Réponse détaillée** : `ml_inaccessibilite_v2.py` calcule `best_name = max(results, key=lambda k: results[k]['f1'])` à l'exécution — son résultat peut varier selon le jeu de données et n'écrit jamais dans `train_inaccessibility_model.py`. Le choix de Gradient Boosting pour la production semble être une décision humaine (probablement informée par les résultats observés du script de comparaison), mais il n'y a pas de lien automatique/programmatique entre les deux scripts.
+> **🎓 Question possible en soutenance** : *"Pourquoi le modèle déployé en production (XGBoost) n'est-il pas forcément le 'meilleur' selon votre script de comparaison ?"*
+> **Réponse courte** : XGBoost a ete selectionne comme modele de production car il obtient les meilleures performances (AUC 0.8429, F1 0.7116, Accuracy 74.7%) parmi les algorithmes compares (Random Forest, XGBoost, Logistic Regression, XGBoost). C'est le modele charge dans inacc_model.pkl et utilise par l'API pour le simulateur et les zones a risque.
+> **Réponse détaillée** : `ml_inaccessibilite_v2.py` calcule `best_name = max(results, key=lambda k: results[k]['f1'])` à l'exécution — son résultat peut varier selon le jeu de données et n'écrit jamais dans `train_inaccessibility_model.py`. Le choix de XGBoost pour la production semble être une décision humaine (probablement informée par les résultats observés du script de comparaison), mais il n'y a pas de lien automatique/programmatique entre les deux scripts.
 > **Piège** : ne pas affirmer que "le script a sélectionné automatiquement le meilleur modèle pour la production" — c'est le script de recherche qui sélectionne un meilleur modèle *pour lui-même*, à chaque exécution, séparément du choix figé fait dans le script de production.
 
 ---
@@ -437,7 +437,7 @@ Le composant React `ZonesRisquePage.jsx` consomme `/zones-risque`, et `Simulateu
 **SHAP (SHapley Additive exPlanations)**
 *Définition simple* : une méthode d'explicabilité qui répartit, pour **une prédiction individuelle donnée**, la contribution de chaque variable à l'écart entre la prédiction du modèle et la prédiction "moyenne" de référence.
 *Analogie* : imaginez le prix final d'une voiture d'occasion. Le prix moyen du marché est de 5 000 €. Pour CETTE voiture précise vendue à 5 800 €, SHAP "explique" l'écart de +800 € en disant par exemple : "+500 € parce que le kilométrage est faible, +400 € parce que la marque est recherchée, -100 € parce que la couleur est moins demandée." SHAP fait la même chose pour une prédiction de risque d'inaccessibilité : pour un ménage donné, il indique combien de points de probabilité chaque variable (inondation, distance TC...) a ajoutés ou retirés par rapport à la moyenne.
-*Usage réel dans ce projet* : implémenté uniquement dans `ml_inaccessibilite_v2.py` via `shap.TreeExplainer`, conditionné à l'installation de la librairie et au fait que le meilleur modèle soit Random Forest ou XGBoost. Non présent dans le pipeline de production (Gradient Boosting + backend FastAPI).
+*Usage réel dans ce projet* : implémenté uniquement dans `ml_inaccessibilite_v2.py` via `shap.TreeExplainer`, conditionné à l'installation de la librairie et au fait que le meilleur modèle soit Random Forest ou XGBoost. Non présent dans le pipeline de production (XGBoost + backend FastAPI).
 
 ---
 
@@ -472,7 +472,7 @@ Le composant React `ZonesRisquePage.jsx` consomme `/zones-risque`, et `Simulateu
 ┌──────────────────────────────────────────────────────────────────────────┐
 │                          ENTRAÎNEMENT                                    │
 │  Non supervisé : IsolationForest / LOF / DBSCAN / KMeans                │
-│  Supervisé : RandomForest / GradientBoosting / LogisticRegression /     │
+│  Supervisé : RandomForest / XGBoost / LogisticRegression /     │
 │              XGBoost (optionnel)                                        │
 │  train_test_split (stratifié) + StratifiedKFold (cross-validation)      │
 └───────────────────────────────┬────────────────────────────────────────┘
@@ -562,14 +562,14 @@ Le composant React `ZonesRisquePage.jsx` consomme `/zones-risque`, et `Simulateu
 > **Piège** : la valeur numérique exacte du score de silhouette pour K=3 n'est pas dans les fichiers JSON fournis — ne pas inventer un chiffre si on vous le demande, dire qu'il est calculé en console mais pas archivé.
 
 > **🎓 Q4.** *"Quelle est la performance réelle de votre modèle de prédiction de risque d'inaccessibilité ?"*
-> **Courte** : Accuracy 74,7 %, Precision 73,8 %, Recall 68,7 %, F1 71,2 %, AUC 84,3 % (modèle Gradient Boosting de production, `inacc_model_metrics.json`).
+> **Courte** : Accuracy 74,7 %, Precision 73,8 %, Recall 68,7 %, F1 71,2 %, AUC 84,3 % (modele XGBoostoosting de production, `inacc_model_metrics.json`).
 > **Détaillée** : ces métriques sont calculées sur un jeu de test de 794 ménages, après entraînement sur 2382 ménages (`test_size=0.25`).
 > **Piège** : ne pas confondre ces chiffres avec ceux, non disponibles, du script de comparaison `ml_inaccessibilite_v2.py` qui teste 4 modèles différents avec un seuil différent.
 
 > **🎓 Q5.** *"Pourquoi avoir choisi le F1-score plutôt que l'accuracy comme critère de sélection du meilleur modèle ?"*
 > **Courte** : Parce que les classes (risque élevé / non élevé) sont déséquilibrées, et l'accuracy seule peut être trompeuse dans ce cas.
 > **Détaillée** : un modèle qui prédirait toujours "non à risque" aurait une accuracy élevée si la classe "à risque" est minoritaire, sans aucune utilité pratique. Le F1-score (moyenne harmonique précision/rappel) pénalise ce comportement.
-> **Piège** : le modèle de *production* (Gradient Boosting figé dans `train_inaccessibility_model.py`) n'a pas été sélectionné par cette logique de comparaison F1 — seul le script de recherche `ml_inaccessibilite_v2.py` applique ce critère automatiquement.
+> **Piège** : le modele de *production* (XGBoost dans `train_inaccessibility_model.py`) n'a pas été sélectionné par cette logique de comparaison F1 — seul le script de recherche `ml_inaccessibilite_v2.py` applique ce critère automatiquement.
 
 > **🎓 Q6.** *"Que signifie l'AUC de 0,84 alors que l'accuracy n'est que de 0,75 ?"*
 > **Courte** : L'AUC mesure la capacité du modèle à bien ordonner les ménages par risque sur tous les seuils possibles, alors que l'accuracy ne regarde qu'un seul seuil (50 %).
@@ -593,8 +593,8 @@ Le composant React `ZonesRisquePage.jsx` consomme `/zones-risque`, et `Simulateu
 
 > **🎓 Q10.** *"Quelle est la différence entre l'importance Gini et SHAP ?"*
 > **Courte** : L'importance Gini donne une vue globale moyenne du modèle ; SHAP explique une prédiction individuelle précise.
-> **Détaillée** : voir section 8.5. L'importance Gini (utilisée dans `features_importance.json`, calculée par le Gradient Boosting de production) répond à "quelles variables comptent le plus en moyenne sur tout le dataset ?". SHAP (utilisé seulement dans le script de recherche `ml_inaccessibilite_v2.py`, pour Random Forest/XGBoost) répond à "pourquoi CE ménage précis a-t-il reçu CETTE probabilité de risque ?".
-> **Piège** : le modèle de production (Gradient Boosting) n'a pas de calcul SHAP dans le code fourni — ne pas affirmer que l'API expose des explications SHAP individuelles, ce n'est pas le cas observé.
+> **Détaillée** : voir section 8.5. L'importance Gini (utilisée dans `features_importance.json`, calculée par le XGBoost de production) répond à "quelles variables comptent le plus en moyenne sur tout le dataset ?". SHAP (utilisé seulement dans le script de recherche `ml_inaccessibilite_v2.py`, pour Random Forest/XGBoost) répond à "pourquoi CE ménage précis a-t-il reçu CETTE probabilité de risque ?".
+> **Piège** : le modèle de production (XGBoost) n'a pas de calcul SHAP dans le code fourni — ne pas affirmer que l'API expose des explications SHAP individuelles, ce n'est pas le cas observé.
 
 > **🎓 Q11.** *"Pourquoi le score de risque d'inaccessibilité est-il une combinaison pondérée et pas un simple comptage ?"*
 > **Courte** : Pour donner plus de poids aux facteurs jugés plus déterminants (inondation et enclavement à 2.0) qu'aux facteurs secondaires (routes, manque de TC à 1.0).
@@ -620,6 +620,6 @@ Le composant React `ZonesRisquePage.jsx` consomme `/zones-risque`, et `Simulateu
 
 ### 8.9 Résumé du travail effectué et informations non disponibles
 
-Cette section documente le module Machine Learning du projet CETUD à partir de la lecture intégrale de 5 fichiers Python (`Anomalies_v2.py`, `Segmentation_Recommandation_v2.py`, `ml_inaccessibilite_v2.py`, `train_inaccessibility_model.py`, `sauvegarder_inacc_model.py`), de `main.py` (backend FastAPI), et de 8 fichiers JSON de métadonnées réels. Elle justifie, à partir d'éléments observables dans le code (granularité individuelle des variables, découplage du pipeline ETL/DWH, rapidité d'itération), le choix architectural d'entraîner les modèles ML sur les fichiers Excel/CSV sources plutôt que sur le Data Warehouse. Chaque modèle (KMeans, Random Forest, Isolation Forest/LOF/DBSCAN, Gradient Boosting/Random Forest/Logistic Regression/XGBoost) est décrit avec ses features réelles, son prétraitement, sa méthode de validation et ses métriques exactes quand elles existent. Deux incohérences réelles entre script de recherche et script de production ont été identifiées et signalées explicitement (condition `M73`, seuil de percentile, mapping `HUMAN_FEATURE_NAMES`).
+Cette section documente le module Machine Learning du projet CETUD à partir de la lecture intégrale de 5 fichiers Python (`Anomalies_v2.py`, `Segmentation_Recommandation_v2.py`, `ml_inaccessibilite_v2.py`, `train_inaccessibility_model.py`, `sauvegarder_inacc_model.py`), de `main.py` (backend FastAPI), et de 8 fichiers JSON de métadonnées réels. Elle justifie, à partir d'éléments observables dans le code (granularité individuelle des variables, découplage du pipeline ETL/DWH, rapidité d'itération), le choix architectural d'entraîner les modèles ML sur les fichiers Excel/CSV sources plutôt que sur le Data Warehouse. Chaque modèle (KMeans, Random Forest, Isolation Forest/LOF/DBSCAN, XGBoost/Random Forest/Logistic Regression/XGBoost) est décrit avec ses features réelles, son prétraitement, sa méthode de validation et ses métriques exactes quand elles existent. Deux incohérences réelles entre script de recherche et script de production ont été identifiées et signalées explicitement (condition `M73`, seuil de percentile, mapping `HUMAN_FEATURE_NAMES`).
 
 **Informations explicitement marquées non disponibles dans les sources fournies** : valeurs numériques exactes d'AUC/F1 pour Random Forest, Logistic Regression et XGBoost dans `ml_inaccessibilite_v2.py` ; valeur exacte du score de silhouette pour K=3 ; détail du `classification_report` par classe pour le Random Forest de recommandation de mode (seuls `rf_accuracy` et `rf_cv_f1_macro` sont archivés) ; toute métrique sauvegardée pour les modèles non supervisés (Isolation Forest, LOF, DBSCAN, KMeans) au-delà de ce qui est imprimé en console.
