@@ -57,7 +57,6 @@ D'après les sources disponibles, on peut établir le schéma général suivant 
 
 📌 **À retenir : dans ce document, on documente uniquement le maillon "restitution" (Knowage)**, c'est-à-dire la façon dont les chiffres du Data Warehouse sont affichés à l'utilisateur final sous forme de cockpit. La construction du Data Warehouse lui-même (ETL, modélisation) relève d'un autre document du PFE.
 
-🎓 **Question possible en soutenance : "Qu'est-ce qu'un outil BI et à quoi sert Knowage dans votre projet ?"**
 Réponse attendue : un outil BI sert à transformer des données stockées (ici dans le Data Warehouse CETUD) en représentations visuelles exploitables par un décideur. Knowage est la brique de restitution du projet : il affiche, via des cockpits, les indicateurs de mobilité urbaine de Dakar (trafic, déplacements, démographie, accessibilité) sans modifier ni recalculer les données sources.
 
 ---
@@ -98,7 +97,6 @@ D'après `sheet_accessibilite_v3.html`, les KPI affichés sont :
 | 🏘️ Communes bien desservies | 9 / 14 | Score ≥ 70 % |
 | ⚠️ Zones sous-desservies | 3 | Score < 50 % |
 
-🎓 **Question possible en soutenance : "Quels datasets Knowage utilise-t-il pour vos cockpits ?"**
 Réponse honnête à donner : "Les widgets affichent des indicateurs cohérents avec les données de l'Enquête Ménages Déplacements et des comptages trafic du Data Warehouse CETUD (déplacements, ménages, individus, sites, communes, accessibilité). La configuration technique précise des datasets Knowage (requêtes, connexions) n'a pas été formalisée dans la documentation disponible à ce stade — c'est un point à clarifier/compléter si la question est posée en détail."
 
 ---
@@ -175,10 +173,8 @@ Les sheets **Trafic**, **Déplacements**, **Démographie** et **IA & Prévisions
 
 **Information non disponible dans les sources fournies :** le détail complet (KPI, graphiques, filtres) des sheets Trafic, Déplacements, Démographie et IA & Prévisions pris individuellement.
 
-🎓 **Question possible en soutenance : "Combien de cockpits/sheets avez-vous créés dans Knowage et que montre chacun ?"**
 Réponse attendue : un cockpit unique "TransportDakar" composé de 6 sheets (Acceuil, Trafic, Déplacements, Démographie, Accessibilité, IA & Prévisions). La sheet Acceuil donne une vue de synthèse globale (carte, résumé exécutif, mini-aperçus, prévisions IA), tandis que la sheet Accessibilité approfondit un thème précis (l'accès aux transports par commune, mode et tranche horaire).
 
-🎓 **Question possible en soutenance : "Quel KPI montre la fracture territoriale dans votre cockpit ?"**
 Réponse attendue : le graphique "Accessibilité par commune" de la sheet Accessibilité, qui oppose Plateau (92 %) à Rufisque (35 %), complété par le bloc "Zones sous-desservies" qui isole Rufisque, Bargny et Sébikotane.
 
 ---
@@ -200,7 +196,6 @@ D'après les deux sheets HTML disponibles, l'inventaire réel des types de widge
 
 📌 **À retenir : tous ces widgets sont construits "à la main" en HTML/CSS dans l'éditeur de widget de Knowage**, et non via des widgets graphiques "natifs" préconfigurés de Knowage (type widget chart standard avec assistant). C'est une particularité importante du projet : Knowage est utilisé ici comme moteur d'affichage de documents composites personnalisés en HTML/CSS, plutôt que comme générateur de graphiques automatiques à partir d'un dataset connecté graphiquement.
 
-🎓 **Question possible en soutenance : "Vos graphiques sont-ils générés automatiquement par Knowage à partir des données, ou codés en dur ?"**
 Réponse honnête à donner : dans la version observée, les graphiques en barres sont du HTML/CSS où la hauteur de chaque barre (`style="height:NN%"`) est définie manuellement à partir de la valeur de la donnée. Ce n'est pas un graphique généré dynamiquement par un moteur de rendu connecté à un dataset Knowage natif — c'est un widget HTML personnalisé affichant les valeurs sous forme de barres. Le lien dynamique automatique avec le Data Warehouse à chaque chargement n'est pas démontré dans les sources fournies.
 
 ---
@@ -261,13 +256,10 @@ Un fond hachuré (`repeating-linear-gradient`) simule un quadrillage de lecture 
 
 📌 **À retenir : l'ensemble de l'expérience utilisateur du cockpit (navigation, thème, graphiques) a été conçu pour respecter une contrainte de sécurité serveur stricte (pas de script, pas de gestionnaire d'événement inline), ce qui a orienté tous les choix techniques vers des solutions 100 % HTML/CSS.**
 
-🎓 **Question possible en soutenance : "Pourquoi n'avez-vous pas utilisé de JavaScript pour la navigation ou le mode sombre ?"**
 Réponse attendue : parce que Knowage applique un filtre de sécurité serveur (sanitizer) au moment de la sauvegarde du document composite, qui rejette toute balise `<script>` et tout attribut `onclick`/`onchange`. Toute tentative d'utiliser du JavaScript provoque l'erreur "Invalid HTML payload" et empêche la sauvegarde réelle. La solution a donc consisté à utiliser des techniques purement CSS : sélecteur `:has()` pour le mode sombre, positionnement absolu/flex pour les graphiques, et la barre d'onglets native de Knowage pour la navigation réelle.
 
-🎓 **Question possible en soutenance : "Comment fonctionne votre bouton de bascule clair/sombre sans JavaScript ?"**
 Réponse attendue : explication du couple `<input type="checkbox">` caché + `<label for="...">` cliquable + sélecteur CSS `:has()`, qui permet de styliser un conteneur parent selon que la case cachée est cochée ou non, sans aucun script.
 
-🎓 **Question possible en soutenance : "Y a-t-il une procédure particulière pour sauvegarder vos modifications dans Knowage ?"**
 Réponse attendue : oui, deux niveaux de sauvegarde existent. Le bouton SAVE de l'éditeur de widget valide la sauvegarde "locale" du widget mais ne garantit rien côté serveur. Seule la sauvegarde au niveau du document (icône disque dans le menu cockpit/hamburger) déclenche le filtre de sécurité serveur, avec confirmation par un toast "Saved" (succès) ou un message "Invalid HTML payload" (échec, nécessitant de retirer tout script/attribut interdit). Il faut ensuite recharger complètement la page pour vérifier que la modification a bien persisté.
 
 ---
@@ -293,7 +285,6 @@ Les sources fournies pour cette tâche (PDF, markdown, fichiers HTML) ne décriv
 
 📌 **À retenir : dans l'état des sources disponibles, le lien "widget Knowage → Data Warehouse" repose sur le principe général de tout outil BI (dataset = requête sur la base, widget = restitution visuelle de ce dataset), mais la configuration technique précise propre au projet CETUD n'a pas été documentée dans les fichiers remis pour cette tâche.** Il est donc honnête, en soutenance, de présenter le principe général tout en reconnaissant que le détail de l'implémentation (datasets Knowage, requêtes) reste à documenter/clarifier si la question est creusée.
 
-🎓 **Question possible en soutenance : "Concrètement, comment Knowage récupère-t-il les chiffres affichés dans vos cockpits ?"**
 Réponse honnête à donner : "Le principe général d'un outil BI comme Knowage est de définir des datasets connectés au Data Warehouse, que l'on associe ensuite à des widgets. Dans la version observée de nos sheets HTML, les valeurs sont intégrées directement dans le code du widget (par exemple les hauteurs de barres en pourcentage). La configuration précise de la connexion entre Knowage et notre Data Warehouse (requêtes, datasets nommés) n'est pas formalisée dans la documentation que j'ai sous la main actuellement — c'est un point que je peux approfondir si nécessaire."
 
 ---
@@ -320,7 +311,6 @@ Récapitulatif de tous les KPI réellement observés dans les sources (sheets Ac
 
 **Information non disponible dans les sources fournies :** les KPI précis des sheets Trafic, Déplacements, Démographie et IA & Prévisions pris individuellement (au-delà des mini-aperçus visibles sur la sheet Acceuil).
 
-🎓 **Question possible en soutenance : "Quel est le KPI le plus important de votre cockpit et pourquoi ?"**
 Réponse possible (argumentée à partir des données observées) : le score d'**accessibilité globale (78 %)** est central car il synthétise en un seul chiffre la qualité de desserte en transport, et il est répété sur plusieurs sheets (Acceuil et Accessibilité), ce qui montre son rôle de KPI transversal du cockpit.
 
 ---
@@ -331,7 +321,6 @@ Réponse possible (argumentée à partir des données observées) : le score d'*
 
 **Sécurité de la plateforme (utilisateurs, rôles, droits d'accès), installation serveur, et configuration de connexion à la base de données :** Information non disponible dans les sources fournies. Aucun élément du PDF, du markdown ou des fichiers HTML ne documente la gestion des comptes utilisateurs Knowage, les rôles/permissions, le protocole d'authentification, ni les paramètres serveur (installation, ports, configuration de la base de données sous-jacente).
 
-🎓 **Question possible en soutenance : "Quelles sont les mesures de sécurité de Knowage dans votre projet ?"**
 Réponse honnête à donner : "La seule mesure de sécurité documentée et observée concrètement dans notre travail est le filtre de sécurité serveur (sanitizer) qui s'applique à la sauvegarde des widgets HTML, et qui bloque tout JavaScript ou gestionnaire d'événement inline pour éviter les failles de type injection de script (XSS). Les aspects de sécurité applicative plus larges de Knowage (gestion des utilisateurs, droits d'accès, authentification) n'ont pas été documentés dans le cadre de cette partie du projet."
 
 ---
