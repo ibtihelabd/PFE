@@ -139,17 +139,6 @@ Les justifications données par les sources pour ce choix de séparation sont :
 3. **Itération rapide.** Les commentaires des scripts ML (`v2`, "CORRECTION bug...", ajustements de seuils) montrent un rythme de correction/réentraînement rapide qui serait ralenti si chaque test nécessitait une mise à jour préalable du DWH via l'ETL Talend (§8.1.2.c).
 4. **Conservation de variables non "décisionnelles".** Le modèle d'inaccessibilité utilise des variables très fines de l'enquête ménage (ex. `M67_1` à `M67_8`, disponibilité de 8 types de TC) qui n'ont probablement pas vocation à devenir des dimensions/mesures d'un DWH orienté pilotage stratégique (§8.1.2.d).
 
-### 4.1 Avantages et inconvénients de cette séparation (synthèse argumentée à partir des sources)
-
-| | Avantages | Inconvénients |
-|---|---|---|
-| **Confirmés explicitement par `07_MachineLearning.md`** | Granularité individuelle préservée pour le ML ; découplage total (le ML continue de fonctionner même si l'ETL/DWH est en panne) ; itérations rapides sans attendre un cycle ETL complet ; conservation de variables fines non vouées à un usage décisionnel agrégé | **Double lecture des fichiers sources** sans mutualisation du nettoyage (une correction de qualité de donnée faite côté ETL n'est pas automatiquement répercutée côté ML, sauf duplication manuelle du correctif) ; **chemins de fichiers codés en dur** propres à la machine du développeur, fragilisant la portabilité ; **pas de validation automatique de schéma** côté ML si le fichier Excel source change de structure |
-| **Déduit par recoupement (cohérent avec les deux chaînes documentées)** | Chaque équipe/chaîne peut évoluer à son rythme sans synchronisation contraignante ; les pannes d'un système (Talend/Knowage) n'affectent pas l'autre (FastAPI/React) et réciproquement | Deux pipelines à maintenir, deux jeux de scripts/connaissances séparés ; risque d'incohérence de définitions/seuils entre les deux mondes (analogue, dans l'esprit, aux incohérences déjà relevées **à l'intérieur même** de la chaîne ML — seuils 0.60/0.40 vs 0.65/0.45, condition `M73` 'Oui' vs 'TCOui', cf. `07_MachineLearning.md` §8.3.4) ; absence de "source unique de vérité" globale pour des notions qui pourraient être communes aux deux chaînes (ex. zones géographiques, niveaux de risque) |
-
-> Précision de méthode : le tableau ci-dessus distingue ce qui est **explicitement écrit** dans les sources de ce qui est une **déduction raisonnable** cohérente avec les faits déjà établis (différenciée dans la colonne de gauche), conformément à la règle de ne rien inventer.
-
----
-
 ## 5. Comparatif des deux pipelines de données
 
 | Critère | Pipeline décisionnel (BI) | Pipeline Machine Learning |
@@ -186,69 +175,6 @@ Les justifications données par les sources pour ce choix de séparation sont :
 | **Cockpit Knowage (reporting décisionnel)** | Donner aux décideurs une vue BI synthétique de la mobilité urbaine (trafic, déplacements, démographie, accessibilité) | `CockpitDakar.jsx` (intégration), 6 sheets Knowage (Acceuil, Trafic, Déplacements, Démographie, Accessibilité, IA & Prévisions) | Knowage, iframe, proxy `setupProxy.js`, HTML/CSS pur (sanitizer serveur interdisant JavaScript) | Le cockpit est affiché dans l'espace décideurs via une iframe en same-origin. Les widgets sont construits en HTML/CSS sans JavaScript (contrainte du filtre de sécurité Knowage), avec un mode sombre géré uniquement en CSS via le sélecteur `:has()`. |
 | **Pipeline ETL Talend** | Extraire, transformer et charger les données brutes CETUD vers le Data Warehouse | Jobs Talend (`SA_individu`, `Dim_geographie`, `fait_accessibilite`, etc.) | Talend Open Studio, PostgreSQL | Chaque job lit une source, applique des transformations visuelles (filtrage, jointures, dédoublonnage), puis écrit dans la base. C'est la "tuyauterie" qui alimente le Data Warehouse, indépendante du pipeline ML. |
 | **Data Warehouse en constellation** | Stocker les données décisionnelles de façon structurée pour l'analyse multi-thématique | Schéma `DW` (4 faits, 10 dimensions) | PostgreSQL | Plusieurs sujets d'analyse (mobilité, accessibilité, trafic, démographie) partagent certaines dimensions communes (notamment la géographie), permettant des analyses croisées sans tout fusionner dans une seule grande table. |
-
----
-
-## 7. Analyse transversale du code : bonnes pratiques, limites, pistes d'amélioration
-
-Cette section consolide — sans en ajouter de nouvelles — les observations déjà faites séparément dans chacun des 8 documents sources, en les regroupant par thématique transversale.
-
-### 7.1 Bonnes pratiques observées (consolidées)
-
-| Thème | Observation | Source |
-|---|---|---|
-| Validation des données | Pydantic + `Field(ge=, le=)` rejette automatiquement les entrées hors bornes (code 422) avant toute logique métier | `03_Backend_FastAPI.md` §3 |
-| Performance d'inférence | Les modèles `.pkl` sont chargés **une seule fois** au démarrage de `main.py`, pas à chaque requête | `03_Backend_FastAPI.md` §5.1 |
-| Découplage entraînement/service | Les scripts d'entraînement (`train_inaccessibility_model.py`) sont séparés du service d'API (`main.py`) | `03_Backend_FastAPI.md` §8.1 |
-| Calibration statistique plutôt qu'arbitraire | Le paramètre de contamination des modèles d'anomalies est calculé via IQR plutôt que fixé à une valeur arbitraire (5 %) | `07_MachineLearning.md` §8.3.1 |
-| Architecture en couches du DW | Séparation `SA` (staging brut) / `DW` (modèle décisionnel propre), pattern ETL classique | `04_Base_de_donnees.md` §1 |
-| Intégrité référentielle | Usage systématique de `COALESCE` pour éviter les clés étrangères NULL dans les jointures Talend/SQL | `04_Base_de_donnees.md` §5 |
-| Cohérence visuelle frontend | Composants décideurs partagent les mêmes motifs visuels (cartes, thème clair/sombre persistant) | `02_Frontend.md` §12.1 |
-| Robustesse face aux contraintes Knowage | Solutions 100% CSS (sélecteur `:has()`, axes gradués) pour contourner l'interdiction de JavaScript du sanitizer Knowage | `08_Knowage.md` §5 |
-| Séparation des chaînes ML/BI | Le pipeline ML ne dépend pas de la disponibilité de l'ETL/DWH, et réciproquement | `07_MachineLearning.md` §8.1.2 |
-
-### 7.2 Mauvaises pratiques et problèmes d'architecture (consolidés)
-
-| Thème | Observation | Source |
-|---|---|---|
-| **Sécurité — mots de passe en clair côté serveur** | 13 des 18 endpoints FastAPI sont protégés par JWT signé (HS256) via `POST /auth/login` + dependency `get_current_decideur` ; les 5 endpoints citoyens restent publics par design ; `DECIDEURS_DB` stocke cependant les mots de passe en texte brut, sans hashing | `03_Backend_FastAPI.md` §4.4 ; `02_Frontend.md` §3.3 |
-| **Monolithe non modulaire côté backend** | `main.py` (823 lignes) concentre chargement des modèles, schémas Pydantic, logique métier et 18 endpoints dans un seul fichier, sans `routers/`/`services/` | `03_Backend_FastAPI.md` §1.1 |
-| **Incohérences de seuils entre script ML et API/production** | Seuils de risque 0.65/0.45 (script de recherche) vs 0.60/0.40 (script de production et endpoint `/zones-risque/resume`) ; condition `M73 == 'Oui'` (corrigée en v2 recherche) vs `M73 == 'TCOui'` (non corrigée en production) | `03_Backend_FastAPI.md` §2.2, §8.2 ; `07_MachineLearning.md` §8.3.4 |
-| **Incohérences de libellés entre sources internes** | `SEGMENT_LABELS` codé en dur dans `main.py` diffère de `metadata.json segment_labels` ; `HUMAN_FEATURE_NAMES` (production) contredit `cat_features`/`num_features` (script de recherche) pour les mêmes codes (M26, M28...) | `03_Backend_FastAPI.md` §2.2 ; `07_MachineLearning.md` §8.3.4 |
-| **Duplication de configuration côté frontend** | URL `http://localhost:8000` répétée en dur dans au moins 9 fichiers React, sans fichier de configuration centralisé ni `.env` | `02_Frontend.md` §12.2 |
-| **Fichiers `.bak` non nettoyés** | Au moins 12 fichiers `.jsx.bak` coexistent avec leur version active dans le dépôt frontend | `02_Frontend.md` §12.2 |
-| **Fichiers `.pkl` orphelins** | `kmeans_pca.pkl`, `inacc_label_encoders.pkl`, `inaccessibilite_model.pkl` présents sur disque mais jamais chargés par `main.py` | `03_Backend_FastAPI.md` §8.2 |
-| **Chemins de fichiers absolus codés en dur** | Scripts d'entraînement et `main.py` (pour les données) pointent vers des chemins Windows personnels du développeur, non portables | `03_Backend_FastAPI.md` §5.2, §8.2 ; `07_MachineLearning.md` §8.1.3 |
-| **Persistance fragile** | `feedback_citoyens.json` est réécrit entièrement à chaque ajout (`json.dump`), sans verrou de concurrence ; risque de corruption en écritures simultanées | `03_Backend_FastAPI.md` §8.2 |
-| **Exposition d'erreurs internes** | Plusieurs `HTTPException(500, detail=str(e))` renvoient le message d'exception Python brut au client | `03_Backend_FastAPI.md` §4.3, §8.2 |
-| **Absence de pipeline MLOps** | Pas de réentraînement automatique programmé, pas de versioning de modèles, pas de tests de non-régression, pas de monitoring de dérive des données | `07_MachineLearning.md` §8.7 |
-| **Documentation désynchronisée du code** | Le `README.md` backend ne documente que 5 endpoints sur 18 réels | `03_Backend_FastAPI.md` §2.1 |
-| **Style frontend entièrement inline** | Aucun CSS Module/styled-components pour les pages décideurs ; fichiers JSX de 300 à 700+ lignes avec `style={{...}}` partout | `02_Frontend.md` §12.2 |
-| **Recommandations textuelles "fake-statiques"** | Plusieurs pages (Zones à risque, Anomalies, Évolution temporelle) affichent des textes de recommandation pré-écrits côté frontend, interpolés avec quelques vraies données, et non générés dynamiquement | `02_Frontend.md` §12.2 |
-| **Documentation BI incomplète** | La configuration technique réelle de connexion Knowage ↔ Data Warehouse (datasets, requêtes SQL) n'est pas documentée dans les sources disponibles | `08_Knowage.md` §6.2, §9.2 |
-| **Pas de async côté FastAPI** | Toutes les fonctions sont `def` synchrones, alors que FastAPI permettrait l'asynchrone | `03_Backend_FastAPI.md` §1.2, §8.2 |
-| **Pas de rate limiting** | Aucune limite de débit sur les endpoints publics sensibles (`/api/feedback`, `/recommander`) | `03_Backend_FastAPI.md` §4.4, §8.2 |
-| **Pas de tests automatisés** | Aucun fichier de test trouvé dans le périmètre backend fourni | `03_Backend_FastAPI.md` §8.3 |
-
-### 7.3 Risques de sécurité (synthèse)
-
-1. **Authentification JWT limitée aux endpoints décideurs** : les 13 endpoints décideurs sont protégés par JWT signé (`get_current_decideur`), mais les 5 endpoints citoyens (dont `POST /api/feedback`) restent publics par design, ce qui permet toujours en théorie un déni de service trivial sur ces derniers (spam de requêtes) — confirmé en `03_Backend_FastAPI.md` §4.4.
-3. **Token JWT non falsifiable sans le secret serveur, mais mots de passe en clair** : le token signé HS256 (`auth.js`/`authFetch`) ne peut plus être forgé sans connaître `JWT_SECRET`, qui reste côté serveur uniquement ; en revanche, `DECIDEURS_DB` stocke encore les mots de passe en texte brut, sans hashing (`02_Frontend.md` §3.3 ; `03_Backend_FastAPI.md` §4.4).
-4. **Fuite d'informations internes possible** : plusieurs réponses d'erreur HTTP 500 renvoient le détail brut de l'exception Python (chemins de fichiers, noms de colonnes) au client (`03_Backend_FastAPI.md` §4.3).
-
-### 7.4 Pistes d'amélioration consolidées (reprises des 8 documents, sans ajout)
-
-- Hasher les mots de passe de `DECIDEURS_DB` (ex. `passlib`/`bcrypt`) et envisager un refresh token, l'authentification JWT de base étant déjà en place côté backend.
-- Modulariser `main.py` en `routers/`, `services/`, `schemas/`.
-- Harmoniser les seuils de risque et les libellés de segments entre les scripts de recherche et de production.
-- Remplacer le stockage JSON du feedback citoyen par une base de données légère (SQLite a minima) pour gérer la concurrence.
-- Centraliser la configuration de l'URL d'API côté frontend (variable d'environnement `REACT_APP_API_URL`).
-- Nettoyer les fichiers `.bak` et les `.pkl` orphelins du dépôt.
-- Ajouter un rate limiting sur les endpoints publics sensibles.
-- Ajouter des tests automatisés (absents des deux côtés, frontend et backend).
-- Mettre à jour le `README.md` backend pour refléter les 18 endpoints réels.
-- Documenter formellement la configuration technique des datasets Knowage et leur lien avec le Data Warehouse.
-- Étudier un mécanisme de réentraînement périodique programmé pour les modèles ML.
 
 ---
 
