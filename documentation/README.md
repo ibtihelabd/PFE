@@ -51,9 +51,6 @@ Décrit le cockpit décisionnel Knowage "TransportDakar", composé de 6 feuilles
 ### 09_Integration.md *(en cours de rédaction)*
 Ce fichier doit présenter la vision d'intégration bout-en-bout du système TransportDakar, en reliant explicitement les éléments documentés dans les fichiers 02 à 08.
 
-### 10_Soutenance.md *(en cours de rédaction)*
-Ce fichier doit regrouper une préparation synthétique aux questions de soutenance, en consolidant les questions/réponses déjà proposées dans chacun des fichiers thématiques.
-
 ### 11_Glossaire.md
 Glossaire alphabétique de plus de 70 termes techniques (développement web, ETL/Data Warehouse, Machine Learning, BI) et de termes métier spécifiques au domaine (CETUD, EMD, mobilité urbaine, matrice origine-destination), destiné à faciliter la compréhension transversale de la documentation.
 
