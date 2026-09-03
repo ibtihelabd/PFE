@@ -277,23 +277,3 @@ tDBInput_2 (Lookup, Dim_Individu)──row2──┼──► tMap_1 ──fact_
 
 ---
 
-## 7. À retenir et questions de soutenance
-
-> 📌 **À retenir (synthèse)**
-> - Le pipeline Talend suit le cycle Extract (fichiers/tDBInput) → Transform (tMap, tSortRow, tUniqRow) → Load (tDBOutput), répété pour chaque table source et chaque table cible.
-> - Les jobs de dimension utilisent `DISTINCT` (SQL) ou `tUniqRow` (Talend) pour garantir l'unicité des lignes de dimension.
-> - Les jobs de fait combinent systématiquement un flux principal (Main) avec plusieurs flux de lookup (un par dimension à résoudre), tous fusionnés dans un seul `tMap`.
-> - Une clé composite (`num_individu + "|" + num_menage`) est recalculée à la fois côté fait et côté dimension pour fiabiliser les jointures sur l'individu.
-> - Les choix de jointure (`Inner Join` strict vs `LEFT JOIN` + `COALESCE`) varient selon le besoin métier : strict quand la dimension est garantie complète, permissif avec valeur par défaut quand des valeurs manquantes sont à anticiper.
-
-> 🎓 **Questions possibles en soutenance**
-> 1. Quelle est la différence entre un flux `Main` et un flux `Lookup` dans un `tMap` Talend, et pourquoi cette distinction est-elle structurante pour le pipeline ?
-> 2. Pourquoi le job `Dim_site` nécessite-t-il un `tSortRow` suivi d'un `tUniqRow`, alors que les autres jobs de dimension se contentent d'un `SELECT DISTINCT` ?
-> 3. Expliquez le rôle du `tFilterColumns` dans les jobs d'alimentation du staging (`SA_individu`, `SA_men`). Que se passerait-il si on le supprimait ?
-> 4. Dans le job `fait_accessibilite`, combien de flux convergent vers le `tMap_1` ? Quel est le rôle de chacun ?
-> 5. Pourquoi le job `fact_indivMen` utilise-t-il un `Inner Join` strict pour son lookup, alors que `fait_accessibilite` utilise des `LEFT JOIN` avec valeurs par défaut ?
-> 6. Comment la date de comptage (`date_comptage`) est-elle décomposée en année/mois/jour dans le tMap du job de comptage, et pourquoi ce découpage est-il utile pour `Dim_Temps` ?
-> 7. Quel est l'ordre de dépendance obligatoire entre les jobs Talend (quel job doit s'exécuter avant quel autre) ? Pourquoi ?
-> 8. Si une nouvelle source de données arrivait (par exemple une enquête de satisfaction usagers), comment l'intégreriez-vous dans ce pipeline en respectant les mêmes patterns observés ?
-
-> Information non disponible dans les sources fournies : l'orchestration globale des jobs (existence d'un job "maître" / `tRunJob` enchaînant automatiquement tous les jobs dans l'ordre, planification/fréquence d'exécution, gestion des erreurs au niveau du job, journalisation) n'apparaît dans aucune capture fournie.
