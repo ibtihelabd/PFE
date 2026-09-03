@@ -299,54 +299,6 @@ Cette section consolide — sans en ajouter de nouvelles — les observations d�
 
 ---
 
-## 9. Questions possibles en soutenance
-
-🎓 **Q1 — "Votre projet a-t-il une seule architecture intégrée, ou plusieurs systèmes séparés ?"**
-*Réponse courte* : Deux systèmes distincts : l'application citoyenne (React + FastAPI + fichiers `.pkl`/`.json`) et le système décisionnel (Talend + Data Warehouse PostgreSQL + Knowage). Ils ne partagent que la même donnée brute d'origine.
-*Réponse détaillée* : `07_MachineLearning.md` confirme explicitement qu'aucun script ML ne se connecte à une base de données ou au Data Warehouse, et que les deux pipelines "ne se croisent jamais après l'étape de lecture du fichier source". Le seul point de jonction visible dans le code est l'affichage du cockpit Knowage en iframe dans la page React `CockpitDakar.jsx`, qui est une intégration d'affichage et non d'échange de données.
-
-🎓 **Q2 — "Pourquoi n'avez-vous pas connecté vos modèles ML au Data Warehouse que vous avez construit ?"**
-*Réponse courte* : Parce que le Data Warehouse agrège les données pour le reporting, alors que le ML a besoin de données individuelles fines, et parce que cela aurait créé une dépendance inutile à l'ETL Talend.
-*Réponse détaillée* : voir section 4 de ce document, qui reprend les quatre justifications de `07_MachineLearning.md` §8.1.2 (granularité, découplage, itération rapide, conservation de variables non décisionnelles).
-
-🎓 **Q3 — "Où, concrètement, dans le code, les deux chaînes se rencontrent-elles ?"**
-*Réponse courte* : Uniquement dans `CockpitDakar.jsx`, qui affiche le cockpit Knowage en iframe au sein de l'espace décideurs React.
-*Réponse détaillée* : Ce composant ne fait aucun appel `fetch` vers FastAPI ; il pointe une iframe vers `/knowage-vue/workspace/document-composite/Acceuil`, rendue same-origin par un proxy de développement. Aucun autre fichier des huit documents sources ne montre d'appel API entre les deux mondes.
-
-🎓 **Q4 — "Quelle est la principale faiblesse de sécurité commune aux deux chaînes ?"**
-*Réponse courte* : Côté FastAPI (chaîne ML), le JWT protège l'espace décideurs mais les mots de passe restent stockés en clair côté serveur ; côté BI, le sanitizer Knowage offre une protection XSS mais aucune information sur la gestion des comptes/droits Knowage n'est documentée.
-*Réponse détaillée* : `03_Backend_FastAPI.md` confirme que 13 des 18 endpoints sont protégés par JWT signé HS256 (`get_current_decideur`), mais que `DECIDEURS_DB` ne hash pas les mots de passe. `08_Knowage.md` confirme que la sécurité applicative de Knowage (utilisateurs, rôles, authentification serveur) n'est pas documentée dans les sources disponibles — ce qui ne permet pas d'affirmer qu'elle existe ou non.
-
-🎓 **Q5 — "Le frontend React utilise-t-il les mêmes données pour les pages décideurs et pour le cockpit Knowage ?"**
-*Réponse courte* : Non, ce sont deux sources de données totalement séparées consommées par la même interface React.
-*Réponse détaillée* : Les pages décideurs (`ZonesRisquePage`, `AnomalyDashboard`, `SegmentationPage`...) consomment exclusivement les endpoints FastAPI alimentés par les modèles `.pkl`/fichiers `.json`. La page `CockpitDakar.jsx` affiche un cockpit Knowage alimenté (selon le principe général d'un outil BI) par le Data Warehouse — mais le mécanisme exact de cette alimentation n'est pas documenté dans les sources.
-
-🎓 **Q6 — "Quelles incohérences de seuils avez-vous identifiées dans votre propre pipeline ML, et où se situent-elles dans l'architecture globale ?"**
-*Réponse courte* : Le seuil de risque d'inaccessibilité diffère entre le script de recherche (65e percentile) et le script de production (60e percentile), et ce dernier est celui réellement chargé par FastAPI.
-*Réponse détaillée* : `07_MachineLearning.md` §8.3.4 et `03_Backend_FastAPI.md` §2.2 confirment cette incohérence sur deux points : le seuil de percentile et la condition `M73` ('Oui' vs 'TCOui'). Comme c'est le script de production qui alimente l'API utilisée par React, c'est cette version (non corrigée) qui est réellement servie aux utilisateurs finaux.
-
-🎓 **Q7 — "Si le Data Warehouse tombe en panne, votre application citoyenne est-elle affectée ?"**
-*Réponse courte* : Non, car FastAPI ne dépend d'aucune base de données relationnelle ni du Data Warehouse.
-*Réponse détaillée* : Toute la chaîne React/FastAPI repose sur des fichiers `.pkl`/`.json` chargés en mémoire au démarrage du serveur ; seule la page `CockpitDakar.jsx` (affichage du cockpit Knowage) serait affectée par une panne du système décisionnel, sans impact sur les fonctionnalités usager (planning, simulateur, avis citoyen) ni sur les autres pages décideurs (zones à risque, anomalies, segmentation).
-
-🎓 **Q8 — "Comment qualifierieriez-vous la maturité de l'intégration globale du projet ?"**
-*Réponse courte* : C'est une intégration de niveau prototype/PFE : deux chaînes fonctionnelles mais non unifiées, sans orchestration commune, avec des incohérences internes documentées plutôt que masquées.
-*Réponse détaillée* : Aucune des sources ne mentionne d'orchestrateur global (pas de `tRunJob` Talend documenté, pas de pipeline MLOps, pas de configuration `.env` centralisée), ce qui est cohérent avec un projet de fin d'études démontrant la faisabilité de chaque brique plutôt qu'un système de production industrialisé.
-
-🎓 **Q9 — "Le citoyen qui dépose un avis sur la cellule d'écoute alimente-t-il le Data Warehouse décisionnel ?"**
-*Réponse courte* : Non — ces avis sont stockés uniquement dans `feedback_citoyens.json`, consommé par l'API FastAPI, sans lien avec le schéma `SA`/`DW` PostgreSQL.
-*Réponse détaillée* : `02_Frontend.md` §6.3 confirme que `AvisCitoyenPage.jsx` poste vers `POST /api/feedback`, qui écrit dans un fichier JSON local au backend. Aucune des sources ne mentionne d'écriture vers le Data Warehouse à partir de ce flux.
-
-🎓 **Q10 — "Pourquoi le projet n'a-t-il pas une seule base de données pour tout centraliser ?"**
-*Réponse courte* : Parce que les deux chaînes ont des besoins très différents — l'application citoyenne privilégie la simplicité et la rapidité d'un service de modèles ML via fichiers, tandis que le système décisionnel a besoin d'un modèle relationnel structuré (constellation) pour le reporting BI.
-*Réponse détaillée* : Combiner les deux dans une seule base aurait nécessité de concilier des granularités et des usages incompatibles (cf. tableau comparatif section 5) ; le choix observé reflète une architecture pragmatique de PFE qui démontre chaque brique séparément plutôt qu'une plateforme de données unifiée — un axe d'amélioration explicitement identifiable mais non implémenté dans les sources.
-
-🎓 **Q11 — "Les deux pipelines de données produisent-ils des analyses de risque cohérentes entre elles (BI vs ML) ?"**
-*Réponse courte* : Cela ne peut pas être confirmé avec les sources disponibles — aucune comparaison croisée entre les résultats BI (cockpit Knowage) et les résultats ML (zones à risque, anomalies) n'est documentée.
-*Réponse détaillée* : Les KPI affichés dans Knowage (ex. "Accessibilité globale : 78 %") et les sorties du modèle d'inaccessibilité FastAPI (ex. zone DALIFORD à ~75 % de risque) portent sur des thématiques voisines (accessibilité aux transports) mais proviennent de calculs et de sources de données différents et ne sont reliés par aucun mécanisme documenté. Information non disponible/non confirmée pour une éventuelle cohérence chiffrée entre les deux.
-
----
-
 ## 10. Résumé final
 
 TransportDakar repose sur **deux chaînes de données indépendantes**, confirmées explicitement par `07_MachineLearning.md` : une chaîne applicative (React → FastAPI → modèles `.pkl`/fichiers `.json`, sans base relationnelle, confirmé par `03_Backend_FastAPI.md`) et une chaîne décisionnelle (Sources CETUD → ETL Talend → Data Warehouse PostgreSQL en constellation → Knowage). Elles partent des mêmes fichiers Excel/CSV bruts mais ne se recroisent jamais après lecture, sauf à l'affichage : la page React `CockpitDakar.jsx` intègre le cockpit Knowage via iframe, sans échange de données JSON. Le tableau comparatif détaille les étapes, outils et granularités propres à chaque pipeline ; le tableau des fonctionnalités couvre recommandation de transport, segmentation, simulateur de risque, détection d'anomalies, avis citoyens, cockpit Knowage, et plus. L'analyse transversale consolide des limites déjà documentées : authentification JWT limitée à l'espace décideurs (mots de passe en clair côté serveur, pas de refresh token), incohérences de seuils/libellés entre scripts de recherche et production, fichiers `.bak`/`.pkl` orphelins, configuration dupliquée, et documentation BI incomplète sur le lien technique Knowage-Data Warehouse. Aucune information non confirmée par les 8 documents sources n'a été ajoutée.
