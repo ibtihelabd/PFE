@@ -117,11 +117,8 @@ D'après `04_Base_de_donnees.md`, `05_ETL.md` et `06_DataWarehouse.md`, le syst�
 
 ### 3.2 Le lien Knowage ↔ Data Warehouse : ce qui est confirmé et ce qui ne l'est pas
 
-Point important à ne pas survendre en soutenance : `08_Knowage.md` indique explicitement que **la chaîne technique précise de connexion entre Knowage et le Data Warehouse CETUD n'est pas documentée dans les sources disponibles** : *« Les sources fournies […] ne décrivent pas la chaîne technique réelle de connexion entre Knowage et le Data Warehouse CETUD (pas de configuration de source de données, pas de requête SQL, pas de nom de dataset Knowage). »* Ce qui est confirmé, en revanche, c'est que :
 - les widgets observés (sheets Acceuil et Accessibilité) sont construits **en HTML/CSS codé à la main** dans l'éditeur de widget Knowage, et non via des widgets graphiques natifs connectés dynamiquement à un dataset ;
 - les valeurs affichées (hauteurs de barres en `%`, KPI chiffrés) sont des **valeurs CSS/HTML fixes** intégrées dans le code du widget, sans preuve d'une liaison dynamique automatique avec les tables du Data Warehouse à chaque chargement de page.
-
-📌 **À retenir** : il faut donc distinguer, en soutenance, le **principe général attendu** d'un outil BI (dataset = requête sur la base, widget = restitution visuelle) du **mécanisme réellement observé et documenté** dans le projet (valeurs HTML/CSS en grande partie statiques). C'est une nuance honnête à assumer plutôt qu'à dissimuler, exactement comme le préconise `08_Knowage.md`.
 
 ### 3.3 Le seul point de jonction visible entre React et Knowage
 
@@ -236,7 +233,6 @@ Cette section consolide — sans en ajouter de nouvelles — les observations d�
 ### 7.3 Risques de sécurité (synthèse)
 
 1. **Authentification JWT limitée aux endpoints décideurs** : les 13 endpoints décideurs sont protégés par JWT signé (`get_current_decideur`), mais les 5 endpoints citoyens (dont `POST /api/feedback`) restent publics par design, ce qui permet toujours en théorie un déni de service trivial sur ces derniers (spam de requêtes) — confirmé en `03_Backend_FastAPI.md` §4.4.
-2. **CORS n'est pas un mécanisme de sécurité serveur** : il protège uniquement les appels initiés par un navigateur depuis une origine non autorisée, mais n'empêche pas un script ou un outil comme `curl`/Postman d'appeler directement l'API — point explicitement souligné comme central pour la soutenance (`03_Backend_FastAPI.md` §4.4).
 3. **Token JWT non falsifiable sans le secret serveur, mais mots de passe en clair** : le token signé HS256 (`auth.js`/`authFetch`) ne peut plus être forgé sans connaître `JWT_SECRET`, qui reste côté serveur uniquement ; en revanche, `DECIDEURS_DB` stocke encore les mots de passe en texte brut, sans hashing (`02_Frontend.md` §3.3 ; `03_Backend_FastAPI.md` §4.4).
 4. **Fuite d'informations internes possible** : plusieurs réponses d'erreur HTTP 500 renvoient le détail brut de l'exception Python (chemins de fichiers, noms de colonnes) au client (`03_Backend_FastAPI.md` §4.3).
 
