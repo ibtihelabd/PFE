@@ -336,37 +336,6 @@ Réponse honnête à donner : "La seule mesure de sécurité documentée et obse
 
 ---
 
-## 9. Avantages, limites et pistes d'amélioration
-
-### 9.1 Avantages observés
-
-- **Flexibilité visuelle totale** : en construisant les sheets en HTML/CSS pur, le cockpit "TransportDakar" obtient un design entièrement personnalisé (couleurs de marque orange/bleu nuit, icônes, mise en page), bien au-delà d'un widget standard "prêt à l'emploi".
-- **Mode sombre natif sans dépendance externe** : la solution `:has()` est légère (aucune librairie JS) et s'intègre directement dans le widget HTML.
-- **Cohérence de navigation** : la combinaison "barre d'onglets native + cartes de repère visuel" donne à l'utilisateur un repère clair de sa position dans le cockpit, même si les cartes ne sont pas cliquables.
-- **Lisibilité des graphiques améliorée** : le passage d'un simple `height:%` à un graphique avec axe Y gradué et étiquette de valeur (section 3 du markdown) répond directement à un vrai problème de lisibilité identifié.
-
-### 9.2 Limites observées
-
-- **Contrainte forte du sanitizer** : l'impossibilité d'utiliser JavaScript empêche toute interactivité réellement dynamique (pas de clic sur les cartes de navigation pour changer de sheet, pas de filtre interactif visible dans les widgets observés).
-- **Graphiques "statiques"** : les barres sont positionnées avec des valeurs CSS fixes (`height:NN%`) écrites en dur dans le HTML du widget, ce qui suggère que les graphiques ne se mettent pas à jour automatiquement à chaque nouvelle donnée du Data Warehouse sans intervention manuelle sur le code du widget (le lien dynamique exact n'étant pas démontré dans les sources).
-- **Absence de filtres interactifs documentés** : aucun sélecteur (date, commune, mode de transport) n'apparaît dans les deux sheets HTML observées — l'utilisateur ne peut pas filtrer dynamiquement les données affichées.
-- **Procédure de sauvegarde fragile** : comme documenté en section 5.1/8, une sauvegarde "widget" peut sembler réussie sans être réellement persistée côté serveur, ce qui impose une procédure de vérification stricte (rechargement complet de page).
-- **Documentation technique incomplète sur la connexion aux données** : comme indiqué en section 6, le mécanisme exact de récupération des données depuis le Data Warehouse n'est pas documenté dans les sources disponibles pour cette tâche.
-
-### 9.3 Pistes d'amélioration (raisonnables, dans la continuité de ce qui est documenté)
-
-- Documenter et formaliser la configuration réelle des datasets Knowage (requêtes SQL, source de données, fréquence de rafraîchissement) pour clarifier le lien avec le Data Warehouse.
-- Étudier la possibilité d'utiliser les widgets graphiques natifs de Knowage (connectés dynamiquement à un dataset) en complément des widgets HTML personnalisés, pour les graphiques qui nécessitent une mise à jour automatique fréquente.
-- Compléter la documentation des sheets Trafic, Déplacements, Démographie et IA & Prévisions avec le même niveau de détail que les sheets Acceuil et Accessibilité.
-- Si des filtres interactifs sont nécessaires, étudier les mécanismes Knowage natifs (paramètres de cockpit, filtres cross-navigation) qui ne s'appuient pas sur du JavaScript interdit par le sanitizer.
-
-📌 **À retenir : la principale tension technique de ce cockpit est l'équilibre entre richesse visuelle personnalisée (HTML/CSS) et les contraintes de sécurité serveur de Knowage qui interdisent tout script.** Toutes les solutions présentées dans les sources (navigation, mode sombre, graphiques) sont des réponses créatives à cette contrainte.
-
-🎓 **Question possible en soutenance : "Quelles sont les limites de votre solution Knowage et comment les amélioreriez-vous ?"**
-Réponse attendue : la principale limite est l'absence d'interactivité dynamique réelle (pas de filtre, pas de mise à jour automatique visible des graphiques) du fait du sanitizer qui interdit le JavaScript. Une piste d'amélioration serait d'explorer les widgets natifs de Knowage connectés à des datasets pour les graphiques nécessitant une vraie dynamique de données, tout en conservant l'habillage HTML/CSS personnalisé pour les éléments purement visuels (navigation, thème).
-
----
-
 ## 10. Synthèse visuelle du cockpit (vue d'ensemble)
 
 ```
@@ -390,21 +359,3 @@ Réponse attendue : la principale limite est l'absence d'interactivité dynamiqu
 
 ---
 
-## Récapitulatif des "Questions possibles en soutenance" (liste consolidée)
-
-1. Qu'est-ce qu'un outil BI et à quoi sert Knowage dans votre projet ?
-2. Quels datasets Knowage utilise-t-il pour vos cockpits ?
-3. Combien de cockpits/sheets avez-vous créés dans Knowage et que montre chacun ?
-4. Quel KPI montre la fracture territoriale dans votre cockpit ?
-5. Vos graphiques sont-ils générés automatiquement par Knowage à partir des données, ou codés en dur ?
-6. Pourquoi n'avez-vous pas utilisé de JavaScript pour la navigation ou le mode sombre ?
-7. Comment fonctionne votre bouton de bascule clair/sombre sans JavaScript ?
-8. Y a-t-il une procédure particulière pour sauvegarder vos modifications dans Knowage ?
-9. Concrètement, comment Knowage récupère-t-il les chiffres affichés dans vos cockpits ?
-10. Quel est le KPI le plus important de votre cockpit et pourquoi ?
-11. Quelles sont les mesures de sécurité de Knowage dans votre projet ?
-12. Quelles sont les limites de votre solution Knowage et comment les amélioreriez-vous ?
-
----
-
-*Document rédigé à partir de : `KNOWAGE.pdf`, `knowage_navigation_darkmode_graphiques.md`, `accueil_knowage_v3.html`, `sheet_accessibilite_v3.html`, `knowadge.png`. Aucune information n'a été inventée ; toute donnée non présente dans ces sources est explicitement signalée comme "non disponible".*
