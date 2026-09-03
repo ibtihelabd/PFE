@@ -88,7 +88,6 @@ frontend/
 
 Toute l'arborescence `/decideurs/*` est enveloppée par `<ProtectedRoute>`, et l'application entière est enveloppée par `<ThemeProvider>` et `<AnimatePresence mode="wait">` (pour les transitions de page animées par `framer-motion`).
 
-🎓 **Question possible en soutenance — "Pourquoi avez-vous mis `ProtectedRoute` seulement sur `/decideurs` et pas sur chaque sous-route individuellement ?"**
 *Réponse courte* : Parce que toutes les sous-routes décideurs partagent le même besoin minimal (être authentifié) ; le contrôle plus fin par rôle (RBAC) est fait **après**, à l'intérieur de `DecideursLayout`/`VueGenerale` via `canAccess()`.
 *Réponse détaillée* : `ProtectedRoute.jsx` ne vérifie que `isAuthenticated()` puis `canAccess(session, location.pathname)` pour le chemin exact d'entrée — mais comme `/decideurs` est le point d'entrée englobant, la vérification de premier niveau s'applique à tout l'arbre. La granularité fine (cacher un module ML pour le rôle "exploitation") est ensuite gérée *côté UI*, dans `VueGenerale.jsx` (fonction `hasAccess()`) et dans `DecideursLayout.jsx` (filtrage des éléments de menu), pas par un blocage de route strict supplémentaire sur chaque sous-chemin.
 
@@ -169,11 +168,9 @@ Chaque utilisateur possède un tableau `allowedRoutes` qui détermine le RBAC (R
                                      → navigate('/login-decideurs')
 ```
 
-🎓 **Question possible en soutenance — "Le token est-il sécurisé ? Peut-on le falsifier ?"**
 *Réponse courte* : Le token est désormais un JWT signé HS256 côté serveur : on peut en lire le contenu (payload) mais pas le falsifier sans connaître `JWT_SECRET`, qui n'est jamais envoyé au client.
 *Réponse détaillée* : N'importe qui ouvrant les DevTools peut décoder la partie payload du JWT (c'est normal, cette partie est publique par construction, comme pour tout JWT), mais ne peut pas fabriquer un nouveau token valide ni modifier `role` dans le token existant, car la signature serait invalidée et rejetée par `get_current_decideur` côté serveur lors de la prochaine requête. La limite résiduelle n'est donc plus la falsifiabilité du token, mais le fait que les mots de passe de `DECIDEURS_DB` restent stockés en clair côté serveur, et qu'il n'existe pas de refresh token ni de révocation serveur (un JWT déjà émis reste valide jusqu'à expiration, même après "déconnexion").
 
-🎓 **Question possible en soutenance — "Que se passe-t-il si la session expire pendant que l'utilisateur navigue ?"**
 *Réponse courte* : Un `setInterval` dans `DecideursLayout.jsx` vérifie le temps restant toutes les 30 secondes et déconnecte automatiquement si la session est expirée.
 *Réponse détaillée* : `DecideursLayout.jsx` appelle `getSessionTimeLeft()` toutes les 30000ms ; si la valeur est `<= 0`, il appelle `authLogout()` (alias de `logout()` de `auth.js`) puis `navigate('/login-decideurs')`. Cela signifie qu'un utilisateur déjà sur une page décideur ne sera éjecté qu'à la prochaine vérification (donc jusqu'à 30s de délai après expiration réelle), pas instantanément.
 
@@ -232,7 +229,6 @@ Couleurs des marqueurs anomalies (`STATUS_COLOR`) :
 
 Popups affichant le détail de chaque zone/site, légende superposée sur la carte.
 
-🎓 **Question possible en soutenance — "Pourquoi ne pas avoir utilisé `react-leaflet`, qui est plus idiomatique en React ?"**
 *Réponse courte* : Pour éviter un conflit de double instance React, documenté explicitement en commentaire dans le fichier source.
 *Réponse détaillée* : Le commentaire dans `MapView.jsx` indique que `react-leaflet` provoquait un problème de double-instanciation de React (probablement lié à une incompatibilité de version entre `react-leaflet` et React 18, ou à un montage du DOM Leaflet en dehors du cycle React strict). La solution adoptée a été de manipuler directement l'API impérative de Leaflet (`L.map(...)`, `L.circleMarker(...)`) dans des `useEffect`, en gérant manuellement la création/destruction de la carte.
 
@@ -258,7 +254,6 @@ C'est un composant **100% client-side**, sans aucune dépendance serveur (le com
 
 **Affichage du bouton** : pendant `loading`, l'icône `Loader` tourne (animation CSS `spin` injectée inline dans une balise `<style>` du composant) et le texte devient "Génération...".
 
-🎓 **Question possible en soutenance — "Le PDF contient-il des données réelles du backend ou seulement des textes fixes ?"**
 *Réponse courte* : Les deux — les KPI et tableaux viennent des données réelles passées en props (`data`), mais le texte des recommandations est hardcodé en français dans le composant.
 *Réponse détaillée* : `ExportPDF` reçoit `data` en prop, qui provient des résultats d'appels API faits par la page parente (`ZonesRisquePage` ou `AnomalyDashboard`). Les chiffres affichés (nombre de zones, niveaux de risque, sites à risque, etc.) sont donc réels et dynamiques. En revanche, le texte des recommandations (ex. *« Déployer des dessertes TC complémentaires sur les X zones... »*) est un template de chaîne fixe défini dans le code du composant, où seul le nombre `X` est injecté dynamiquement (`data.zones_elevees`). Ce n'est donc pas un texte généré par le modèle ML, mais une suggestion pré-écrite par l'auteur du PFE et paramétrée par les vraies données.
 
@@ -400,7 +395,6 @@ Le résultat est visualisé par une **jauge circulaire SVG animée** (cercle de 
 
 Le bouton "Réinitialiser" remet `inputs` à ses valeurs par défaut codées en dur.
 
-🎓 **Question possible en soutenance — "Pourquoi un debounce de 250ms sur le simulateur ?"**
 *Réponse courte* : Pour éviter de spammer l'API à chaque pixel de déplacement d'un slider.
 *Réponse détaillée* : Chaque `<input type="range">` déclenche `onChange` en continu pendant le glissement. Sans debounce, cela génère potentiellement des dizaines d'appels `fetch` par seconde vers `/predict-inaccessibility`. Le `useEffect` du composant utilise `setTimeout(() => runPrediction(inputs), 250)` avec un nettoyage (`clearTimeout`) à chaque nouveau rendu — ce qui annule l'appel précédent si l'utilisateur continue à bouger le slider, et ne lance réellement la requête que 250ms après la dernière modification.
 
@@ -458,7 +452,6 @@ Logique notable et documentée en commentaire dans le code source lui-même :
 
 5 boutons de navigation (`SHEETS` : Acceuil, Trafic, Déplacements, Démographie, Accessibilité, IA) sont gérés **entièrement en React**, pas par Knowage, et appellent `clickTab()` pour chaque onglet cible.
 
-🎓 **Question possible en soutenance — "Pourquoi avoir besoin d'un proxy pour le Cockpit Knowage ?"**
 *Réponse courte* : Pour que React puisse manipuler le DOM de l'iframe Knowage, il faut que les deux soient sur la même origine (même protocole+domaine+port) — sinon le navigateur bloque l'accès cross-origin par sécurité.
 *Réponse détaillée* : Le code de `CockpitDakar.jsx` accède directement à `iframeRef.current.contentDocument`, ce qui n'est possible que si l'iframe est de la **même origine** que la page parente (politique *same-origin* du navigateur). Comme Knowage tourne sur `localhost:18080` et le frontend React sur `localhost:3000`, sans proxy ce serait une requête cross-origin bloquée. `setupProxy.js` (chargé automatiquement par `react-scripts` en dev) intercepte toute URL commençant par `/knowage*` et la redirige côté serveur vers `http://localhost:18080`, ce qui fait que, du point de vue du navigateur, tout reste sur `localhost:3000` — donc même origine, accès DOM autorisé. Le commentaire du fichier précise aussi qu'une configuration nginx équivalente serait nécessaire en production.
 
