@@ -483,8 +483,6 @@ Entièrement déléguée à Pydantic (voir section 3) : bornes numériques (`ge`
 3. **Déni de service possible sur les endpoints publics** : rien n'empêche d'envoyer des milliers de requêtes `POST /api/feedback` pour polluer `feedback_citoyens.json` (pas de rate limiting, pas de CAPTCHA, pas de validation d'unicité) — ce risque ne concerne que les 5 endpoints publics par design, les 13 endpoints décideurs étant désormais protégés.
 4. **CORS limité à `localhost:3000`** reste un mécanisme distinct de l'authentification : il atténue le risque d'appels depuis un site tiers en navigateur, mais ne protège pas contre des appels directs (curl, Postman, scripts) qui ignorent les règles CORS (CORS est une protection **navigateur**, pas une protection serveur) — l'authentification JWT, elle, s'applique quel que soit le client.
 
-🎓 Ce point est central pour la soutenance : il faut être capable d'expliquer clairement que **CORS n'est pas un système d'authentification**, que ce backend en possède désormais un (JWT) pour l'espace décideurs, et que les endpoints citoyens restent publics par choix de conception, pas par oubli.
-
 ---
 
 ## 5. Intégration des modèles Machine Learning dans l'API
