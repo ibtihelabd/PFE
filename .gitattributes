@@ -1,0 +1,7 @@
+# Dire a GitHub Linguist que le frontend est secondaire
+frontend/**/*.js  linguist-detectable=false
+frontend/**/*.jsx linguist-detectable=false
+frontend/**/*.css linguist-detectable=false
+
+# Marquer le backend Python comme langage principal
+backend/**/*.py   linguist-detectable=true
