@@ -1,0 +1,106 @@
+﻿# ============================================================
+# .gitignore — PFE Transport Urbain Dakar (CETUD)
+# ============================================================
+
+# ─── Python ────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+.venv/
+venv/
+env/
+ENV/
+
+# ─── Modeles ML (trop lourds pour Git) ─────────────────────
+# Regenerables via les scripts d entrainement
+PFE (partie usager)/backend/ml_models/*.pkl
+PFE (partie usager)/backend/ml_models/*.joblib
+PFE (partie usager)/backend/ml_models/anomalies_results.csv
+
+# ─── Donnees brutes (confidentielles / trop lourdes) ───────
+PFE (partie usager)/*.xls
+PFE (partie usager)/*.xlsx
+PFE (partie usager)/Deplacement.csv
+PFE (partie usager)/Menage.csv
+PFE (partie usager)/Trafic.csv
+
+# ─── Base de donnees locale ─────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+
+# ─── Variables d environnement / secrets ───────────────────
+.env
+.env.*
+!.env.example
+
+# ─── Frontend React ─────────────────────────────────────────
+PFE (partie usager)/frontend/node_modules/
+PFE (partie usager)/frontend/build/
+PFE (partie usager)/frontend/.cache/
+
+# ─── Fichier de feedback (remplace par PostgreSQL) ──────────
+PFE (partie usager)/backend/data/feedback_citoyens.json
+
+# ─── LaTeX : fichiers de compilation ────────────────────────
+Rapport_PFE_LaTeX/rapport_pfe/*.aux
+Rapport_PFE_LaTeX/rapport_pfe/*.log
+Rapport_PFE_LaTeX/rapport_pfe/*.out
+Rapport_PFE_LaTeX/rapport_pfe/*.toc
+Rapport_PFE_LaTeX/rapport_pfe/*.lof
+Rapport_PFE_LaTeX/rapport_pfe/*.lot
+Rapport_PFE_LaTeX/rapport_pfe/*.bbl
+Rapport_PFE_LaTeX/rapport_pfe/*.blg
+Rapport_PFE_LaTeX/rapport_pfe/*.synctex.gz
+Rapport_PFE_LaTeX/rapport_pfe/use_case_standalone.aux
+Rapport_PFE_LaTeX/rapport_pfe/use_case_standalone.log
+
+# ─── Fichiers ZIP / archives ────────────────────────────────
+Rapport_PFE_LaTeX/*.zip
+Rapport_PFE_LaTeX/zirRnzHt
+
+# ─── Fichiers temporaires OS ────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+*.tmp
+*.bak
+*~
+
+# ─── IDE / editeurs ─────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+
+# ─── Fichier de test vide ───────────────────────────────────
+Presentation_PFE/testfile.txt
+
+# ─── Videos de demo (trop lourdes pour Git) ────────────────
+*.mp4
+*.avi
+*.mov
+*.mkv
+
+# ─── Fichiers a la racine hors projet ──────────────────────
+/anomalies_results_v2.csv
+/rapport_pfe_final.pdf
+/main.pdf
+/TransportDakar_Soutenance_v2.pptx
+/TransportDakar_Soutenance_v3.pptx
+/zones a risque planif.mp4
+/demo complet.mp4
+
+# ─── node_modules racine ───────────────────────────────────
+/node_modules/
+
+# ─── CETUD DATA brut (confidentiel) ─────────────────────────
+/CETUD DATA/
+
+# ─── Captures solution (trop lourdes) ───────────────────────
+/Captures_Solution_a_ajouter/*.mp4
