@@ -363,23 +363,3 @@ D'après le tMap `tmap_indivmen.png` :
 | `Fait_indivMen` | DW | Mesures démographiques/mobilité par individu | — | FK_id_individu | 1 ligne = 1 individu |
 
 ---
-
-## 7. À retenir et questions de soutenance
-
-> 📌 **À retenir (synthèse)**
-> - La base CETUD repose sur PostgreSQL et deux schémas : `SA` (staging, données brutes) et `DW` (entrepôt, faits/dimensions).
-> - La table `SA.menage` est en format "large" (colonnes répétées par service) ; elle est dépivotée vers `Fait_accessibilite` en format "long".
-> - Les jointures vers les dimensions utilisent systématiquement des `LEFT JOIN` avec `COALESCE` pour ne jamais produire de clé étrangère NULL.
-> - Les libellés textuels (difficulté) sont normalisés (accents) avant comparaison pour fiabiliser les jointures.
-> - Une clé composite (`num_individu + num_menage`) est nécessaire car l'identifiant individuel seul n'est pas globalement unique.
-> - Une dimension comme `Dim_Site` est dédoublonnée explicitement via `tUniqRow` avant chargement.
-
-> 🎓 **Questions possibles en soutenance**
-> 1. Pourquoi avoir séparé les données en deux schémas `SA` et `DW` plutôt qu'un seul schéma unique ?
-> 2. Pourquoi utilisez-vous `COALESCE(dt.pk_id_transport, 1)` plutôt que de laisser la valeur NULL en cas de transport inconnu ?
-> 3. Expliquez la nécessité du `CROSS JOIN LATERAL (VALUES ...)` dans la requête d'insertion de `Fait_accessibilite`. Que se passerait-il si on ne faisait pas ce dépivotage ?
-> 4. Pourquoi la clé de jointure vers `Dim_Individu` combine-t-elle `num_individu` ET `num_menage` ?
-> 5. Pourquoi la fonction `TRANSLATE` est-elle utilisée sur les libellés de difficulté avant la comparaison `LOWER(...) = LOWER(...)` ?
-> 6. Quelle est la granularité exacte de la table `Fait_accessibilite` ? Pourquoi le filtre `WHERE svc.frequence IS NOT NULL AND svc.frequence NOT ILIKE '%pas n%'` est-il appliqué ?
-> 7. Quels types de données PostgreSQL avez-vous utilisés pour les colonnes nettoyées (`::int`, `::numeric`) et pourquoi ce choix après un `REGEXP_REPLACE` ?
-> 8. Si l'on devait ajouter une nouvelle dimension (par exemple `Dim_Periode_Enquete`), quelles tables faudrait-il modifier et selon quelle démarche ?
