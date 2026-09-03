@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+
+/* ── THÈME DARK (défaut) ── */
+:root, [data-theme="dark"] {
+  --primary: #FF6B35;
+  --primary-hover: #e55a2b;
+  --secondary: #1A1A2E;
+  --secondary-light: #16213E;
+  --accent: #F7C948;
+  --bg-light: #0a0d14;
+  --text-main: #ffffff;
+  --text-muted: #94a3b8;
+  --white: #FFFFFF;
+  --border-color: rgba(255,255,255,0.1);
+  --card-bg: rgba(255,255,255,0.04);
+  --card-border: rgba(255,255,255,0.08);
+  --navbar-bg: rgba(10,13,20,0.9);
+  --input-bg: rgba(255,255,255,0.05);
+  --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.4);
+  --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.4);
+  --shadow-colored: 0 10px 25px -5px rgba(255,107,53,0.4);
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --form-left-bg: linear-gradient(135deg, #1A1A2E 0%, #2D1B69 100%);
+  --hero-subtitle: rgba(255,255,255,0.5);
+  --feature-card-bg: rgba(255,255,255,0.03);
+  --feature-card-border: rgba(255,255,255,0.05);
+  --footer-color: rgba(255,255,255,0.3);
+}
+
+/* ── THÈME LIGHT ── */
+[data-theme="light"] {
+  --primary: #e85a1a;
+  --primary-hover: #c94d12;
+  --secondary: #fbfcfd;          /* fond de page light */
+  --secondary-light: #f3f5f8;
+  --accent: #d97706;
+  --bg-light: #fbfcfd;
+  --text-main: #0f1117;           /* texte principal sombre */
+  --text-muted: #475569;
+  --white: #ffffff;               /* blanc pur — ne change pas */
+  --border-color: rgba(0,0,0,0.1);
+  --card-bg: rgba(255,255,255,0.9);
+  --card-border: rgba(0,0,0,0.08);
+  --navbar-bg: rgba(251,252,253,0.95);
+  --input-bg: rgba(0,0,0,0.04);
+  --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.08);
+  --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.08);
+  --shadow-colored: 0 10px 25px -5px rgba(232,90,26,0.3);
+  --form-left-bg: linear-gradient(135deg, #eef4ff 0%, #e8e0ff 60%, #f0f4ff 100%);
+  --hero-subtitle: rgba(0,0,0,0.5);
+  --feature-card-bg: rgba(255,255,255,0.7);
+  --feature-card-border: rgba(0,0,0,0.08);
+  --footer-color: rgba(0,0,0,0.35);
+  /* FormPage overrides */
+  --form-stepper-circle: #ffffff;
+  --form-stepper-text: #475569;
+  --form-stepper-line: #e2e8f0;
+  --form-input-bg: #f8fafc;
+  --form-input-text: #0f1117;
+  --form-label: #475569;
+  --form-card-bg: #ffffff;
+  --form-card-border: rgba(0,0,0,0.1);
+  --form-step-title: #0f1117;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-light);
+  color: var(--text-main);
+  overflow-x: hidden;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-light);
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
