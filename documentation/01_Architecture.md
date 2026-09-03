@@ -47,25 +47,6 @@ D'après les fichiers déjà rédigés (02 à 08) et l'arborescence réelle du c
 | Machine Learning | scikit-learn (K-Means, Random Forest, Gradient Boosting, Isolation Forest, LOF, DBSCAN, Z-Score), joblib pour la sérialisation des modèles |
 | BI / restitution décisionnelle | Knowage (cockpit "TransportDakar", 6 feuilles) |
 
-### 1.6 Contraintes et limites globales
-
-- Authentification JWT côté backend FastAPI (vérification de token sur 13 des 18 endpoints, ceux de l'espace décideurs) ; les 5 endpoints citoyens restent publics par design. Limite résiduelle : les mots de passe sont stockés en clair côté serveur (`DECIDEURS_DB`), sans hashing, et il n'existe pas de refresh token.
-- CORS restreint à `localhost:3000`, ce qui limite le déploiement en l'état à un environnement de développement local.
-- Code backend entièrement synchrone (pas de `async def`), ce qui peut limiter la scalabilité.
-- Les pipelines ML et la chaîne BI/ETL/DW sont **totalement découplés** : ils repartent tous deux des mêmes fichiers sources bruts du CETUD, mais ne communiquent pas entre eux. Le Data Warehouse n'alimente pas les modèles ML, et les résultats ML ne sont pas réinjectés dans le DW.
-- Cockpit Knowage limité aux widgets HTML/CSS (le sanitizer interne empêche l'exécution de JavaScript), ce qui contraint les possibilités d'interactivité avancée.
-- Information non disponible dans les sources fournies : mécanisme exact de connexion entre Knowage et le Data Warehouse PostgreSQL (non documenté dans les fichiers 06/08).
-
-### 1.7 Pistes d'amélioration futures
-
-- Hasher les mots de passe (`DECIDEURS_DB`) et ajouter un refresh token côté FastAPI, l'authentification JWT de base étant déjà en place.
-- Industrialiser le déploiement (CORS multi-origine, conteneurisation, environnement de production).
-- Passer le backend en asynchrone (`async def`, driver PostgreSQL asynchrone) pour améliorer la scalabilité.
-- Rapprocher à terme les deux chaînes (ML et BI/DW), par exemple en stockant les sorties des modèles ML dans le Data Warehouse pour les rendre consultables depuis Knowage.
-- Réconcilier les incohérences relevées entre scripts de recherche et scripts de production des modèles ML (cf. 07_MachineLearning.md).
-
----
-
 ## 2. Architecture globale du système
 
 Le système TransportDakar repose sur **deux chaînes distinctes**, partant toutes deux des mêmes données sources brutes du CETUD, mais ne se croisant jamais :
