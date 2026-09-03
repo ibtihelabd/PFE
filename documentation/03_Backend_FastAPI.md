@@ -87,8 +87,6 @@ main.py (823 lignes)
 | 17 | `/api/anomalies/sites` | GET | Liste agrégée des sites de comptage routier avec niveau d'anomalie |
 | 18 | `/api/anomalies/sites/{site_id}/details` | GET | Détail des anomalies pour un site de comptage donné (path parameter) |
 
-> Remarque de cohérence : le `README.md` ne documente que 5 de ces 18 endpoints (`/`, `/health`, `/segments`, `/modes`, `/recommander`). Le README est donc **obsolète par rapport au code réel** — un point à signaler en soutenance comme limite de la documentation existante, pas comme erreur d'analyse de ce document.
-
 > 🎓 Mise à jour sécurité : une authentification JWT a depuis été ajoutée (`POST /auth/login` + dépendance `get_current_decideur`). Sur les 18 endpoints listés ci-dessus, 13 sont désormais protégés (en-tête `Authorization: Bearer <token>` requis) : `/segments`, `/modes`, `/zones-risque`, `/zones-risque/resume`, `/api/segmentation/profils`, `/api/satisfaction`, `/api/feedback/stats`, `/api/anomalies/summary`, `/predict-inaccessibility`, `/api/ml/features-importance`, `/api/ml/metrics`, `/api/anomalies/sites`, `/api/anomalies/sites/{site_id}/details`. Les 5 endpoints citoyens restent volontairement publics : `/`, `/health`, `/quartiers`, `/recommander`, `/api/feedback`. Voir §4.4 pour le détail.
 
 ---
