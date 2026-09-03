@@ -1,7 +1,5 @@
 # Documentation technique et pédagogique — Projet TransportDakar
 
-Cette documentation a pour objectif d'accompagner la compréhension et la soutenance du projet de fin d'études **TransportDakar**, réalisé pour le compte du CETUD (Conseil Exécutif des Transports Urbains de Dakar). Elle est composée de 11 fichiers couvrant l'ensemble des briques du projet : architecture globale, frontend, backend, base de données, ETL, Data Warehouse, Machine Learning, BI/Knowage, intégration, préparation à la soutenance et glossaire.
-
 ## Sommaire
 
 | Fichier | Contenu |
@@ -15,7 +13,6 @@ Cette documentation a pour objectif d'accompagner la compréhension et la souten
 | [07_MachineLearning.md](./07_MachineLearning.md) | Modèles de Machine Learning |
 | [08_Knowage.md](./08_Knowage.md) | Cockpit décisionnel Knowage |
 | [09_Integration.md](./09_Integration.md) | Intégration globale et pipelines (en cours de rédaction) |
-| [10_Soutenance.md](./10_Soutenance.md) | Préparation à la soutenance (en cours de rédaction) |
 | [11_Glossaire.md](./11_Glossaire.md) | Glossaire des termes techniques et métier |
 
 ---
@@ -23,16 +20,12 @@ Cette documentation a pour objectif d'accompagner la compréhension et la souten
 ## Résumé de chaque fichier
 
 ### 01_Architecture.md
-Présente le contexte métier du projet (CETUD, mobilité urbaine à Dakar), ses objectifs et utilisateurs cibles (citoyens vs décideurs), puis détaille l'architecture globale du système sous forme de deux chaînes distinctes : la chaîne applicative (React ↔ FastAPI ↔ Machine Learning) et la chaîne décisionnelle (Sources CETUD → Talend → Data Warehouse → Knowage). Inclut également l'arborescence réelle du projet et une synthèse pour la soutenance.
 
 ### 02_Frontend.md
-Documente en détail l'application React : structure des fichiers, système de routage, mécanisme d'authentification par JWT côté serveur (`auth.js`), gestion du thème clair/sombre, composants partagés (carte Leaflet, export PDF, garde de route), ainsi que toutes les pages publiques et décideurs. Présente aussi les avantages, limites et questions de soutenance liées au frontend.
 
 ### 03_Backend_FastAPI.md
-Décrit l'architecture du backend FastAPI (`main.py`, fichier unique de 823 lignes), les 18 endpoints REST exposés, les modèles de validation Pydantic, la configuration CORS, l'authentification JWT protégeant les endpoints décideurs, et le mécanisme de chargement des modèles Machine Learning au démarrage de l'application. Conclut par les avantages, limites et questions de soutenance liées au backend.
 
 ### 04_Base_de_donnees.md
-Détaille la modélisation PostgreSQL du projet, organisée en deux schémas : `SA` (staging) et `DW` (Data Warehouse). Présente l'ensemble des tables, leurs colonnes, le schéma relationnel complet, ainsi que les choix de modélisation (valeurs par défaut via COALESCE, normalisation des accents, dédoublonnage). Inclut un tableau récapitulatif des tables et des questions de soutenance.
 
 ### 05_ETL.md
 Documente les jobs Talend Open Studio utilisés pour charger les données du staging (SA) vers les dimensions et les faits du Data Warehouse (DW). Décrit le rôle des composants Talend (tDBInput, tMap, tSortRow, tUniqRow, tDBOutput) et propose un diagramme ASCII complet du pipeline, des sources jusqu'au DW.
