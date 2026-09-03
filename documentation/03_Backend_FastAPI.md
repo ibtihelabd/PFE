@@ -212,36 +212,6 @@ POST /recommander
 ```
 (Les valeurs numériques exactes dépendent réellement des `.pkl` chargés en mémoire et n'ont pas pu être exécutées dans cette analyse statique ; la **structure** ci-dessus, elle, est garantie par le code.)
 
-#### `GET /zones-risque`
-
-- **Lignes** : 410-423.
-- **Fonctionnement** : parcourt `zones_risque` (chargé depuis `zones_risque.json`, puis normalisé au démarrage — `ELEVE`->`ÉLEVÉ`, `MODERE`->`MODÉRÉ`, lignes 62-64), enrichit chaque zone avec ses coordonnées GPS via le dictionnaire `ZONES_GPS` (codé en dur, lignes 132-174), puis trie par `prob_risque` décroissant.
-- **Fichier concerné** : `ml_models/zones_risque.json` (généré par `sauvegarder_inacc_model.py`, voir section 5).
-- **Réponse exemple (1 zone)** :
-```json
-{
-  "total_zones": 40,
-  "zones": [
-    {"rang": 1, "zone": "DALIFORD", "niveau_risque": "ÉLEVÉ", "prob_risque": 0.7502704508467269,
-     "nb_menages": 70, "pct_risque": 81.43, "tc_disponibles": 1.79, "dur_sante": 15.76,
-     "lat": 14.730, "lon": -17.302}
-  ]
-}
-```
-
-#### `GET /zones-risque/resume`
-
-- **Lignes** : 425-440.
-- **Fonctionnement** : **recalcule dynamiquement** (à chaque appel, pas au démarrage) le `niveau_risque` de chaque zone à partir de `prob_risque`, avec des seuils codés en dur dans l'endpoint (`>= 0.60` -> ÉLEVÉ, `>= 0.40` -> MODÉRÉ, sinon FAIBLE).
-- ⚠️ Point d'attention pédagogique : ces seuils (0.60/0.40) **diffèrent** de ceux utilisés à l'origine dans `sauvegarder_inacc_model.py` pour générer `zones_risque.json` (`>= 0.65` / `>= 0.45`, ligne 96 du script). C'est une autre incohérence réelle entre script d'entraînement et code de l'API.
-- **Réponse exemple** :
-```json
-{
-  "total_zones": 40, "zones_elevees": 9, "zones_moderees": 22, "zones_faibles": 9,
-  "top5_risque": [ /* 5 objets zone triés par prob_risque décroissant */ ]
-}
-```
-
 #### `GET /api/segmentation/profils`
 
 - **Lignes** : 441-479.
