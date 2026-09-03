@@ -1,4 +1,4 @@
-﻿## 8. Module Machine Learning
+## 8. Module Machine Learning
 
 > Chapitre rédigé pour un lecteur qui n'a jamais fait de Machine Learning. Chaque terme technique est expliqué la première fois qu'il apparaît, avec une analogie simple. Toutes les métriques citées proviennent exactement des fichiers de code et des fichiers JSON de métadonnées du projet — aucune valeur n'est inventée.
 
@@ -58,9 +58,6 @@ Le modèle d'inaccessibilité utilise des variables très spécifiques et peu "d
 | Prédiction du risque d'inaccessibilité (production backend) | `train_inaccessibility_model.py` / `sauvegarder_inacc_model.py` | Supervisé (classification binaire), 1 seul modèle simplifié | Même objectif, version allégée utilisée réellement par l'API FastAPI |
 
 > **🎓 Question possible en soutenance** : *"Pourquoi avez-vous deux scripts différents pour le modèle d'inaccessibilité (`ml_inaccessibilite_v2.py` et `train_inaccessibility_model.py`) ?"*
-> **Réponse courte** : Le premier est un script de recherche/comparaison (4 algorithmes, SMOTE, SHAP), le second est la version simplifiée et stabilisée réellement chargée par le backend FastAPI en production.
-> **Réponse détaillée** : `ml_inaccessibilite_v2.py` sert à explorer et comparer Random Forest, XGBoost, Logistic Regression et XGBoost avec SMOTE (rééquilibrage) et SHAP (interprétabilité), pour choisir la meilleure approche. `train_inaccessibility_model.py` retient uniquement XGBoost (sans SMOTE, sans les 3 autres modèles), produit des fichiers de métadonnées exploitables par l'API (`inacc_model_metrics.json`, `features_importance.json`, `inacc_features_defaults.json`, `inacc_encoders_mappings.json`) et sauvegarde le modèle final sous un nom fixe (`inacc_model.pkl`) que `main.py` charge au démarrage.
-> **Piège à éviter** : ne pas dire que les deux scripts produisent le même modèle — le seuil de risque diffère (65e percentile dans `ml_inaccessibilite_v2.py` contre 60e percentile dans `train_inaccessibility_model.py`), et le score `score_tc_manque` utilise une condition différente (`'Oui'` contre `'TCOui'`, voir section 8.3.4 — incohérence réelle observée dans le code).
 
 ---
 
@@ -183,9 +180,6 @@ else: return 'Travailleurs informels'
 D'après `metadata.json`, les 3 segments réellement obtenus sont : **`0: "Étudiants mobilité douce"`, `1: "Actifs motorisés"`, `2: "Travailleurs informels"`**.
 
 > **🎓 Question possible en soutenance** : *"Comment savez-vous que le cluster 0 correspond vraiment à des étudiants, et pas le hasard ?"*
-> **Réponse courte** : KMeans ne nomme pas les clusters — c'est une fonction métier (`auto_label`) appliquée après coup, basée sur les statistiques moyennes du cluster (% étudiants, % actifs, coût moyen).
-> **Réponse détaillée** : L'algorithme regroupe les individus uniquement sur la base de leur proximité numérique dans l'espace des variables standardisées. Une fois les groupes formés, on calcule pour chacun des statistiques descriptives (`profil = df.groupby('segment').agg(...)`) et on applique des règles de seuil pour leur donner un nom compréhensible. Le nom est donc une interprétation humaine *a posteriori*, pas une sortie de l'algorithme.
-> **Piège** : ne pas confondre l'étiquette métier ("Étudiants mobilité douce") avec une vérité terrain validée — c'est une heuristique de nommage, pas une classification supervisée vérifiée par un humain pour chaque individu.
 
 **Visualisation PCA (Analyse en Composantes Principales).** `PCA(n_components=2)` réduit les 10 variables à 2 axes pour permettre une visualisation 2D des clusters. *Explication simple* : impossible de dessiner un graphique à 10 dimensions ; la PCA trouve les 2 "directions" qui résument le mieux la diversité des données, un peu comme prendre une photo d'un objet 3D sous l'angle qui montre le plus de détails.
 
@@ -276,9 +270,6 @@ RISQUE_INACC = (score_total >= seuil)
 > **📌 À retenir — incohérence réelle relevée entre les deux scripts** : `ml_inaccessibilite_v2.py` calcule `score_tc_manque` avec `(df['M73'] == 'Oui')`, en commentant explicitement *"CORRECTION : 'Oui' et non 'TCOui'"* (ligne 83-84) — c'est-à-dire que la version v2 corrige un bug détecté dans une version antérieure. Pourtant, `train_inaccessibility_model.py` et `sauvegarder_inacc_model.py` (les scripts utilisés par le backend en production) contiennent encore l'ancienne condition non corrigée : `(df['M73'] == 'TCOui')`. Le correctif appliqué dans le script de recherche v2 n'a **pas été reporté** dans la version de production. C'est un vrai écart de cohérence entre les deux pipelines, observable directement dans le code.
 
 > **🎓 Question possible en soutenance** : *"Le seuil de risque est-il le même entre vos scripts ?"*
-> **Réponse courte** : Non. `ml_inaccessibilite_v2.py` utilise le 65e percentile (`quantile(0.65)`), `train_inaccessibility_model.py` utilise le 60e percentile (`quantile(0.60)`).
-> **Réponse détaillée** : Le commentaire d'en-tête de `ml_inaccessibilite_v2.py` indique explicitement *"Seuil cible ajusté au 65e percentile pour meilleur équilibre"*. Le script de production n'a pas repris cet ajustement et reste au 60e percentile. Cela signifie que la proportion de ménages classés "à risque élevé" diffère légèrement entre les deux pipelines — un même ménage pourrait être classé "à risque" dans un script et "non à risque" dans l'autre, selon où il se situe entre les deux seuils.
-> **Piège** : ne pas affirmer que les deux pipelines produisent des résultats strictement identiques — ce n'est pas vrai d'après le code lu.
 
 ##### Variables d'entrée (features)
 
@@ -395,9 +386,6 @@ Le composant React `ZonesRisquePage.jsx` consomme `/zones-risque`, et `Simulateu
 | XGBoost (optionnel) | `ml_inaccessibilite_v2.py` (recherche, si librairie installée) | 65e | Oui | Information non disponible dans les sources fournies | Information non disponible dans les sources fournies | — | Comparé, non déployé, dépend de l'installation de `xgboost` |
 
 > **🎓 Question possible en soutenance** : *"Pourquoi le modèle déployé en production (XGBoost) n'est-il pas forcément le 'meilleur' selon votre script de comparaison ?"*
-> **Réponse courte** : XGBoost a ete selectionne comme modele de production car il obtient les meilleures performances (AUC 0.8429, F1 0.7116, Accuracy 74.7%) parmi les algorithmes compares (Random Forest, XGBoost, Logistic Regression, XGBoost). C'est le modele charge dans inacc_model.pkl et utilise par l'API pour le simulateur et les zones a risque.
-> **Réponse détaillée** : `ml_inaccessibilite_v2.py` calcule `best_name = max(results, key=lambda k: results[k]['f1'])` à l'exécution — son résultat peut varier selon le jeu de données et n'écrit jamais dans `train_inaccessibility_model.py`. Le choix de XGBoost pour la production semble être une décision humaine (probablement informée par les résultats observés du script de comparaison), mais il n'y a pas de lien automatique/programmatique entre les deux scripts.
-> **Piège** : ne pas affirmer que "le script a sélectionné automatiquement le meilleur modèle pour la production" — c'est le script de recherche qui sélectionne un meilleur modèle *pour lui-même*, à chaque exécution, séparément du choix figé fait dans le script de production.
 
 ---
 
@@ -549,72 +537,58 @@ Le composant React `ZonesRisquePage.jsx` consomme `/zones-risque`, et `Simulateu
 > **🎓 Q1.** *"Pourquoi ne pas avoir branché vos modèles ML sur le Data Warehouse que vous avez construit pour la partie décisionnelle ?"*
 > **Courte** : Les modèles ML ont besoin de données individuelles fines (par usager/ménage), alors que le DWH est conçu pour des agrégats de reporting ; brancher le ML sur le DWH aurait créé une dépendance inutile au pipeline ETL.
 > **Détaillée** : voir section 8.1 — granularité, découplage, itération rapide.
-> **Piège** : ne pas dire "on n'a pas eu le temps" — le choix est défendable techniquement, pas un raccourci.
 
 > **🎓 Q2.** *"Le modèle KMeans a-t-il une variable cible ?"*
 > **Courte** : Non, c'est un apprentissage non supervisé — il n'y a pas de "bonne réponse" connue à l'avance.
 > **Détaillée** : KMeans regroupe les individus selon leur proximité dans l'espace des 10 variables standardisées (`features_cluster`), sans savoir a priori qu'il doit trouver des "étudiants" ou des "actifs motorisés". Les labels métier sont attribués après coup par la fonction `auto_label()`.
-> **Piège** : confondre la variable cible du Random Forest (`groupe_mode`, supervisée) avec l'absence de cible pour KMeans (non supervisé) — ce sont deux modèles différents dans le même script.
 
 > **🎓 Q3.** *"Comment avez-vous choisi le nombre de clusters K=3 ?"*
 > **Courte** : En testant K de 2 à 8 et en retenant celui qui maximise le score de silhouette.
 > **Détaillée** : `K_OPTIMAL = list(K_range)[silhouettes.index(max(silhouettes))]`. Le résultat confirmé dans `metadata.json` est K=3.
-> **Piège** : la valeur numérique exacte du score de silhouette pour K=3 n'est pas dans les fichiers JSON fournis — ne pas inventer un chiffre si on vous le demande, dire qu'il est calculé en console mais pas archivé.
 
 > **🎓 Q4.** *"Quelle est la performance réelle de votre modèle de prédiction de risque d'inaccessibilité ?"*
 > **Courte** : Accuracy 74,7 %, Precision 73,8 %, Recall 68,7 %, F1 71,2 %, AUC 84,3 % (modele XGBoostoosting de production, `inacc_model_metrics.json`).
 > **Détaillée** : ces métriques sont calculées sur un jeu de test de 794 ménages, après entraînement sur 2382 ménages (`test_size=0.25`).
-> **Piège** : ne pas confondre ces chiffres avec ceux, non disponibles, du script de comparaison `ml_inaccessibilite_v2.py` qui teste 4 modèles différents avec un seuil différent.
 
 > **🎓 Q5.** *"Pourquoi avoir choisi le F1-score plutôt que l'accuracy comme critère de sélection du meilleur modèle ?"*
 > **Courte** : Parce que les classes (risque élevé / non élevé) sont déséquilibrées, et l'accuracy seule peut être trompeuse dans ce cas.
 > **Détaillée** : un modèle qui prédirait toujours "non à risque" aurait une accuracy élevée si la classe "à risque" est minoritaire, sans aucune utilité pratique. Le F1-score (moyenne harmonique précision/rappel) pénalise ce comportement.
-> **Piège** : le modele de *production* (XGBoost dans `train_inaccessibility_model.py`) n'a pas été sélectionné par cette logique de comparaison F1 — seul le script de recherche `ml_inaccessibilite_v2.py` applique ce critère automatiquement.
 
 > **🎓 Q6.** *"Que signifie l'AUC de 0,84 alors que l'accuracy n'est que de 0,75 ?"*
 > **Courte** : L'AUC mesure la capacité du modèle à bien ordonner les ménages par risque sur tous les seuils possibles, alors que l'accuracy ne regarde qu'un seul seuil (50 %).
 > **Détaillée** : un AUC élevé avec une accuracy plus modeste suggère que le modèle discrimine bien globalement, mais que le seuil de décision à 0,5 n'est peut-être pas optimal pour ce cas d'usage — on pourrait l'ajuster (ex. abaisser le seuil pour privilégier le rappel si l'objectif est de ne rater aucun ménage à risque).
-> **Piège** : ne pas dire que l'AUC et l'accuracy mesurent "la même chose avec des formules différentes" — ce sont des notions distinctes (classement global vs exactitude à un seuil fixe).
 
 > **🎓 Q7.** *"Pourquoi utiliser SMOTE dans un script et pas dans l'autre ?"*
 > **Courte** : `ml_inaccessibilite_v2.py` (recherche) applique SMOTE pour rééquilibrer les classes ; `train_inaccessibility_model.py` (production) ne l'utilise pas du tout.
 > **Détaillée** : SMOTE crée des exemples synthétiques de la classe minoritaire par interpolation entre voisins réels, ce qui peut améliorer la détection de la classe rare mais aussi introduire du bruit synthétique. Le script de production a fait l'impasse sur cette technique, ce qui peut expliquer en partie le recall plus modeste (68,7 %) par rapport à la precision (73,8 %).
-> **Piège** : ne pas affirmer que le modèle de production utilise SMOTE — il ne l'utilise pas, c'est vérifiable dans le code.
 
 > **🎓 Q8.** *"Comment le backend transforme-t-il une requête utilisateur en prédiction ?"*
 > **Courte** : Le backend reconstruit un vecteur de features dans le même ordre et avec le même prétraitement (imputation, encodage) que lors de l'entraînement, puis appelle `model.predict()` ou `predict_proba()`.
 > **Détaillée** : pour la recommandation de mode, `build_features_rf()` construit un dictionnaire de features ordonné selon `FEATURES_RF` (lu depuis `metadata.json`), puis applique `imputer_rf.transform()` avant `rf.predict()`. Pour l'inaccessibilité, le backend part d'un profil par défaut (`inacc_features_defaults.json`), encode les catégorielles via `inacc_encoders_mappings.json`, applique `inacc_imputer.transform()` puis `inacc_model.predict_proba()`.
-> **Piège** : si l'ordre des features ou les valeurs par défaut diffèrent entre l'entraînement et l'API, la prédiction sera incorrecte sans erreur visible — c'est pourquoi les listes de features sont sauvegardées dans `metadata.json` et relues par le backend plutôt que recopiées en dur deux fois.
 
 > **🎓 Q9.** *"Le modèle d'anomalies de trafic est-il rechargé à chaque requête de l'API ?"*
 > **Courte** : Non, aucun modèle (.pkl) n'est rechargé — l'API sert un CSV de résultats déjà calculés (`anomalies_results.csv`), chargé en mémoire une seule fois au démarrage.
 > **Détaillée** : `main.py` charge `ANOMALIES_DF` avec `pd.read_csv()` une seule fois au démarrage du serveur FastAPI (mise en cache mémoire, commentaire "dataset d'anomalies de 14 Mo"), puis les endpoints `/api/anomalies/*` font des agrégations pandas sur ce DataFrame déjà en mémoire — il n'y a pas de ré-exécution d'IsolationForest/LOF/DBSCAN en temps réel.
-> **Piège** : ne pas dire que l'utilisateur "déclenche" une nouvelle détection d'anomalie à chaque clic — il consulte un résultat déjà figé, calculé hors ligne par le script Python.
 
 > **🎓 Q10.** *"Quelle est la différence entre l'importance Gini et SHAP ?"*
 > **Courte** : L'importance Gini donne une vue globale moyenne du modèle ; SHAP explique une prédiction individuelle précise.
 > **Détaillée** : voir section 8.5. L'importance Gini (utilisée dans `features_importance.json`, calculée par le XGBoost de production) répond à "quelles variables comptent le plus en moyenne sur tout le dataset ?". SHAP (utilisé seulement dans le script de recherche `ml_inaccessibilite_v2.py`, pour Random Forest/XGBoost) répond à "pourquoi CE ménage précis a-t-il reçu CETTE probabilité de risque ?".
-> **Piège** : le modèle de production (XGBoost) n'a pas de calcul SHAP dans le code fourni — ne pas affirmer que l'API expose des explications SHAP individuelles, ce n'est pas le cas observé.
 
 > **🎓 Q11.** *"Pourquoi le score de risque d'inaccessibilité est-il une combinaison pondérée et pas un simple comptage ?"*
 > **Courte** : Pour donner plus de poids aux facteurs jugés plus déterminants (inondation et enclavement à 2.0) qu'aux facteurs secondaires (routes, manque de TC à 1.0).
 > **Détaillée** : `score_total = score_tc_distance*1.5 + score_inond_bin*2.0 + score_enclavement*2.0 + score_routes*1.0 + score_tc_manque*1.0 + score_pluie_tc_bin*1.5 + score_acces_services*1.0`. Ces poids sont fixés manuellement dans le code (choix d'expert/heuristique), pas appris par un algorithme.
-> **Piège** : ne pas dire que ces poids sont "optimisés par le modèle" — ils sont fixés a priori par le développeur, en amont de tout entraînement ML ; c'est le classement binaire (`RISQUE_INACC`) qui sert ensuite de cible au modèle supervisé.
 
 > **🎓 Q12.** *"Qu'est-ce qui empêche votre pipeline ML d'être utilisé directement en production à grande échelle ?"*
 > **Courte** : L'absence de pipeline MLOps (pas de réentraînement automatique, pas de versioning de modèle, chemins de fichiers codés en dur).
 > **Détaillée** : voir section 8.7. Le rechargement des `.pkl` se fait une seule fois au démarrage du serveur FastAPI ; toute mise à jour des données CETUD nécessite de relancer manuellement le script d'entraînement puis de redémarrer l'API.
-> **Piège** : ne pas prétendre qu'il existe un mécanisme de réentraînement automatique périodique — aucun des fichiers lus ne montre de tâche planifiée (cron, scheduler) déclenchant un réentraînement.
 
 > **🎓 Q13.** *"Le filtre 'groupes avec au moins 30 exemples' pour la recommandation de mode, à quoi sert-il ?"*
 > **Courte** : À éviter d'entraîner le modèle sur des catégories de mode trop rares pour être apprises de façon fiable.
 > **Détaillée** : `counts[counts >= 30].index` ; un groupe avec seulement 5 ou 10 exemples ne permettrait pas au Random Forest d'apprendre un schéma généralisable et risquerait de produire des prédictions erratiques pour cette classe.
-> **Piège** : ce filtre explique pourquoi `classes_rf` dans `metadata.json` ne contient que 4 classes (Moto, Taxi/Clando, Transport Commun, Voiture) et pas les 7 groupes définis dans `MODE_GROUPES` — Marche, Vélo et Autre ont probablement moins de 30 exemples ou ont été exclus par le `dropna(subset=['groupe_mode'])`.
 
 > **🎓 Q14.** *"Le seuil de confiance de 40% dans la fonction predire() du script de recherche, comment est-il utilisé ?"*
 > **Courte** : Si la probabilité du mode recommandé est inférieure à 40 %, un avertissement est ajouté pour signaler un profil atypique.
 > **Détaillée** : `SEUIL_CONFIANCE = 0.40` ; dans `predire()` (présent dans `Segmentation_Recommandation_v2.py`, fonction de test/démonstration, pas nécessairement identique à la fonction `predire()` du backend `main.py`), si `confiance < SEUIL_CONFIANCE`, un message `confiance_flag` du type "⚠️ Confiance X% — profil atypique, résultat indicatif" est renvoyé.
-> **Piège** : attention, la fonction `predire()` de `main.py` (backend réel) ne reprend pas ce mécanisme de seuil de confiance — elle ne le mentionne pas dans le code lu. C'est une fonctionnalité du script de démonstration, pas confirmée comme présente dans l'API de production.
 
 ---
 
