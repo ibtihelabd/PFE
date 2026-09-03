@@ -18,8 +18,6 @@ Cette documentation a pour objectif d'accompagner la compréhension et la souten
 | [10_Soutenance.md](./10_Soutenance.md) | Préparation à la soutenance (en cours de rédaction) |
 | [11_Glossaire.md](./11_Glossaire.md) | Glossaire des termes techniques et métier |
 
-> Les fichiers **09_Integration.md** et **10_Soutenance.md** sont en cours de rédaction par d'autres agents au moment de la création de ce README. Ils font partie intégrante du plan documentaire global et viendront compléter respectivement la vision d'intégration bout-en-bout du système et la préparation aux questions de soutenance.
-
 ---
 
 ## Résumé de chaque fichier
