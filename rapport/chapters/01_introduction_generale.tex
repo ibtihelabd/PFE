@@ -1,0 +1,114 @@
+\chapter*{Introduction générale}
+\addcontentsline{toc}{chapter}{Introduction générale}
+\markboth{Introduction générale}{}
+
+\section*{Contexte}
+La ville de Dakar connaît, comme la plupart des grandes agglomérations africaines, une croissance urbaine rapide accompagnée d'une demande de mobilité de plus en plus forte. Le réseau de transport urbain, structuré autour de multiples modes (bus, cars rapides, Ndiaga Ndiaye, TATA, taxis, transport informel), génère un volume important de données issues des enquêtes ménages-déplacements et des dispositifs de comptage de trafic. Ces données, bien que riches, restent aujourd'hui largement sous-exploitées par manque d'outils permettant de les centraliser, de les croiser et de les restituer sous une forme directement utilisable par les décideurs.
+
+C'est dans ce contexte que le CETUD (Conseil Exécutif des Transports Urbains de Dakar), autorité organisatrice des transports urbains de la région de Dakar, a souhaité disposer d'une solution décisionnelle complète permettant de transformer ces données brutes en informations stratégiques. L'enjeu n'est pas uniquement technique~: il s'agit de fournir au directeur de planification et au chef d'exploitation du CETUD une vision fiable, actualisée et exploitable des flux de transport, afin d'orienter les décisions d'investissement, d'adaptation de l'offre et d'amélioration de l'accessibilité.
+
+\section*{Problématique}
+La problématique générale ayant motivé ce projet peut être formulée ainsi~:
+
+\begin{quote}
+\textit{Comment exploiter efficacement un grand volume de données hétérogènes issues du système de transport urbain afin de fournir une vision globale, pertinente et exploitable des flux de transport, et ainsi améliorer la prise de décision et l'optimisation du réseau de transport urbain~?}
+\end{quote}
+
+Cette problématique se décline en plusieurs questions opérationnelles~:
+\begin{itemize}
+\item Comment garantir la qualité, la fiabilité et la cohérence de données collectées depuis des sources multiples et hétérogènes (enquêtes terrain, comptages automatiques)~?
+\item Comment structurer ces données pour qu'elles soient directement exploitables dans des indicateurs décisionnels~?
+\item Comment restituer ces indicateurs de façon claire et actionnable aux différents profils de décideurs du CETUD~?
+\item Comment aller au-delà du simple reporting descriptif, en exploitant les données pour anticiper (segmentation des usagers, détection d'anomalies, prédiction des zones à risque)~?
+\end{itemize}
+
+\section*{Objectifs du projet}
+Pour répondre à cette problématique, le projet poursuit les objectifs suivants~:
+
+\begin{enumerate}
+\item \textbf{Compréhension métier et données}~: analyser les sources de données disponibles (EMD, comptages de trafic) et identifier les besoins des décideurs du CETUD.
+\item \textbf{Modélisation décisionnelle}~: concevoir un modèle multidimensionnel capable de répondre aux besoins analytiques identifiés.
+\item \textbf{Mise en œuvre de l'ETL}~: industrialiser la collecte, le nettoyage et le chargement des données dans l'entrepôt de données à l'aide de Talend.
+\item \textbf{Implémentation de l'entrepôt de données}~: déployer un entrepôt de données sous PostgreSQL conforme au modèle décisionnel conçu.
+\item \textbf{Visualisation et restitution}~: développer des tableaux de bord interactifs avec Knowage BI permettant le suivi des indicateurs clés.
+\item \textbf{Enrichissement par le Machine Learning}~: développer des modèles prédictifs et de segmentation pour aller au-delà du reporting descriptif.
+\item \textbf{Intégration applicative}~: exposer l'ensemble de la solution à travers une application web destinée aux usagers et aux décideurs.
+\end{enumerate}
+
+\section*{Méthodologie}
+
+\subsection*{Comparaison des méthodologies de gestion de projet}
+
+La conduite d'un projet décisionnel s'appuie sur une méthodologie de gestion de projet qui structure les étapes de développement, garantit la maîtrise du périmètre et assure la livraison d'une solution de qualité. Plusieurs méthodologies étaient envisageables pour ce projet~; elles ont été comparées avant de justifier le choix retenu (tableau~\ref{tab:methodo_comparaison}).
+
+\begin{table}[H]
+\centering
+\caption{Comparaison des principales méthodologies de gestion de projet}
+\label{tab:methodo_comparaison}
+\begin{tabular}{p{2.3cm}p{3.5cm}p{3.5cm}p{3.5cm}}
+\toprule
+\textbf{Méthodologie} & \textbf{Principe} & \textbf{Avantages} & \textbf{Limites} \\
+\midrule
+Cycle en cascade & Phases séquentielles (besoins $\rightarrow$ conception $\rightarrow$ dev $\rightarrow$ tests $\rightarrow$ livraison) & Simple à planifier, documentation complète & Très peu adaptable aux changements en cours de projet ; retours tardifs du client \\
+\midrule
+RUP (Rational Unified Process) & Processus itératif et piloté par les risques, organisé en quatre phases (Inception, Élaboration, Construction, Transition) & Bonne gestion des risques, orienté architecture & Lourd à mettre en œuvre, nécessite une équipe expérimentée ; trop formel pour un projet de taille académique \\
+\midrule
+Kanban & Gestion visuelle du flux de travail en cours, sans itérations fixes & Souplesse maximale, limite l'encours & Absence de cadence temporelle ; peu adapté lorsque des délais formels doivent être respectés \\
+\midrule
+\textbf{Scrum} & Cycles courts (sprints), revues régulières, adaptation continue aux priorités & Livraisons incrémentales, adaptation rapide, visibilité permanente & Requiert une implication régulière du product owner~; moins adapté aux projets à périmètre figé dès le départ \\
+\midrule
+GIMSI & Démarche de construction de tableaux de bord partant des décideurs et de leurs objectifs, en quatre étapes (Identification, Conception, Mise en œuvre, Amélioration permanente) & Rigoureuse pour les projets BI, centrée sur la valeur décisionnelle & Ne couvre pas la gestion opérationnelle du projet (planification, suivi d'avancement) ; doit être combinée à une méthode de gestion de projet \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection*{Méthodologie retenue~: Scrum intégrant GIMSI}
+
+À l'issue de cette comparaison, le choix s'est porté sur une combinaison de \textbf{Scrum} comme cadre de gestion opérationnelle du projet et de \textbf{GIMSI} comme démarche métier pour la construction du système décisionnel. Ce choix se justifie par plusieurs raisons~:
+
+\begin{itemize}
+\item \textbf{Scrum} offre la souplesse nécessaire pour un projet de fin d'études dont le périmètre fonctionnel s'affine progressivement~: le découpage en sprints courts permet d'intégrer les retours des encadrants à chaque itération, de prioriser les briques à forte valeur ajoutée et de livrer des résultats intermédiaires démontrables~;
+\item \textbf{GIMSI} fournit le cadre métier structurant qui manque à Scrum pour un projet décisionnel~: en s'appuyant sur l'Identification des décideurs et de leurs objectifs (étape~1), la Conception des indicateurs et de l'architecture (étape~2), la Mise en œuvre technique (étape~3) et l'Amélioration permanente (étape~4), GIMSI garantit que la solution est pilotée par la valeur décisionnelle plutôt que par la technologie.
+\end{itemize}
+
+Concrètement, la démarche GIMSI a été intégrée \emph{à l'intérieur} des sprints Scrum (figure~\ref{fig:scrum_process})~: les étapes d'identification et de conception GIMSI ont structuré les premiers sprints (analyse des besoins, modélisation décisionnelle), tandis que les étapes de mise en \oe uvre et d'amélioration permanente ont piloté les sprints suivants (ETL, entrepôt, Machine Learning, application, restitution, tests). Ce couplage a permis de conserver la rigueur analytique propre aux projets BI tout en bénéficiant de la flexibilité et de la visibilité d'un cadre agile. L'intégration détaillée des étapes GIMSI dans chaque sprint est illustrée à la figure~\ref{fig:scrum_gimsi}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.88\textwidth]{scrum_process.png}
+\caption{Le processus Scrum~: du Product Backlog à l'Incrément du produit via les sprints}
+\label{fig:scrum_process}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{gimsi.png}
+\caption{Les quatre étapes de la méthodologie GIMSI}
+\label{fig:gimsi}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=0.5cm, every node/.style={font=\small}]
+\node[draw, rounded corners, fill=blue!10, text width=5.5cm, minimum height=1cm, align=center] (s1) {\textbf{Sprint 1 -- Analyse \& Besoins}\\[2pt]\textit{GIMSI~: Identification}};
+\node[draw, rounded corners, fill=blue!10, text width=5.5cm, minimum height=1cm, align=center, below=0.4cm of s1] (s2) {\textbf{Sprint 2 -- Modélisation DW}\\[2pt]\textit{GIMSI~: Conception}};
+\node[draw, rounded corners, fill=green!10, text width=5.5cm, minimum height=1cm, align=center, below=0.4cm of s2] (s3) {\textbf{Sprint 3 -- ETL Talend}\\[2pt]\textit{GIMSI~: Mise en \oe uvre}};
+\node[draw, rounded corners, fill=green!10, text width=5.5cm, minimum height=1cm, align=center, below=0.4cm of s3] (s4) {\textbf{Sprint 4 -- Machine Learning}\\[2pt]\textit{GIMSI~: Mise en \oe uvre}};
+\node[draw, rounded corners, fill=green!10, text width=5.5cm, minimum height=1cm, align=center, below=0.4cm of s4] (s5) {\textbf{Sprint 5 -- Application Web}\\[2pt]\textit{GIMSI~: Mise en \oe uvre}};
+\node[draw, rounded corners, fill=orange!15, text width=5.5cm, minimum height=1cm, align=center, below=0.4cm of s5] (s6) {\textbf{Sprint 6 -- Tests \& Résultats}\\[2pt]\textit{GIMSI~: Amélioration permanente}};
+\draw[->, thick] (s1.south) -- (s2.north);
+\draw[->, thick] (s2.south) -- (s3.north);
+\draw[->, thick] (s3.south) -- (s4.north);
+\draw[->, thick] (s4.south) -- (s5.north);
+\draw[->, thick] (s5.south) -- (s6.north);
+\end{tikzpicture}
+\caption{Intégration de la démarche GIMSI dans les sprints Scrum du projet}
+\label{fig:scrum_gimsi}
+\end{figure}
+
+Le projet s'est déroulé sur une période de six mois, avec des points d'avancement réguliers avec l'encadrant professionnel de SIMAC.
+
+\section*{Organisation du mémoire}
+Ce rapport est organisé en six chapitres. Le premier chapitre présente l'étude de l'existant et l'analyse des besoins~: l'organisme d'accueil, le domaine du transport urbain, les limites du processus actuel, l'arbre de décision et le cahier des charges fonctionnel et non fonctionnel. Le deuxième chapitre décrit la conception de la solution décisionnelle~: l'architecture globale proposée, les choix technologiques et la modélisation UML retenue. Le troisième chapitre détaille la conception décisionnelle proprement dite~: sources de données, architecture ETL et conception de l'entrepôt de données. Le quatrième chapitre est consacré à l'intégration du Machine Learning, des choix méthodologiques jusqu'à l'exploitation des prédictions dans l'application. Le cinquième chapitre couvre le développement de la plateforme décisionnelle~: backend FastAPI, frontend React, intégration de Knowage et sécurité. Le sixième chapitre présente les résultats obtenus et leur évaluation. Le rapport se termine par une conclusion générale, une bibliographie et un ensemble d'annexes techniques.
+
+\clearpage
