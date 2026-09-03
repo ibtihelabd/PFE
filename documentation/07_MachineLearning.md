@@ -39,28 +39,6 @@ Les commentaires d'en-tête des scripts (`Anomalies_v2.py`, `ml_inaccessibilite_
 **d) Conservation de variables que l'agrégation décisionnelle n'a pas vocation à conserver.**
 Le modèle d'inaccessibilité utilise des variables très spécifiques et peu "décisionnelles" telles que `M67_1` à `M67_8` (disponibilité de 8 types de TC en temps normal) et `M69_1` à `M69_8` (les mêmes, mais "sous la pluie") pour calculer `tc_pluie_total` et un score de disparition des TC sous la pluie. Ce sont des variables très fines, typiques d'une enquête ménage, qui n'ont probablement pas vocation à devenir des dimensions ou des mesures dans un DWH orienté pilotage stratégique (fréquentation, recettes, kilomètres parcourus, etc.).
 
-#### 8.1.3 Limites de ce choix (honnêtes, à ne pas dissimuler en soutenance)
-
-- **Double lecture des fichiers sources** : les données brutes sont lues une fois pour l'ETL/DWH et une autre fois pour le ML — pas de mutualisation du nettoyage. Si une correction de qualité de donnée est faite côté ETL (ex. valeurs aberrantes corrigées), elle n'est *pas* automatiquement répercutée côté ML, sauf si le même correctif est dupliqué dans le script ML.
-- **Chemins de fichiers codés en dur** (`r'PFE (partie usager)\Trafic.csv'`, ou un chemin Windows absolu complet dans `train_inaccessibility_model.py` : `C:\Users\ibtih\OneDrive\Bureau\cetud data\MENAGE\CETUD_BD_EMD_MENAGE_COMPILE.xls`). Cela rend le pipeline ML fragile en déploiement (portabilité faible) — un problème typique de prototype académique, pas d'un système de production robuste.
-- **Pas de validation automatique de schéma** : si la structure du fichier Excel CETUD change (colonne renommée, feuille déplacée), le script casse sans message clair, alors qu'un DWH avec un ETL structuré aurait probablement une étape de contrôle de schéma.
-
----
-
-### 8.2 Vue d'ensemble : quatre familles de modèles, quatre objectifs métier
-
-| Modèle | Fichier source du code | Type d'apprentissage | Objectif métier |
-|---|---|---|---|
-| Détection d'anomalies de trafic | `Anomalies_v2.py` | Non supervisé (3 algorithmes en consensus) | Repérer les comptages de trafic anormaux par site/heure/jour |
-| Segmentation des usagers | `Segmentation_Recommandation_v2.py` (partie KMeans) | Non supervisé | Regrouper les usagers en profils-types de mobilité |
-| Recommandation de mode de transport | `Segmentation_Recommandation_v2.py` (partie RandomForest) | Supervisé (classification multi-classe) | Prédire le mode de transport le plus probable pour un profil donné |
-| Prédiction du risque d'inaccessibilité (recherche, v2) | `ml_inaccessibilite_v2.py` | Supervisé (classification binaire), 4 modèles comparés | Identifier les zones/ménages à risque élevé d'isolement en transport |
-| Prédiction du risque d'inaccessibilité (production backend) | `train_inaccessibility_model.py` / `sauvegarder_inacc_model.py` | Supervisé (classification binaire), 1 seul modèle simplifié | Même objectif, version allégée utilisée réellement par l'API FastAPI |
-
----
-
-### 8.3 Modèle par modèle
-
 #### 8.3.1 Détection d'anomalies de trafic (`Anomalies_v2.py`)
 
 **Objectif métier.** Repérer, parmi des milliers de comptages routiers (nombre de véhicules par site, heure, catégorie), ceux qui sont anormalement élevés ou anormalement bas par rapport au comportement habituel de ce site à cette heure — pour aider le CETUD à détecter des incidents, des fermetures de route, ou des erreurs de capteur.
@@ -494,41 +472,6 @@ Le composant React `ZonesRisquePage.jsx` consomme `/zones-risque`, et `Simulateu
 │  MlInsights.jsx, AnomalyDashboard.jsx → affichage des résultats         │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
-
----
-
-### 8.7 Avantages, limites réelles et pistes d'amélioration
-
-**Avantages observés dans le code :**
-- Granularité fine conservée (variables individuelles/ménage), nécessaire pour des modèles prédictifs personnalisés.
-- Découplage total du pipeline ML vis-à-vis du pipeline ETL/DWH — pas de dépendance croisée.
-- Architecture backend qui sépare clairement modèle (`.pkl`) et métadonnées exploitables côté API sans recharger d'objets scikit-learn lourds pour le simple encodage (`inacc_encoders_mappings.json`).
-- Comparaison méthodique de plusieurs algorithmes avant le choix d'un modèle de production (`ml_inaccessibilite_v2.py`), avec validation croisée stratifiée pour limiter le risque de surapprentissage (overfitting — quand un modèle "apprend par cœur" les données d'entraînement au lieu de généraliser).
-- Score de contamination calibré statistiquement (IQR) pour les anomalies plutôt qu'un seuil arbitraire.
-
-**Limites réelles, observées dans le code :**
-- **Versions v1/v2 non unifiées** : `Anomalies_v2.py` et `ml_inaccessibilite_v2.py` sont des réécritures corrigées de scripts v1 non fournis ici, mais leurs commentaires ("CORRECTION bug...", "CORRECTION radar chart...") montrent que des erreurs ont existé en v1 et ont nécessité une nouvelle version — sans qu'on sache si v1 est encore utilisée ailleurs dans le projet.
-- **Incohérence non résolue entre script de recherche et script de production** pour le modèle d'inaccessibilité : condition `M73` différente (`'Oui'` vs `'TCOui'`), seuil de percentile différent (65e vs 60e), SMOTE présent dans un script et absent dans l'autre.
-- **Mapping `HUMAN_FEATURE_NAMES` incohérent** avec le mapping réel `cat_features`/`num_features` pour plusieurs codes (M26, M28, M29, M30, M31...), ce qui peut afficher des libellés trompeurs côté dashboard décideur.
-- **Aucun pipeline MLOps** : pas de réentraînement automatique programmé, pas de gestion de version de modèle (pas de `model_v1.pkl`/`model_v2.pkl` horodatés), pas de tests automatisés de non-régression sur les métriques, pas de monitoring de dérive des données (data drift) en production.
-- **Chemins de fichiers absolus codés en dur** (`train_inaccessibility_model.py` pointe vers un chemin personnel `C:\Users\ibtih\OneDrive\Bureau\cetud data\...`), peu portable hors de la machine de développement.
-- **Pas de métrique sauvegardée pour le modèle de recommandation de mode** (Random Forest) au-delà de `rf_accuracy` et `rf_cv_f1_macro` dans `metadata.json` — pas de détail par classe disponible en dehors de l'exécution du script.
-- **Pas de fichier de métrique sauvegardé pour les modèles non supervisés** (anomalies, KMeans) — la silhouette et le détail des votes ne sont visibles qu'en console/graphique au moment de l'exécution, non persistés pour audit ultérieur.
-
-**Pistes d'amélioration (raisonnables, dérivées des limites ci-dessus) :**
-- Unifier les deux scripts d'inaccessibilité (recherche et production) ou au moins synchroniser le seuil de percentile et la condition `M73`.
-- Corriger le mapping `HUMAN_FEATURE_NAMES` pour qu'il corresponde réellement aux codes EMD utilisés.
-- Sauvegarder systématiquement les métriques de chaque modèle (y compris segmentation et anomalies) dans des fichiers JSON versionnés et horodatés.
-- Paramétrer les chemins de données via variables d'environnement plutôt que des chemins absolus codés en dur.
-- Ajouter un script de réentraînement programmé (cron / tâche planifiée) avec contrôle de schéma sur le fichier Excel source avant tout traitement.
-
----
-
-### 8.8 Synthèse des questions possibles en soutenance
-
-> **🎓 Q1.** *"Pourquoi ne pas avoir branché vos modèles ML sur le Data Warehouse que vous avez construit pour la partie décisionnelle ?"*
-> **Courte** : Les modèles ML ont besoin de données individuelles fines (par usager/ménage), alors que le DWH est conçu pour des agrégats de reporting ; brancher le ML sur le DWH aurait créé une dépendance inutile au pipeline ETL.
-> **Détaillée** : voir section 8.1 — granularité, découplage, itération rapide.
 
 ---
 
