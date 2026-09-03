@@ -14,7 +14,6 @@
 6. [Tableau des fonctionnalités du projet](#6-tableau-des-fonctionnalités-du-projet)
 7. [Analyse transversale du code : bonnes pratiques, limites, pistes d'amélioration](#7-analyse-transversale-du-code--bonnes-pratiques-limites-pistes-damélioration)
 8. [Schéma de synthèse global](#8-schéma-de-synthèse-global)
-9. [Questions possibles en soutenance](#9-questions-possibles-en-soutenance)
 10. [Résumé final](#10-résumé-final)
 
 ---
