@@ -1,0 +1,67 @@
+\chapter{Implémentation de l'entrepôt de données}
+\label{ch:dw}
+
+\section{Introduction}
+Ce chapitre présente l'implémentation physique de l'entrepôt de données sous PostgreSQL, ainsi que la vérification de sa structure à l'aide de l'outil pgAdmin, conformément au modèle décisionnel conçu au chapitre~\ref{ch:modele}.
+
+\section{Choix d'implémentation}
+L'entrepôt de données a été déployé dans un schéma dédié (\texttt{DW}) au sein d'une base PostgreSQL. Chaque table de dimension est préfixée \texttt{Dim\_} et chaque table de faits \texttt{Fact\_}, conformément aux conventions de nommage usuelles en modélisation décisionnelle. Les clés primaires des dimensions sont des entiers auto-incrémentés (\texttt{PK\_id\_...}), repris en clé étrangère dans les tables de faits (\texttt{FK\_id\_...}).
+
+\section{Structure physique des tables de faits}
+La table \texttt{Fact\_Comptage} a été vérifiée directement via une requête sur le catalogue système \texttt{information\_schema.columns}, confirmant la structure suivante~:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.55\textwidth]{pg/Fact_comptage.png}
+\caption{Structure de la table \texttt{Fact\_Comptage} (pgAdmin)}
+\label{fig:fact_comptage_pg}
+\end{figure}
+
+Cette table comporte les clés étrangères \texttt{FK\_id\_site} et \texttt{FK\_id\_temps}, ainsi que les mesures \texttt{GPS\_X}, \texttt{GPS\_Y}, \texttt{Amplitude} et \texttt{Volume\_Sect}, confirmant la granularité site/heure retenue dans la conception.
+
+De même, les tables \texttt{Fact\_deplacement} et \texttt{Fact\_indivMen} ont été contrôlées afin de s'assurer de la cohérence entre le modèle conceptuel et son implémentation physique, et corrigées si nécessaire (ajout de colonnes manquantes, correction de types).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.48\textwidth]{pg/Fact_deplacement.png}
+\hfill
+\includegraphics[width=0.48\textwidth]{pg/Fact_indivMEn.png}
+\caption{Structures des tables \texttt{Fact\_deplacement} et \texttt{Fact\_indivMen}}
+\end{figure}
+
+\section{Structure physique des dimensions}
+La dimension géographique (\texttt{Dim\_Geographie}) illustre la richesse du référentiel mis en place~: elle recense 507 zones de résidence, chacune associée à une strate et un quartier de domicile, permettant l'agrégation de tous les indicateurs à différents niveaux géographiques.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{pg/dim_geo.png}
+\caption{Extrait de la table \texttt{Dim\_Geographie} (507 zones)}
+\label{fig:dim_geo_pg}
+\end{figure}
+
+Les autres dimensions (\texttt{Dim\_Individu}, \texttt{Dim\_Menage}, \texttt{Dim\_Site}, \texttt{Dim\_Motif}, \texttt{Dim\_Temps}) ainsi que deux dimensions complémentaires créées pour les besoins de l'analyse d'accessibilité (\texttt{Dim\_Service} et \texttt{Dim\_Difficulte}, \texttt{Dim\_Transport}) ont été vérifiées de la même façon.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.3\textwidth]{pg/dim_menage.png}
+\includegraphics[width=0.3\textwidth]{pg/dim_indiv.png}
+\includegraphics[width=0.3\textwidth]{pg/dim_site.png}
+\caption{Vérification des dimensions \texttt{Dim\_Menage}, \texttt{Dim\_Individu} et \texttt{Dim\_Site}}
+\end{figure}
+
+\section{Table de faits dédiée à l'accessibilité}
+Une table \texttt{fact\_access} a été ajoutée au modèle initial afin de porter spécifiquement les mesures liées à l'accessibilité aux transports en commun et aux services (score d'accessibilité, durée de marche, nombre de modes disponibles, indicateur de zone inondable), en lien avec les dimensions \texttt{Dim\_Difficulte}, \texttt{Dim\_Service} et \texttt{Dim\_Transport}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.55\textwidth]{pg/fact_access.png}
+\caption{Structure de la table \texttt{fact\_access}}
+\end{figure}
+
+\section{Administration et contrôle qualité}
+L'outil pgAdmin a été utilisé tout au long du projet pour~: vérifier la structure des tables après chaque chargement Talend, contrôler les volumes chargés, détecter les valeurs manquantes ou aberrantes, et exécuter des requêtes SQL de contrôle qualité (cohérence des clés étrangères, doublons, valeurs hors plage). Ce contrôle a notamment permis d'identifier l'absence de données fiables pour le taux de motorisation des ménages et la mobilité des seniors, indicateurs qui n'ont donc pu être que partiellement renseignés.
+
+\section{Conclusion}
+L'entrepôt de données PostgreSQL constitue le socle physique fiable sur lequel s'appuient l'ensemble des restitutions décisionnelles et des modèles de Machine Learning présentés dans les chapitres suivants. Le chapitre suivant détaille les modèles de Machine Learning développés pour enrichir l'analyse au-delà du reporting descriptif.
+
+\clearpage
