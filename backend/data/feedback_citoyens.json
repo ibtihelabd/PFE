@@ -1,0 +1,101 @@
+[
+  {
+    "note_satisfaction": 4,
+    "mode_utilise": "Taxi",
+    "type_probleme": "ponctualite",
+    "quartier": "dakar",
+    "commentaire": "le chauffeur est ponctuel",
+    "id": 2,
+    "date": "2026-06-16T22:51:30.061528"
+  },
+  {
+    "note_satisfaction": 2,
+    "mode_utilise": "Ndiaga Ndiaye",
+    "type_probleme": "ponctualite",
+    "quartier": "Médina",
+    "commentaire": "le chauffeur n'arrive pas à l'heure",
+    "id": 3,
+    "date": "2026-06-29T13:16:12.668917"
+  },
+  {
+    "note_satisfaction": 1,
+    "mode_utilise": "Minibus",
+    "type_probleme": "confort",
+    "quartier": "pikine",
+    "commentaire": "pas de confort",
+    "id": 4,
+    "date": "2026-06-29T14:30:47.905402"
+  },
+  {
+    "note_satisfaction": 5,
+    "mode_utilise": "Taxi",
+    "type_probleme": "aucun",
+    "quartier": "pikine",
+    "commentaire": "satisfaite par le service ",
+    "id": 5,
+    "date": "2026-07-26T13:20:49.810455"
+  },
+  {
+    "note_satisfaction": 1,
+    "mode_utilise": "Ndiaga Ndiaye",
+    "type_probleme": "confort",
+    "quartier": "Medina",
+    "commentaire": "y' a pas de confort",
+    "id": 6,
+    "date": "2026-07-26T17:34:33.150578"
+  },
+  {
+    "note_satisfaction": 1,
+    "mode_utilise": "Tata",
+    "type_probleme": "attente",
+    "quartier": "medina",
+    "commentaire": null,
+    "id": 7,
+    "date": "2026-07-27T11:07:20.794063"
+  },
+  {
+    "note_satisfaction": 5,
+    "mode_utilise": "Tata",
+    "type_probleme": "aucun",
+    "quartier": "dfghj",
+    "commentaire": null,
+    "id": 8,
+    "date": "2026-07-27T13:48:36.997870"
+  },
+  {
+    "note_satisfaction": 3,
+    "mode_utilise": "Ndiaga Ndiaye",
+    "type_probleme": "prix",
+    "quartier": "fghj",
+    "commentaire": null,
+    "id": 9,
+    "date": "2026-07-27T13:48:48.402975"
+  },
+  {
+    "note_satisfaction": 3,
+    "mode_utilise": "Minibus",
+    "type_probleme": "securite",
+    "quartier": "Pikine",
+    "commentaire": null,
+    "id": 10,
+    "date": "2026-07-27T13:50:02.773241"
+  },
+  {
+    "note_satisfaction": 5,
+    "mode_utilise": "Tata",
+    "type_probleme": "aucun",
+    "quartier": "Pikine",
+    "commentaire": "service satisfaisant ",
+    "id": 11,
+    "date": "2026-07-28T14:52:08.134694"
+  },
+  {
+    "note_satisfaction": 5,
+    "mode_utilise": "Car rapide",
+    "type_probleme": "ponctualite",
+    "quartier": "Pikine",
+    "commentaire": "service satisfaisant",
+    "id": 12,
+    "date": "2026-07-29T13:46:12.549788"
+  }
+]
