@@ -118,8 +118,6 @@ Chaque utilisateur possède un tableau `allowedRoutes` qui détermine le RBAC (R
 
 `getSession()` décode localement la partie *payload* du JWT (sans vérifier la signature côté client — cette vérification cryptographique réelle se fait côté serveur, à chaque appel vers un endpoint protégé) pour afficher les informations utilisateur dans l'interface, et vérifie le champ `exp` pour détecter une expiration.
 
-🎓 Nuance importante pour la soutenance : décoder la partie payload d'un JWT côté client est normal et ne constitue pas une faille — cette partie est publique par construction. La sécurité réelle vient de la **signature**, vérifiable uniquement avec `JWT_SECRET`, qui reste côté serveur.
-
 ### 3.4 Fonctions exposées
 - `login(loginInput, passwordInput)` (async) : appelle `POST /auth/login`, stocke le JWT renvoyé dans `localStorage.setItem('dtk_session', token)`.
 - `logout()` : `localStorage.removeItem('dtk_session')` — purement local ; le JWT déjà émis reste valide côté serveur jusqu'à son expiration (pas de révocation serveur).
@@ -469,8 +467,6 @@ Ce fichier contient des **constantes JavaScript statiques** (pas d'appel réseau
 - `RECOMMANDATIONS` : 6 objets de recommandations textuelles (catégorie, constat, recommandation, priorité, horizon) entièrement rédigés à la main.
 
 Le fichier documente lui-même sa méthodologie en commentaire d'en-tête : **seule l'année 2015 est réelle pour les domaines EMD** (ménages, déplacements, partage modal, inaccessibilité, segmentation ML) et **seule l'année 2019 est réelle pour le domaine Trafic** (comptages). Les autres années (2010, 2023) sont explicitement qualifiées de *« données reconstituées / projetées à des fins d'analyse comparative et prospective (PFE) »* et ne constituent pas des relevés officiels — ce message est également répété dans l'UI de `EvolutionTemporelle.jsx`.
-
-📌 **À retenir** : ceci est une nuance essentielle pour la soutenance — la page "Évolution temporelle" présente des graphiques convaincants sur 4 années, mais **seuls 2 points de données sur 4 par domaine sont réels** ; les 2 autres sont des extrapolations volontairement choisies par l'auteur pour illustrer une tendance, pas des mesures.
 
 ---
 
