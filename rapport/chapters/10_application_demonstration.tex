@@ -1,0 +1,155 @@
+\chapter{Application web et démonstration de la solution}
+\label{ch:demo}
+
+\section{Introduction}
+En complément du cockpit décisionnel Knowage, une application web a été développée afin d'exposer les modèles de Machine Learning du chapitre~\ref{ch:ml} à deux publics distincts~: les \textbf{citoyens}, qui consultent l'application pour obtenir une recommandation de mode de transport, et les \textbf{décideurs du CETUD}, qui disposent d'un espace dédié à l'analyse approfondie des zones à risque, des anomalies de trafic et des segments d'usagers. Ce chapitre présente l'architecture technique de cette application et illustre son fonctionnement à travers ses principaux écrans.
+
+\section{Architecture technique}
+L'application repose sur une architecture client-serveur classique en trois couches~:
+
+\begin{itemize}
+\item un \textbf{backend} développé avec \textbf{FastAPI} (Python), exposant neuf points d'accès REST, avec validation des entrées par schémas \textbf{Pydantic} et documentation interactive automatique (Swagger). Les modèles de Machine Learning, sérialisés avec \texttt{joblib}, sont chargés une seule fois au démarrage du serveur pour garantir des temps de réponse rapides~;
+\item un \textbf{frontend} développé avec \textbf{React.js}, organisé autour d'un routeur central (\texttt{App.js}) et d'un contexte de thème (\texttt{ThemeProvider}) gérant le mode clair/sombre~;
+\item une couche de \textbf{contrôle d'accès} (RBAC) distinguant les rôles \emph{citoyen}, \emph{directeur de planification} et \emph{chef d'exploitation}, chacun disposant d'un périmètre fonctionnel différent.
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\caption{Principaux points d'accès (endpoints) de l'API}
+\begin{tabular}{lp{8cm}}
+\toprule
+\textbf{Endpoint} & \textbf{Fonction} \\
+\midrule
+\texttt{POST /recommander} & Recommandation de mode de transport (citoyen) \\
+\texttt{GET /zones-risque} & Liste des zones à risque d'inaccessibilité \\
+\texttt{GET /zones-risque/resume} & Statistiques agrégées sur les zones à risque \\
+\texttt{GET /api/anomalies/summary} & Indicateurs de synthèse sur les anomalies de trafic \\
+\texttt{GET /api/anomalies/sites} & Liste des sites de comptage avec score d'anomalie \\
+\texttt{GET /api/segmentation/profils} & Profils des cinq segments d'usagers \\
+\texttt{POST /predict-inaccessibility} & Prédiction du score de risque pour un profil donné \\
+\texttt{GET /api/ml/metrics} & Métriques de performance des modèles (accuracy, AUC, F1) \\
+\texttt{GET /api/ml/features-importance} & Importance des variables du modèle de prédiction \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Parcours citoyen}
+
+\subsection{Page d'accueil}
+La page d'accueil (\texttt{WelcomePage}) présente l'application aux citoyens avec une identité visuelle dédiée (logo, palette de couleurs orange/bleu) et un point d'entrée vers le formulaire de recommandation.
+
+\subsection{Formulaire et recommandation}
+Le citoyen renseigne un court formulaire (\texttt{FormPage}) décrivant son profil de mobilité (zone de résidence, âge, statut, disponibilité d'un véhicule, fréquence des déplacements). Le formulaire applique un contrôle de saisie contextualisé~: certains champs sont masqués ou adaptés en fonction de l'âge déclaré (par exemple, les champs liés au permis de conduire ne sont pas affichés pour les moins de 18 ans), afin de garantir la cohérence et la qualité des données saisies.
+
+Ce profil est transmis à l'API (\texttt{POST /recommander}), qui retourne le \emph{top 3} des modes de transport recommandés par le modèle Random Forest, accompagné des statistiques de durée et de coût estimées pour chaque mode.
+
+\section{Espace décideurs}
+
+\subsection{Authentification et contrôle d'accès}
+L'accès à l'espace décideurs (\texttt{LoginDecideurs}) est protégé par une authentification distinguant deux rôles~: le \emph{directeur de planification}, qui dispose d'un accès complet incluant les pages d'analyse ML avancée, et le \emph{chef d'exploitation}, dont l'accès est restreint aux tableaux de bord opérationnels (sans les pages de transparence des modèles).
+
+\subsection{Vue générale}
+La page \texttt{VueGenerale} constitue le tableau de bord d'entrée de l'espace décideurs, agrégeant les indicateurs clés (volumes de trafic, nombre de zones à risque, nombre d'anomalies détectées) sous forme de cartes de synthèse.
+
+\subsection{Zones à risque d'inaccessibilité}
+La page \texttt{ZonesRisquePage} restitue les résultats du modèle de prédiction d'inaccessibilité (chapitre~\ref{ch:ml})~: cartographie interactive des 41 zones analysées, classées selon quatre niveaux de risque (Bien desservie, Moyenne, Sous-desservie, Critique), avec, pour chaque zone, le détail des facteurs contribuant au score.
+
+\subsection{Tableau de bord des anomalies}
+La page \texttt{AnomalyDashboard} présente les résultats du module de détection d'anomalies de trafic~: liste des sites de comptage avec leur score de consensus, drill-down par site, et visualisation des \emph{hotspots} identifiés par clustering spatial DBSCAN.
+
+\subsection{Segmentation des usagers}
+La page \texttt{SegmentationPage} restitue les cinq profils d'usagers issus du modèle K-Means, avec leurs caractéristiques moyennes et leur poids relatif dans la population enquêtée.
+
+\subsection{Simulateur de risque}
+La page \texttt{SimulateurRisque} permet à un décideur de simuler le score de risque d'inaccessibilité d'une zone hypothétique en faisant varier les sept indicateurs composant le score, offrant ainsi un outil d'aide à la décision pour l'évaluation de projets d'infrastructure.
+
+\subsection{Transparence des modèles (MlInsights)}
+La page \texttt{MlInsights}, réservée au directeur de planification, expose les métriques de performance des modèles (exactitude, ROC AUC, F1-score) ainsi que l'importance des variables, dans un objectif de transparence et d'auditabilité des décisions automatisées.
+
+\subsection{Évolution temporelle}
+La page \texttt{EvolutionTemporelle} propose une analyse prospective de l'évolution de la mobilité à Dakar sur la période 2010--2023, à partir de données contextualisées, afin d'apporter un éclairage de tendance complémentaire à l'analyse instantanée des autres pages.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.48\textwidth]{evolution_light.png}
+\hfill
+\includegraphics[width=0.48\textwidth]{evolution_dark.png}
+\caption{Page \texttt{EvolutionTemporelle} -- mode clair (gauche) et mode sombre (droite)}
+\label{fig:evolution}
+\end{figure}
+
+\section{Fonctionnalités transversales}
+
+\subsection{Mode clair/sombre}
+L'ensemble de l'application supporte un basculement dynamique entre mode clair et mode sombre, géré par un contexte React (\texttt{ThemeProvider}) accessible depuis toutes les pages. Ce choix d'interface améliore le confort visuel selon les conditions d'utilisation et renforce l'identité moderne de la plateforme.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.48\textwidth]{welcome_light.png}
+\hfill
+\includegraphics[width=0.48\textwidth]{welcome_dark.png}
+\caption{Page d'accueil en mode clair (gauche) et mode sombre (droite)}
+\label{fig:dark_light}
+\end{figure}
+
+\subsection{Export PDF des rapports}
+Les pages \texttt{ZonesRisquePage} et \texttt{AnomalyDashboard} proposent un bouton \emph{Exporter PDF} (encerclé ci-dessous) permettant aux décideurs de générer et télécharger un rapport synthétique de l'analyse en cours -- zones à risque classées ou anomalies de trafic détectées -- directement depuis l'interface, sans recourir à un outil externe.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.48\textwidth]{pdf_export_zones_annote.png}
+\hfill
+\includegraphics[width=0.48\textwidth]{pdf_export_anomalies_annote.png}
+\caption{Bouton \emph{Exporter PDF} (encerclé) -- page Zones à risque (gauche) et page Anomalies de trafic (droite)}
+\label{fig:export_pdf}
+\end{figure}
+
+\subsection{Satisfaction et écoute citoyenne}
+La page \texttt{AvisPage} recueille les retours des citoyens sur la qualité des recommandations reçues. Après avoir obtenu une recommandation de mode de transport, le citoyen peut noter sa satisfaction et laisser un commentaire libre. Ces données constituent une boucle de rétroaction qualitative complémentaire aux métriques quantitatives des modèles.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.48\textwidth]{avis_light.png}
+\hfill
+\includegraphics[width=0.48\textwidth]{avis_dark.png}
+\caption{Page \texttt{AvisPage} -- recueil des avis citoyens en mode clair (gauche) et mode sombre (droite)}
+\label{fig:avis}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.48\textwidth]{satisfaction_light.png}
+\hfill
+\includegraphics[width=0.48\textwidth]{satisfaction_dark.png}
+\caption{Dashboard de satisfaction agrégée -- visualisation des retours citoyens}
+\label{fig:satisfaction}
+\end{figure}
+
+\section{Synthèse de la démonstration}
+Le tableau~\ref{tab:demo_synth} récapitule l'ensemble des écrans de l'application et leur public cible.
+
+\begin{table}[H]
+\centering
+\caption{Synthèse des écrans de l'application web}
+\label{tab:demo_synth}
+\begin{tabular}{p{3.5cm}p{5cm}p{4cm}}
+\toprule
+\textbf{Écran} & \textbf{Fonction} & \textbf{Public} \\
+\midrule
+WelcomePage / FormPage & Accueil et recommandation & Citoyen \\
+AvisPage & Satisfaction et écoute citoyenne & Citoyen \\
+VueGenerale & Tableau de bord de synthèse & Décideurs \\
+ZonesRisquePage & Zones à risque d'inaccessibilité + export PDF & Décideurs \\
+AnomalyDashboard & Anomalies de trafic + export PDF & Décideurs \\
+SegmentationPage & Segments d'usagers & Décideurs \\
+SimulateurRisque & Simulation de scénarios & Décideurs \\
+MlInsights & Transparence des modèles & Directeur de planification \\
+EvolutionTemporelle & Analyse prospective & Directeur de planification \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Conclusion}
+L'application web développée concrétise, à travers une interface accessible, l'ensemble de la chaîne de traitement décrite dans les chapitres précédents~: des modèles de Machine Learning entraînés sur les données EMD jusqu'à leur exposition via une API REST consommée par des écrans dédiés à chaque type d'utilisateur. Elle constitue, avec le cockpit Knowage, le second pilier de restitution du système décisionnel mis en place pour le CETUD.
+
+\clearpage
