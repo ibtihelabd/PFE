@@ -1,0 +1,178 @@
+/* ── Variables globales thème dark (défaut) ── */
+:root {
+  --bg:          #0a0d14;
+  --bg2:         #0f1117;
+  --panel:       rgba(255,255,255,0.04);
+  --border:      rgba(255,255,255,0.08);
+  --text:        #ffffff;
+  --text-sub:    rgba(255,255,255,0.65);
+  --muted:       rgba(255,255,255,0.35);
+  --navbar:      rgba(10,13,20,0.9);
+  --input-bg:    rgba(255,255,255,0.05);
+  --input-border:rgba(255,255,255,0.1);
+  --accent:      #ff6b35;
+  --primary:     #ff6b35;
+  --bg-light:    #0a0d14;
+}
+
+/* ── Variables thème light ── */
+[data-theme="light"] {
+  --bg:          #fbfcfd;
+  --bg2:         #f3f5f8;
+  --panel:       rgba(255,255,255,0.9);
+  --border:      rgba(0,0,0,0.08);
+  --text:        #0f1117;
+  --text-sub:    rgba(0,0,0,0.7);
+  --muted:       rgba(0,0,0,0.45);
+  --navbar:      rgba(251,252,253,0.95);
+  --input-bg:    rgba(0,0,0,0.04);
+  --input-border:rgba(0,0,0,0.12);
+  --accent:      #e85a1a;
+  --primary:     #e85a1a;
+  --bg-light:    #fbfcfd;
+}
+
+.app-container {
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background 0.3s, color 0.3s;
+}
+
+.background-video, .overlay {
+  display: none;
+}
+
+/* ══════════════════════════════════════════════
+   LIGHT MODE — overrides globaux décideurs
+   Les pages décideurs ajoutent className="dtk-page"
+   sur leur conteneur principal.
+   ══════════════════════════════════════════════ */
+
+/* Texte principal */
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h4,
+[data-theme="light"] h5 {
+  color: #0f1117;
+}
+
+/* Cards et panels générique dans les pages décideurs */
+[data-theme="light"] .dtk-page {
+  background: #fbfcfd !important;
+  color: #0f1117 !important;
+}
+
+/* Forcer les textes blancs hardcodés à devenir sombres en light */
+[data-theme="light"] .dtk-page span,
+[data-theme="light"] .dtk-page p,
+[data-theme="light"] .dtk-page div,
+[data-theme="light"] .dtk-page label,
+[data-theme="light"] .dtk-page button {
+  color: inherit;
+}
+
+/* Navbar sticky */
+[data-theme="light"] .dtk-navbar-sticky {
+  background: rgba(244,246,251,0.95) !important;
+  border-bottom-color: rgba(0,0,0,0.08) !important;
+}
+[data-theme="light"] .dtk-navbar-sticky * {
+  color: #0f1117;
+}
+
+/* Cards génériques */
+[data-theme="light"] .dtk-card-generic {
+  background: #ffffff !important;
+  border-color: rgba(0,0,0,0.08) !important;
+  color: #0f1117 !important;
+}
+
+/* Tables / rows alternés */
+[data-theme="light"] .dtk-row-even { background: transparent !important; }
+[data-theme="light"] .dtk-row-odd  { background: rgba(0,0,0,0.02) !important; }
+
+/* Scrollbar light */
+[data-theme="light"] ::-webkit-scrollbar-track { background: #f3f5f8; }
+[data-theme="light"] ::-webkit-scrollbar-thumb { background: #cbd5e1; }
+
+/* ── Textes manquants light mode ── */
+/* Blanc pur — le navigateur normalise #fff → rgb(255, 255, 255) dans l'attribut style du DOM */
+[data-theme="light"] .dtk-page *[style*="color: rgb(255, 255, 255)"],
+[data-theme="light"] .dtk-page *[style*="color: #fff"],
+[data-theme="light"] .dtk-page *[style*="color:#fff"],
+[data-theme="light"] .dtk-page *[style*="color: white"] {
+  color: #0f1117 !important;
+}
+/* Blancs semi-transparents — toutes opacités (sans/avec espaces après virgules) */
+[data-theme="light"] .dtk-page *[style*="color: rgba(255, 255, 255,"],
+[data-theme="light"] .dtk-page *[style*="color: rgba(255,255,255,"] {
+  color: rgba(0,0,0,0.55) !important;
+}
+/* Inputs/selects : fond et texte */
+[data-theme="light"] .dtk-page input,
+[data-theme="light"] .dtk-page select,
+[data-theme="light"] .dtk-page textarea {
+  color: #0f1117 !important;
+  background: rgba(0,0,0,0.04) !important;
+  border-color: rgba(0,0,0,0.12) !important;
+}
+
+/* ── Cartes 3D dynamiques ── */
+.card-3d {
+  transition: transform 0.25s cubic-bezier(0.23,1,0.32,1), box-shadow 0.25s ease !important;
+  will-change: transform;
+}
+.card-3d:hover {
+  transform: perspective(700px) translateY(-7px) rotateX(4deg) rotateY(-2deg) scale(1.025) !important;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.28), 0 8px 16px rgba(0,0,0,0.16) !important;
+  z-index: 2;
+  position: relative;
+}
+[data-theme="light"] .card-3d:hover {
+  box-shadow: 0 20px 40px rgba(0,0,0,0.14), 0 6px 14px rgba(0,0,0,0.08) !important;
+}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE — Mobile (< 768px)
+   ═══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* ── Layout décideurs : empiler sidebar + contenu ── */
+  .app-container > div[style*="display: flex"] {
+    flex-direction: column !important;
+  }
+
+  /* ── Cartes grilles : 1 colonne sur mobile ── */
+  .dtk-page [style*="grid-template-columns: repeat(4"],
+  .dtk-page [style*="grid-template-columns: repeat(3"],
+  .dtk-page [style*="grid-template-columns: 1fr 1fr 1fr"],
+  .dtk-page [style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Padding pages ── */
+  .dtk-page {
+    padding: 16px !important;
+  }
+
+  /* ── Désactiver effet 3D sur mobile (performance) ── */
+  .card-3d:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  /* ── Textes trop grands ── */
+  .dtk-page h1 { font-size: 20px !important; }
+  .dtk-page h2 { font-size: 17px !important; }
+}
+
+/* ── Leaflet z-index fix ── */
+.leaflet-container { z-index: 0 !important; }
+.leaflet-pane      { z-index: 1 !important; }
+.leaflet-top,
+.leaflet-bottom    { z-index: 2 !important; }
+.leaflet-popup-pane { z-index: 3 !important; }
