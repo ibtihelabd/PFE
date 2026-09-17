@@ -1,0 +1,122 @@
+[
+  {
+    "feature_raw": "M68",
+    "feature_human": "Frequence des inondations",
+    "importance": 0.20739803720441435
+  },
+  {
+    "feature_raw": "M66",
+    "feature_human": "Distance arret TC (min)",
+    "importance": 0.19889254716905033
+  },
+  {
+    "feature_raw": "dur_marche",
+    "feature_human": "Temps trajet marche (min)",
+    "importance": 0.1067314577184419
+  },
+  {
+    "feature_raw": "I2",
+    "feature_human": "Zone d'habitation (Strate)",
+    "importance": 0.09387895801882484
+  },
+  {
+    "feature_raw": "dur_hopital",
+    "feature_human": "Temps trajet hopital (min)",
+    "importance": 0.08190871196897101
+  },
+  {
+    "feature_raw": "dur_sante",
+    "feature_human": "Temps trajet sante (min)",
+    "importance": 0.08116137960319957
+  },
+  {
+    "feature_raw": "M59",
+    "feature_human": "Revenu du menage",
+    "importance": 0.05695449008598607
+  },
+  {
+    "feature_raw": "tc_norm_total",
+    "feature_human": "Lignes TC disponibles",
+    "importance": 0.050473785024544776
+  },
+  {
+    "feature_raw": "M21",
+    "feature_human": "Taille du menage",
+    "importance": 0.030851602147605697
+  },
+  {
+    "feature_raw": "M26",
+    "feature_human": "Sexe du chef de menage",
+    "importance": 0.02997579815523844
+  },
+  {
+    "feature_raw": "M63",
+    "feature_human": "Budget transport mensuel",
+    "importance": 0.017615043256697008
+  },
+  {
+    "feature_raw": "M27",
+    "feature_human": "Membres actifs dans le menage",
+    "importance": 0.015184347650159727
+  },
+  {
+    "feature_raw": "M29",
+    "feature_human": "Niveau d'instruction du chef",
+    "importance": 0.006328888705055548
+  },
+  {
+    "feature_raw": "M28",
+    "feature_human": "Age du chef de menage",
+    "importance": 0.0039312273869817945
+  },
+  {
+    "feature_raw": "M56",
+    "feature_human": "Possession ordinateur",
+    "importance": 0.0034854716277691283
+  },
+  {
+    "feature_raw": "M57",
+    "feature_human": "Possession connexion Internet",
+    "importance": 0.0028251135598965737
+  },
+  {
+    "feature_raw": "M35",
+    "feature_human": "Membres etudiants dans le menage",
+    "importance": 0.002715089566836299
+  },
+  {
+    "feature_raw": "M31",
+    "feature_human": "Profession du chef",
+    "importance": 0.002474956614505398
+  },
+  {
+    "feature_raw": "M50",
+    "feature_human": "Nombre de motos possedees",
+    "importance": 0.0019322695702423487
+  },
+  {
+    "feature_raw": "M51",
+    "feature_human": "Nombre de voitures possedees",
+    "importance": 0.0016991856122260383
+  },
+  {
+    "feature_raw": "M30",
+    "feature_human": "Statut d'activite du chef",
+    "importance": 0.0013395034467524314
+  },
+  {
+    "feature_raw": "M55",
+    "feature_human": "Possession climatiseur",
+    "importance": 0.0009261019049528118
+  },
+  {
+    "feature_raw": "M37",
+    "feature_human": "Type d'habitat du menage",
+    "importance": 0.0009043536222249576
+  },
+  {
+    "feature_raw": "M49",
+    "feature_human": "Nombre de velos possedes",
+    "importance": 0.0004116803794228356
+  }
+]

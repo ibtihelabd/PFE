@@ -1,0 +1,280 @@
+{
+  "Autre": {
+    "duree_min": 8.6,
+    "duree_q1": 15.0,
+    "duree_median": 20.0,
+    "duree_moy": 35.9,
+    "duree_q3": 40.0,
+    "duree_max": 95.0,
+    "duree_std": 40.4,
+    "cout_min": 100.0,
+    "cout_q1": 138.0,
+    "cout_median": 350.0,
+    "cout_moy": 688.0,
+    "cout_q3": 938.0,
+    "cout_max": 1955.0,
+    "cout_std": 775.0,
+    "cout_mensuel_min": 6050.0,
+    "cout_mensuel_moy": 30250.0,
+    "cout_mensuel_max": 41250.0,
+    "nb_usagers": 23.0,
+    "part_marche": 0.0,
+    "par_segment": {
+      "Actifs motorisés": {
+        "duree_median": 32.5,
+        "duree_q1": 18.8,
+        "duree_q3": 46.2,
+        "cout_median": 850.0,
+        "cout_q1": 188.0,
+        "cout_q3": 1675.0,
+        "cout_mensuel_moy": 44550.0,
+        "nb": 10
+      },
+      "Travailleurs informels": {
+        "duree_median": 20.0,
+        "duree_q1": 15.0,
+        "duree_q3": 31.2,
+        "cout_median": 300.0,
+        "cout_q1": 100.0,
+        "cout_q3": 562.0,
+        "cout_mensuel_moy": 15950.0,
+        "nb": 13
+      }
+    }
+  },
+  "Moto": {
+    "duree_min": 4.4,
+    "duree_q1": 15.0,
+    "duree_median": 20.0,
+    "duree_moy": 25.1,
+    "duree_q3": 30.0,
+    "duree_max": 60.0,
+    "duree_std": 21.2,
+    "cout_min": 200.0,
+    "cout_q1": 200.0,
+    "cout_median": 200.0,
+    "cout_moy": 200.0,
+    "cout_q3": 200.0,
+    "cout_max": 200.0,
+    "cout_std": 0.0,
+    "cout_mensuel_min": 8800.0,
+    "cout_mensuel_moy": 8800.0,
+    "cout_mensuel_max": 8800.0,
+    "nb_usagers": 91.0,
+    "part_marche": 0.0,
+    "par_segment": {
+      "Actifs motorisés": {
+        "duree_median": 20.0,
+        "duree_q1": 15.0,
+        "duree_q3": 30.0,
+        "cout_median": 200.0,
+        "cout_q1": 200.0,
+        "cout_q3": 200.0,
+        "cout_mensuel_moy": 8800.0,
+        "nb": 67
+      },
+      "Travailleurs informels": {
+        "duree_median": 15.0,
+        "duree_q1": 5.0,
+        "duree_q3": 30.0,
+        "cout_median": null,
+        "cout_q1": null,
+        "cout_q3": null,
+        "cout_mensuel_moy": null,
+        "nb": 24
+      }
+    }
+  },
+  "Taxi/Clando": {
+    "duree_min": 6.4,
+    "duree_q1": 15.0,
+    "duree_median": 20.0,
+    "duree_moy": 30.0,
+    "duree_q3": 40.0,
+    "duree_max": 86.0,
+    "duree_std": 25.8,
+    "cout_min": 100.0,
+    "cout_q1": 150.0,
+    "cout_median": 400.0,
+    "cout_moy": 703.0,
+    "cout_q3": 1000.0,
+    "cout_max": 2000.0,
+    "cout_std": 720.0,
+    "cout_mensuel_min": 6600.0,
+    "cout_mensuel_moy": 30945.0,
+    "cout_mensuel_max": 44000.0,
+    "nb_usagers": 229.0,
+    "part_marche": 0.0,
+    "par_segment": {
+      "Actifs motorisés": {
+        "duree_median": 30.0,
+        "duree_q1": 20.0,
+        "duree_q3": 45.0,
+        "cout_median": 825.0,
+        "cout_q1": 288.0,
+        "cout_q3": 1500.0,
+        "cout_mensuel_moy": 45423.0,
+        "nb": 94
+      },
+      "Travailleurs informels": {
+        "duree_median": 15.0,
+        "duree_q1": 12.0,
+        "duree_q3": 30.0,
+        "cout_median": 300.0,
+        "cout_q1": 150.0,
+        "cout_q3": 725.0,
+        "cout_mensuel_moy": 21102.0,
+        "nb": 131
+      },
+      "Étudiants mobilité douce": {
+        "duree_median": 10.0,
+        "duree_q1": 8.8,
+        "duree_q3": 11.2,
+        "cout_median": 125.0,
+        "cout_q1": 100.0,
+        "cout_q3": 488.0,
+        "cout_mensuel_moy": 20350.0,
+        "nb": 4
+      }
+    }
+  },
+  "Transport Commun": {
+    "duree_min": 10.0,
+    "duree_q1": 20.0,
+    "duree_median": 30.0,
+    "duree_moy": 36.4,
+    "duree_q3": 50.0,
+    "duree_max": 90.0,
+    "duree_std": 24.9,
+    "cout_min": 50.0,
+    "cout_q1": 100.0,
+    "cout_median": 150.0,
+    "cout_moy": 211.0,
+    "cout_q3": 250.0,
+    "cout_max": 500.0,
+    "cout_std": 213.0,
+    "cout_mensuel_min": 4400.0,
+    "cout_mensuel_moy": 9271.0,
+    "cout_mensuel_max": 11000.0,
+    "nb_usagers": 598.0,
+    "part_marche": 0.0,
+    "par_segment": {
+      "Actifs motorisés": {
+        "duree_median": 30.0,
+        "duree_q1": 20.0,
+        "duree_q3": 57.5,
+        "cout_median": 200.0,
+        "cout_q1": 150.0,
+        "cout_q3": 300.0,
+        "cout_mensuel_moy": 12318.0,
+        "nb": 122
+      },
+      "Travailleurs informels": {
+        "duree_median": 30.0,
+        "duree_q1": 15.0,
+        "duree_q3": 45.0,
+        "cout_median": 150.0,
+        "cout_q1": 100.0,
+        "cout_q3": 225.0,
+        "cout_mensuel_moy": 8497.0,
+        "nb": 461
+      },
+      "Étudiants mobilité douce": {
+        "duree_median": 25.0,
+        "duree_q1": 20.0,
+        "duree_q3": 45.0,
+        "cout_median": 150.0,
+        "cout_q1": 125.0,
+        "cout_q3": 225.0,
+        "cout_mensuel_moy": 8287.0,
+        "nb": 15
+      }
+    }
+  },
+  "Voiture": {
+    "duree_min": 10.0,
+    "duree_q1": 15.0,
+    "duree_median": 25.0,
+    "duree_moy": 29.3,
+    "duree_q3": 40.0,
+    "duree_max": 60.0,
+    "duree_std": 19.3,
+    "cout_min": 45.0,
+    "cout_q1": 150.0,
+    "cout_median": 200.0,
+    "cout_moy": 479.0,
+    "cout_q3": 675.0,
+    "cout_max": 1350.0,
+    "cout_std": 556.0,
+    "cout_mensuel_min": 6600.0,
+    "cout_mensuel_moy": 21057.0,
+    "cout_mensuel_max": 29700.0,
+    "nb_usagers": 389.0,
+    "part_marche": 0.0,
+    "par_segment": {
+      "Actifs motorisés": {
+        "duree_median": 25.0,
+        "duree_q1": 15.0,
+        "duree_q3": 40.0,
+        "cout_median": 150.0,
+        "cout_q1": 150.0,
+        "cout_q3": 1000.0,
+        "cout_mensuel_moy": 24640.0,
+        "nb": 340
+      },
+      "Travailleurs informels": {
+        "duree_median": 30.0,
+        "duree_q1": 15.0,
+        "duree_q3": 40.0,
+        "cout_median": 275.0,
+        "cout_q1": 238.0,
+        "cout_q3": 312.0,
+        "cout_mensuel_moy": 12100.0,
+        "nb": 49
+      }
+    }
+  },
+  "Vélo": {
+    "duree_min": 6.8,
+    "duree_q1": 10.0,
+    "duree_median": 15.0,
+    "duree_moy": 19.1,
+    "duree_q3": 20.0,
+    "duree_max": 45.0,
+    "duree_std": 13.2,
+    "cout_min": 0.0,
+    "cout_q1": 0.0,
+    "cout_median": 0.0,
+    "cout_moy": 0.0,
+    "cout_q3": 0.0,
+    "cout_max": 0.0,
+    "cout_std": 0.0,
+    "cout_mensuel_min": 0.0,
+    "cout_mensuel_moy": 0.0,
+    "cout_mensuel_max": 0.0,
+    "nb_usagers": 13.0,
+    "part_marche": 0.0,
+    "par_segment": {
+      "Actifs motorisés": {
+        "duree_median": 15.0,
+        "duree_q1": 10.0,
+        "duree_q3": 20.0,
+        "cout_median": null,
+        "cout_q1": null,
+        "cout_q3": null,
+        "cout_mensuel_moy": null,
+        "nb": 5
+      },
+      "Travailleurs informels": {
+        "duree_median": 15.0,
+        "duree_q1": 9.5,
+        "duree_q3": 22.5,
+        "cout_median": null,
+        "cout_q1": null,
+        "cout_q3": null,
+        "cout_mensuel_moy": null,
+        "nb": 8
+      }
+    }
+  }
+}

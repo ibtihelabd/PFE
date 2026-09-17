@@ -152,10 +152,19 @@ python migrate_feedback.py
 
 ---
 
+## Fichiers non versionnes (trop lourds)
 
+Ces elements doivent etre obtenus separement :
+
+- `ml_models/*.pkl` — Modeles ML : regenerables via `train_inaccessibility_model.py`
+- `ml_models/anomalies_results.csv` — Resultat detection anomalies (14 Mo)
+- Donnees brutes CSV/XLS (confidentielles CETUD)
+- Videos de demonstration (`demo/`)
+
+---
 
 ## Auteur
 
-**Ibtihel Abdellaoui** — Etudiante dernière année cycle ingénieur 
+**Ibtihel Abdelhafid** — Etudiante en Master Informatique  
 Projet de Fin d Etudes — 2025-2026  
-Encadrement : SIMAC
+Encadrement : CETUD (Conseil Executif des Transports Urbains de Dakar)

@@ -1,0 +1,77 @@
+<svg viewBox="0 0 1760 900" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1760" height="900" fill="#ffffff"/>
+
+  <!-- Badge circle -->
+  <circle cx="380" cy="370" r="270" fill="none" stroke="#1a1f2b" stroke-width="8"/>
+
+  <!-- Data line (chart dots) -->
+  <polyline points="170,290 240,225 320,265 410,210 480,245 555,200" fill="none" stroke="#1a1f2b" stroke-width="4"/>
+  <circle cx="170" cy="290" r="9" fill="#1a1f2b"/>
+  <circle cx="240" cy="225" r="9" fill="#ff6b35"/>
+  <circle cx="320" cy="265" r="9" fill="#1a1f2b"/>
+  <circle cx="410" cy="210" r="9" fill="#ff6b35"/>
+  <circle cx="480" cy="245" r="9" fill="#1a1f2b"/>
+  <circle cx="555" cy="200" r="9" fill="#ff6b35"/>
+
+  <!-- Skyline -->
+  <rect x="240" y="330" width="34" height="120" fill="#cdd3da"/>
+  <rect x="284" y="300" width="34" height="150" fill="#b9c0c9"/>
+  <rect x="328" y="345" width="34" height="105" fill="#cdd3da"/>
+  <rect x="372" y="315" width="34" height="135" fill="#b9c0c9"/>
+  <rect x="416" y="355" width="34" height="95" fill="#cdd3da"/>
+  <rect x="460" y="325" width="34" height="125" fill="#b9c0c9"/>
+
+  <!-- Bars (mini chart) -->
+  <rect x="210" y="400" width="20" height="50" fill="#1a1f2b"/>
+  <rect x="236" y="375" width="20" height="75" fill="#ff6b35"/>
+  <rect x="262" y="415" width="20" height="35" fill="#1a1f2b"/>
+
+  <!-- Bus -->
+  <rect x="295" y="395" width="170" height="80" rx="14" fill="#1a1f2b"/>
+  <rect x="312" y="412" width="40" height="32" rx="4" fill="#ffffff"/>
+  <rect x="362" y="412" width="40" height="32" rx="4" fill="#ffffff"/>
+  <rect x="412" y="412" width="38" height="32" rx="4" fill="#ffffff"/>
+  <circle cx="325" cy="480" r="13" fill="#0f1117"/>
+  <circle cx="435" cy="480" r="13" fill="#0f1117"/>
+
+  <!-- Road curving with location pin -->
+  <path d="M 150 560 C 280 540, 380 600, 520 565 S 620 470, 600 420" fill="none" stroke="#1a1f2b" stroke-width="26" stroke-linecap="round"/>
+  <path d="M 150 560 C 280 540, 380 600, 520 565 S 620 470, 600 420" fill="none" stroke="#ffffff" stroke-width="3" stroke-dasharray="14 14"/>
+  <path d="M600 420 L 575 360 a 30 30 0 1 1 50 0 Z" fill="#ff6b35"/>
+  <circle cx="600" cy="365" r="11" fill="#ffffff"/>
+
+  <!-- Wordmark -->
+  <text x="660" y="345" font-family="Arial, Helvetica, sans-serif" font-weight="800" font-size="92" fill="#1a1f2b">Transport<tspan fill="#ff6b35">Dakar</tspan></text>
+
+  <!-- divider -->
+  <line x1="660" y1="410" x2="1080" y2="410" stroke="#1a1f2b" stroke-width="2"/>
+  <circle cx="1110" cy="410" r="5" fill="#ff6b35"/>
+  <line x1="1140" y1="410" x2="1630" y2="410" stroke="#1a1f2b" stroke-width="2"/>
+
+  <text x="660" y="450" font-family="Arial, Helvetica, sans-serif" font-size="28" letter-spacing="4" fill="#1a1f2b">URBAN MOBILITY INTELLIGENCE PLATFORM</text>
+
+  <!-- category chips -->
+  <g font-family="Arial, Helvetica, sans-serif" font-size="30" fill="#1a1f2b">
+    <rect x="660" y="540" width="60" height="60" rx="14" fill="#1a1f2b"/>
+    <rect x="675" y="565" width="8" height="22" fill="#ffffff"/>
+    <rect x="688" y="555" width="8" height="32" fill="#ffffff"/>
+    <rect x="701" y="572" width="8" height="15" fill="#ffffff"/>
+    <text x="735" y="580">Trafic</text>
+
+    <rect x="850" y="540" width="60" height="60" rx="14" fill="#1a1f2b"/>
+    <circle cx="868" cy="558" r="5" fill="#ffffff"/>
+    <circle cx="900" cy="565" r="5" fill="#ffffff"/>
+    <circle cx="880" cy="585" r="5" fill="#ffffff"/>
+    <text x="925" y="580">Déplacements</text>
+
+    <rect x="1140" y="540" width="60" height="60" rx="14" fill="#1a1f2b"/>
+    <circle cx="1170" cy="560" r="10" fill="#ffffff"/>
+    <path d="M1152 590 a18 18 0 0 1 36 0 Z" fill="#ffffff"/>
+    <text x="1215" y="580">Démographie</text>
+
+    <rect x="1400" y="540" width="60" height="60" rx="14" fill="#1a1f2b"/>
+    <circle cx="1430" cy="558" r="9" fill="#ffffff"/>
+    <path d="M1414 575 a16 16 0 1 0 32 0" fill="none" stroke="#ffffff" stroke-width="6"/>
+    <text x="1475" y="580">Accessibilité</text>
+  </g>
+</svg>

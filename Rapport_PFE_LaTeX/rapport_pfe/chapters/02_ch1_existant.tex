@@ -1,0 +1,124 @@
+\chapter{Étude de l'existant et analyse des besoins}
+\label{ch:existant}
+
+\section{Introduction}
+Conformément à la première étape de la méthodologie GIMSI (identification), ce chapitre pose le cadre métier du projet~: présentation de l'entreprise d'accueil et du client du projet, du domaine du transport urbain à Dakar, analyse du processus décisionnel actuel et de ses limites, puis spécification des besoins fonctionnels et non fonctionnels qui ont guidé la conception de la solution.
+
+\section{Présentation de l'entreprise}
+Ce projet de fin d'études a été réalisé au sein de \textbf{SIMAC}, l'entreprise d'accueil. SIMAC est une société de services informatiques disposant de deux implantations~: un site en \textbf{Tunisie (Tunis)} et un site au \textbf{Sénégal}, ce qui lui permet d'intervenir directement auprès de clients d'Afrique de l'Ouest tout en s'appuyant sur son pôle d'ingénierie tunisien. C'est dans le cadre de cette double implantation que SIMAC a été chargée de la conception et de la réalisation de la solution décisionnelle objet de ce rapport, pour le compte de son client le CETUD.
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=2.2cm]{logo_simac.png}
+\caption{Logo de SIMAC, entreprise d'accueil}
+\label{fig:logo_simac}
+\end{figure}
+
+\subsection{Présentation du client~: le CETUD}
+Le \textbf{CETUD} (Conseil Exécutif des Transports Urbains de Dakar) est le \textbf{client} du projet. Basé à \textbf{Dakar, Sénégal}, il s'agit de l'autorité organisatrice des transports urbains pour la région de Dakar. Créé pour mettre en œuvre la politique de l'État en matière de transport urbain, il a pour mission de planifier, organiser et réguler l'offre de transport public sur le territoire de l'agglomération dakaroise, en coordonnant les différents opérateurs (bus Dakar Dem Dikk, cars rapides, Ndiaga Ndiaye, TATA, transport informel) et en veillant à l'amélioration continue de l'accessibilité et de la qualité de service offerte aux usagers.
+
+Dans le cadre de ses missions de planification, le CETUD réalise et exploite des enquêtes de grande ampleur, notamment l'Enquête Ménages-Déplacements (EMD), ainsi que des campagnes de comptage de trafic sur les principaux axes et points névralgiques du réseau. Ces données constituent un patrimoine informationnel considérable, mais dont l'exploitation reste aujourd'hui largement manuelle et ponctuelle -- d'où la commande, auprès de SIMAC, de la solution décisionnelle présentée dans ce rapport.
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[height=2.2cm]{cetud.png}
+\caption{Logo du CETUD, client du projet}
+\label{fig:logo_cetud}
+\end{figure}
+
+
+
+
+\section{Contexte métier}
+La mobilité urbaine à Dakar se caractérise par une forte hétérogénéité de l'offre (transport formel et informel coexistants), une demande en croissance continue liée à l'étalement urbain, et des contraintes d'accessibilité marquées dans certaines zones périphériques. Le CETUD doit, dans ce contexte, arbitrer en permanence entre plusieurs préoccupations~: l'adaptation de l'offre de transport en commun à la demande réelle, la priorisation des investissements d'infrastructure, et le suivi de la qualité de service perçue par les usagers. Ces arbitrages reposent aujourd'hui largement sur l'expertise des agents du CETUD et sur des extractions ponctuelles de données, plutôt que sur un système d'information décisionnel structuré.
+
+\section{Présentation du domaine du transport urbain}
+Le réseau de transport urbain de Dakar repose sur plusieurs catégories de données qu'il convient de bien distinguer~:
+
+\begin{itemize}
+\item l'\textbf{Enquête Ménages-Déplacements (EMD)}, une enquête déclarative menée auprès d'un échantillon de ménages, recensant les caractéristiques socio-démographiques des individus et le détail de leurs déplacements quotidiens (motif, mode, durée, coût, origine, destination)~;
+\item les \textbf{comptages de trafic}, des relevés automatiques ou manuels de flux de véhicules effectués sur des sites de comptage répartis sur le réseau, à une granularité horaire~;
+\item les \textbf{indicateurs d'accessibilité}, dérivés des deux sources précédentes, qui qualifient la qualité de la desserte en transport en commun par zone géographique.
+\end{itemize}
+
+Ce triptyque de données (déplacements déclarés, trafic observé, accessibilité dérivée) constitue le socle informationnel sur lequel s'appuie l'ensemble de la solution décisionnelle développée dans ce projet.
+
+\section{Analyse de l'existant}
+
+\subsection{Processus actuel}
+Avant ce projet, l'exploitation des données EMD et de comptage de trafic au CETUD suivait un processus essentiellement manuel~: les fichiers bruts (extraits Excel/CSV des enquêtes) étaient consultés au cas par cas, généralement à l'occasion d'une étude ponctuelle ou d'une demande spécifique d'un service. Les calculs d'indicateurs (volumes, taux, scores) étaient réalisés directement dans des feuilles de calcul, sans modèle de données partagé ni historique structuré. Il n'existait pas de tableau de bord consolidé permettant un suivi régulier des indicateurs clés, ni d'outil permettant de croiser facilement les données de déplacement avec les données de trafic ou les indicateurs d'accessibilité.
+
+\subsection{Limites de l'existant}
+Cette situation présentait plusieurs limites structurelles~:
+\begin{itemize}
+\item \textbf{Absence de modèle de données partagé}~: chaque analyse repartait des fichiers bruts, sans réutilisation d'un référentiel commun (dimensions, mesures), ce qui générait des incohérences entre analyses successives~;
+\item \textbf{Manque de centralisation}~: les données EMD, les données de comptage et les indicateurs d'accessibilité étaient traités séparément, rendant difficile toute analyse croisée~;
+\item \textbf{Restitution non standardisée}~: les résultats étaient produits sous forme de documents ponctuels (tableaux, graphiques isolés), sans interface de consultation interactive ni mise à jour automatisée~;
+\item \textbf{Aucune dimension prédictive}~: l'analyse se limitait à du reporting descriptif (comptages, moyennes), sans capacité de segmentation des usagers, de détection d'anomalies ou de prédiction des zones à risque~;
+\item \textbf{Dépendance à l'expertise individuelle}~: la connaissance des règles de calcul et des spécificités des données reposait sur quelques personnes, sans documentation centralisée.
+\end{itemize}
+
+Ces limites justifient la mise en place d'une chaîne décisionnelle structurée, allant de l'ETL jusqu'à la restitution interactive, enrichie par des modèles de Machine Learning permettant de dépasser le seul reporting descriptif.
+
+\section{Analyse des besoins}
+
+\subsection{Besoins fonctionnels}
+L'analyse menée avec les décideurs du CETUD a permis d'identifier les besoins fonctionnels suivants~:
+\begin{itemize}
+\item centraliser les données issues de l'EMD et des comptages de trafic dans un entrepôt de données unique et structuré~;
+\item produire automatiquement les indicateurs clés de performance (KPI) nécessaires au suivi de la mobilité urbaine (volumes de déplacement, heures de pointe, scores d'accessibilité, etc.)~;
+\item restituer ces indicateurs sous forme de tableaux de bord interactifs, navigables par thématique (trafic, déplacements, démographie, accessibilité)~;
+\item permettre la consultation de prédictions et d'analyses avancées (segmentation des usagers, détection d'anomalies de trafic, prédiction du risque d'inaccessibilité, recommandation de mode de transport)~;
+\item offrir un espace public permettant au citoyen d'obtenir une recommandation personnalisée de mode de transport~;
+\item distinguer les droits d'accès selon le profil de l'utilisateur (citoyen, chef d'exploitation, directeur de planification).
+\end{itemize}
+
+\subsection{Besoins non fonctionnels}
+Au-delà des fonctionnalités, plusieurs exigences non fonctionnelles ont structuré les choix de conception~:
+\begin{itemize}
+\item \textbf{Performance}~: les temps de réponse des tableaux de bord et de l'API de recommandation doivent rester compatibles avec un usage interactif (chargement des modèles de Machine Learning en mémoire au démarrage du serveur plutôt qu'à chaque requête)~;
+\item \textbf{Sécurité}~: l'accès à l'espace décideurs doit être protégé par authentification, avec un contrôle d'accès basé sur les rôles (RBAC)~;
+\item \textbf{Ergonomie}~: les interfaces doivent être accessibles à des utilisateurs non techniques, avec une navigation claire et un mode sombre/clair~;
+\item \textbf{Maintenabilité}~: l'architecture doit séparer clairement les couches (ETL, entrepôt, restitution BI, application web) afin de faciliter l'évolution indépendante de chaque composant~;
+\item \textbf{Traçabilité}~: chaque indicateur restitué doit pouvoir être retracé jusqu'à sa source dans l'entrepôt de données, condition de la confiance des décideurs dans le système.
+\end{itemize}
+
+\section{Identification des acteurs}
+Trois acteurs principaux interagissent avec la solution~:
+
+\begin{itemize}
+\item \textbf{Citoyen / usager}~: tout usager du réseau de transport, sans authentification requise, qui consulte l'application pour obtenir une recommandation de mode de transport adaptée à son profil de mobilité~;
+\item \textbf{Chef d'Exploitation}~: décideur opérationnel du CETUD, authentifié, qui consulte les tableaux de bord de suivi (trafic, déplacements, zones à risque, anomalies, segmentation des usagers) afin d'ajuster l'offre de transport au quotidien~;
+\item \textbf{Directeur Planification}~: décideur stratégique du CETUD, authentifié, qui dispose des mêmes accès que le chef d'exploitation, complétés par l'accès aux pages de transparence et d'audit des modèles de Machine Learning (métriques de performance, importance des variables), dans un objectif de gouvernance des décisions automatisées.
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\caption{Synthèse des acteurs et de leurs objectifs}
+\begin{tabular}{p{3cm}p{4.5cm}p{5.5cm}}
+\toprule
+\textbf{Acteur} & \textbf{Authentification} & \textbf{Objectif principal} \\
+\midrule
+Citoyen / usager & Non & Obtenir une recommandation de mode de transport \\
+Chef d'Exploitation & Oui (RBAC) & Ajuster l'offre au quotidien à partir des tableaux de bord \\
+Directeur Planification & Oui (RBAC) & Piloter la stratégie et auditer les modèles de ML \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Arbre de décision}
+L'arbre de décision ci-dessous (figure~\ref{fig:arbre_decision}) illustre la démarche de prise de décision structurée adoptée pour la conception de la solution décisionnelle du CETUD. Il modélise les chemins décisionnels menant à la définition des indicateurs clés, à la sélection des modules analytiques (BI classique, Machine Learning) et à la priorisation des fonctionnalités selon les profils d'utilisateurs identifiés.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{arbre_decision_objectifs.png}
+\caption{Arbre de décision -- Conception de la solution décisionnelle pour le transport urbain à Dakar (CETUD)}
+\label{fig:arbre_decision}
+\end{figure}
+
+\section{Conclusion}
+Ce chapitre a permis de poser le cadre métier du projet~: présentation du CETUD et du domaine du transport urbain à Dakar, analyse critique du processus décisionnel existant, spécification précise des besoins fonctionnels et non fonctionnels, identification des acteurs de la solution et formalisation de l'arbre de décision. Ces éléments constituent le cahier des charges à partir duquel la conception de la solution décisionnelle, objet du chapitre suivant, a été élaborée.
+
+\clearpage

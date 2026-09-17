@@ -1,0 +1,134 @@
+\chapter{Modèles de Machine Learning}
+\label{ch:ml}
+
+\section{Introduction}
+Au-delà du reporting descriptif assuré par l'entrepôt de données et le cockpit Knowage, le projet intègre quatre familles de modèles de Machine Learning afin de répondre à des besoins analytiques plus avancés~: segmenter les usagers, recommander un mode de transport personnalisé, détecter les anomalies de trafic et prédire les zones à risque d'inaccessibilité. Ce chapitre présente la démarche, les algorithmes retenus et les performances obtenues pour chacun de ces quatre modèles.
+
+\section{Segmentation des usagers (K-Means)}
+
+\subsection{Objectif et données}
+L'objectif est de regrouper les individus enquêtés (données EMD) en profils de mobilité homogènes, afin de permettre des analyses et des recommandations différenciées par segment. Les données utilisées sont les variables sociodémographiques et de mobilité de l'enquête individus (âge, sexe, statut d'activité, niveau d'instruction, possession du permis, fréquence d'utilisation des transports en commun, nombre de déplacements, nombre de véhicules, revenu).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{ml/exploration_data.png}
+\caption{Exploration des données individus avant segmentation}
+\label{fig:exploration}
+\end{figure}
+
+\subsection{Choix du nombre de clusters}
+Le nombre optimal de clusters a été déterminé en combinant la méthode du coude (\emph{elbow method}), qui trace l'inertie intra-cluster en fonction de $k$, et le coefficient de silhouette, qui mesure la qualité de séparation entre clusters. Cette double vérification a permis de retenir $k=5$, valeur pour laquelle le coefficient de silhouette est maximal ($\approx 0,31$) tout en correspondant au coude visible sur la courbe d'inertie.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{ml/choix_k.png}
+\caption{Détermination du nombre optimal de clusters (méthode du coude + silhouette)}
+\label{fig:choix_k}
+\end{figure}
+
+\subsection{Profils obtenus}
+Le tableau~\ref{tab:segments} présente les cinq segments d'usagers identifiés.
+
+\begin{table}[H]
+\centering
+\caption{Segments d'usagers identifiés par K-Means}
+\label{tab:segments}
+\begin{tabular}{p{3.5cm}p{6cm}p{3cm}}
+\toprule
+\textbf{Segment} & \textbf{Profil type} & \textbf{Mode dominant} \\
+\midrule
+Actifs TC réguliers & $\sim$35 ans, actif, sans permis, usage quotidien des TC & Transport commun \\
+Actifs motorisés & $\sim$40 ans, actif, permis, revenu élevé & Voiture / Taxi \\
+Étudiants mobilité douce & $\sim$20 ans, étudiant, budget faible & Marche / TC \\
+Piétons de proximité & $\sim$45 ans, peu mobile, quartier dense & Marche \\
+Travailleurs informels & $\sim$30 ans, actif informel, mobilité mixte & TC / Moto \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{ml/heatmap_segments.png}
+\caption{Caractérisation des segments par variable (heatmap)}
+\label{fig:heatmap}
+\end{figure}
+
+Avant l'application de K-Means, les variables ont été normalisées avec un \texttt{StandardScaler} afin d'éviter qu'une variable à forte variance (par exemple le revenu) ne domine artificiellement le calcul de distance euclidienne. Les valeurs manquantes ont été traitées par imputation à la médiane (robuste aux valeurs extrêmes).
+
+\section{Recommandation de mode de transport (Random Forest)}
+Le second modèle vise à recommander, pour un profil d'usager donné, le mode de transport le plus adapté parmi l'ensemble des modes disponibles (transport en commun, voiture, taxi/clando, marche, moto). Il s'agit d'une tâche de classification supervisée multi-classes, entraînée à partir des modes effectivement déclarés dans l'EMD.
+
+\begin{itemize}
+\item \textbf{Algorithme}~: \texttt{RandomForestClassifier} (scikit-learn), 200 arbres (\texttt{n\_estimators=200}), profondeur maximale 10 (\texttt{max\_depth=10}) pour limiter le surapprentissage, pondération des classes (\texttt{class\_weight='balanced'}) pour compenser le déséquilibre entre modes.
+\item \textbf{Validation}~: validation croisée stratifiée à 5 plis (\texttt{StratifiedKFold}).
+\item \textbf{Performance}~: exactitude (\emph{accuracy}) $\approx 90{,}6\,\%$, F1-macro $\approx 0{,}88$.
+\end{itemize}
+
+En production, le modèle retourne non pas une seule prédiction mais le \emph{top 3} des modes les plus probables avec leurs probabilités, enrichi par des statistiques de durée et de coût (quartiles Q1/médiane/Q3) calculées par mode et par segment, ce qui permet de fournir à l'usager une recommandation nuancée plutôt qu'une réponse binaire.
+
+\section{Détection d'anomalies de trafic}
+
+\subsection{Démarche}
+Les données de comptage de trafic (issues des sites de comptage automatique) sont analysées afin de détecter des comportements anormaux~: pics de volume inattendus, schémas horaires incohérents, sites présentant un comportement différent de leurs voisins géographiques. Trois algorithmes complémentaires sont appliqués en parallèle puis combinés par un vote pondéré (consensus)~:
+
+\begin{table}[H]
+\centering
+\caption{Algorithmes de détection d'anomalies et pondération du consensus}
+\begin{tabular}{p{3cm}p{2cm}p{8cm}}
+\toprule
+\textbf{Algorithme} & \textbf{Poids} & \textbf{Principe} \\
+\midrule
+Z-Score & 0,25 & Détection univariée des valeurs extrêmes par site \\
+Isolation Forest & 0,40 & Détection multivariée par isolement aléatoire (arbres) \\
+Local Outlier Factor (LOF) & 0,35 & Détection par densité locale (comparaison aux voisins) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Une observation est déclarée anormale lorsque le score pondéré combiné dépasse le seuil de 0,6. Cette approche par consensus permet de réduire significativement les faux positifs par rapport à l'utilisation d'un seul algorithme, chaque méthode ayant des forces complémentaires~: le Z-Score est rapide et interprétable mais univarié, l'Isolation Forest est robuste sur des données multivariées sans hypothèse de distribution, et le LOF détecte les anomalies de densité locale invisibles aux deux autres méthodes.
+
+\subsection{Clustering spatial des anomalies}
+Un algorithme \texttt{DBSCAN} est ensuite appliqué sur les coordonnées GPS des sites détectés comme anormaux (rayon \texttt{eps} $\approx$ 500 mètres, minimum 3 sites pour former un groupe), afin de distinguer les \emph{hotspots} de congestion structurelle (axes durablement saturés) des incidents ponctuels et isolés.
+
+\section{Prédiction du risque d'inaccessibilité}
+
+\subsection{Construction de la variable cible}
+Pour chaque ménage, un score composite d'inaccessibilité est construit en sommant sept indicateurs terrain (distance TC, inondation, enclavement, acces sante...). Le seuil de classification (ménage à risque ou non) est fixé au 60\textsuperscript{e} percentile de ce score.
+
+\subsection{Pipeline d'entraînement}
+Le pipeline complet comprend~: l'imputation -> encodage -> normalisation -> SMOTE -> validation croisée stratifiée (4 algorithmes comparés).
+
+Le modèle \textbf{XGBoost} a été retenu comme modèle final, offrant les meilleures performances sur ce jeu de données déséquilibré.
+
+\begin{table}[H]
+\centering
+\caption{Performances du modèle de prédiction d'inaccessibilité (XGBoost)}
+\begin{tabular}{ll}
+\toprule
+\textbf{Métrique} & \textbf{Valeur} \\
+\midrule
+ROC AUC & 89\,\% \\
+F1-score & 72\,\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+L'analyse de l'importance des variables (\emph{feature importance}) confirme que les variables les plus déterminantes sont : Innodations, distance à pied jusqu'à l'arrêt TC, et durée d'accès aux soins de santé.
+
+\section{Synthèse}
+\begin{table}[H]
+\centering
+\caption{Synthèse des modèles de Machine Learning développés}
+\begin{tabular}{p{3cm}p{2.8cm}p{4cm}p{3.2cm}}
+\toprule
+\textbf{Modèle} & \textbf{Type} & \textbf{Objectif} & \textbf{Performance} \\
+\midrule
+K-Means ($k=3$) & Non supervisé & Segmentation des usagers & Silhouette $\approx 0{,}240$ \\
+Random Forest & Supervisé & Recommandation de mode & Accuracy $\approx 80{,}15\,\%$ \\
+Z-Score + Isolation Forest + LOF & Détection d'anomalies & Anomalies de trafic & Consensus pond\'er\'e $\geq 0{,}6$ -- Accord inter-mod\`eles $90{,}6\,\%$ \\
+XGBoost & Supervisé & Prédiction d'inaccessibilité & ROC AUC = 89\,\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+L'ensemble de ces modèles a été sérialisé (\texttt{joblib}) et exposé via l'API FastAPI de l'application web, présentée au chapitre~\ref{ch:demo}. Le chapitre suivant présente le cockpit décisionnel Knowage BI, dédié à la restitution des indicateurs descriptifs de l'entrepôt de données.

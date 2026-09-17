@@ -1,0 +1,75 @@
+\chapter{Analyse métier et spécification des besoins}
+\label{ch:analyse}
+
+\section{Introduction}
+Conformément à la première étape de la méthodologie GIMSI (identification), ce chapitre présente l'analyse métier menée en amont de toute modélisation technique~: identification des décideurs cibles, de leurs besoins respectifs, et des données sources disponibles pour y répondre.
+
+\section{Les données sources}
+La principale source de données exploitée est l'\textbf{Enquête Ménages-Déplacements (EMD)} de Dakar, complétée par des données de \textbf{comptage de trafic} issues de capteurs et de relevés sur les principaux sites de comptage du réseau. L'EMD est structurée en plusieurs blocs de variables, identifiées par des codes (I2, I4, I9, M21, M26, M66 à M91, etc.), couvrant~:
+\begin{itemize}
+\item les caractéristiques géographiques du domicile (quartier, strate, district de recensement)~;
+\item les caractéristiques du ménage (taille, type de logement, équipement)~;
+\item les déplacements individuels (motif, mode, durée, coût)~;
+\item l'accessibilité aux transports en commun et aux services (école, daara)~;
+\item les problèmes et manquements perçus dans le quartier (manque de transport, inondations, enclavement, insécurité).
+\end{itemize}
+
+\section{Identification des décideurs et de leurs besoins}
+Deux profils de décideurs principaux ont été identifiés au sein du CETUD, chacun ayant des besoins analytiques distincts vis-à-vis des mêmes données sources.
+
+\subsection{Le directeur de planification}
+C'est l'utilisateur principal des données décisionnelles. Il doit planifier les lignes de transport, adapter l'offre à la demande et comprendre les habitudes de mobilité des citoyens. Il s'appuie en particulier sur les volumes de déplacements par jour, le type d'habitation et les indicateurs d'équipement et d'accès des ménages.
+\begin{itemize}
+\item \textbf{Objectifs}~: identifier les zones à forte densité de déplacements, les jours les plus chargés, et les types de zones les plus mobiles.
+\item \textbf{KPIs associés}~: nombre moyen de déplacements par jour, mobilité par type d'habitation.
+\end{itemize}
+
+\subsection{Le responsable d'exploitation}
+Ce décideur gère les aspects opérationnels du réseau~: lignes de bus, fréquences, horaires. Il exploite les volumes de déplacements et leur répartition journalière pour ajuster l'offre.
+\begin{itemize}
+\item \textbf{Objectifs}~: ajuster les horaires et la fréquence des bus, gérer les heures de pointe.
+\item \textbf{KPIs associés}~: pic de déplacements par jour, charge moyenne par créneau horaire.
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\caption{Synthèse des décideurs et de leurs usages des données}
+\begin{tabular}{p{3.2cm}p{4.5cm}p{5.5cm}}
+\toprule
+\textbf{Décideur} & \textbf{Usage} & \textbf{Objectif} \\
+\midrule
+Directeur de planification & Stratégique & Planifier l'offre, comprendre la demande \\
+Responsable d'exploitation & Opérationnel & Ajuster horaires et fréquences \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Spécification des indicateurs clés (KPIs)}
+À partir de cette analyse, un score d'accessibilité composite a été défini afin de quantifier, pour chaque ménage ou zone, la qualité de la desserte en transport en commun. Ce score (noté de 0 à 100) intègre~:
+
+\begin{itemize}
+\item une pénalité liée à la durée de marche jusqu'à l'arrêt de transport en commun le plus proche (jusqu'à $-40$ points)~;
+\item un bonus lié à la diversité des modes de transport en commun disponibles (jusqu'à $+20$ points)~;
+\item une pénalité en cas de zone inondable ($-25$ points), aggravée si aucun mode de transport ne reste disponible en cas de pluie ($-20$ points supplémentaires)~;
+\item une pénalité en cas de tarification abusive en période de pluie ($-15$ points).
+\end{itemize}
+
+Ce score permet de classer chaque zone selon une typologie à quatre niveaux~: \textit{Bien desservie} ($\geq 75$), \textit{Moyenne} ($\geq 50$), \textit{Sous-desservie} ($\geq 25$) et \textit{Critique} ($< 25$). Un indicateur complémentaire de \textbf{vulnérabilité climatique} a également été défini, combinant l'exposition aux inondations, l'absence de transport en cas de pluie et la pratique de tarifs abusifs.
+
+Par ailleurs, un indicateur d'\textbf{impact sur l'éducation} a été spécifié à partir des difficultés d'accès déclarées aux structures scolaires (école primaire, daara), permettant de mesurer le lien entre accessibilité aux transports et accès aux services essentiels.
+
+\section{Priorisation des données à intégrer}
+Afin de structurer le développement de l'ETL de façon incrémentale, une priorisation en trois phases des colonnes sources a été retenue~:
+
+\begin{enumerate}
+\item \textbf{Phase 1 -- MVP}~: colonnes géographiques (I2, I4, I9), accessibilité de base (M66 à M70), problèmes majeurs (M73, M87) et taille du ménage (M21)~;
+\item \textbf{Phase 2 -- Extension services}~: variables d'accès aux écoles et daaras (M90, M91)~;
+\item \textbf{Phase 3 -- Détails avancés}~: variables de résilience en cas de pluie (M69), modes de transport vers les services, et autres problèmes de quartier (bruit, insécurité, accidents).
+\end{enumerate}
+
+Cette priorisation a directement guidé la conception du modèle décisionnel et la construction progressive des jobs Talend, présentées dans les chapitres suivants.
+
+\section{Conclusion}
+L'analyse métier a permis d'identifier précisément les décideurs cibles, leurs besoins et les indicateurs à produire, ainsi qu'une stratégie de priorisation des données à intégrer. Ces éléments constituent le cahier des charges fonctionnel à partir duquel le modèle décisionnel, présenté au chapitre suivant, a été conçu.
+
+\clearpage

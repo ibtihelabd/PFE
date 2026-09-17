@@ -1,0 +1,345 @@
+[
+  {
+    "id": "SECT0110031",
+    "site": "Croisement Cambérène /Rte",
+    "lat": 14.7442569732666,
+    "lon": -17.4252395629883,
+    "volume_total": 269694
+  },
+  {
+    "id": "SECT0110011",
+    "site": "Autoroute, Passerelle ent",
+    "lat": 14.6950531005859,
+    "lon": -17.4426555633545,
+    "volume_total": 165068
+  },
+  {
+    "id": "SECT0110004",
+    "site": "ruelle entre Station Shel",
+    "lat": 14.6804685592651,
+    "lon": -17.4386787414551,
+    "volume_total": 146278
+  },
+  {
+    "id": "SECT0110019",
+    "site": "Autoroute (passerelle ent",
+    "lat": 14.7222929000855,
+    "lon": -17.4408416748047,
+    "volume_total": 145495
+  },
+  {
+    "id": "SECT0110006",
+    "site": "Rte de la Corniche",
+    "lat": 14.6763544082642,
+    "lon": -17.4562091827393,
+    "volume_total": 141816
+  },
+  {
+    "id": "SECT0120003",
+    "site": "Pikine, Sur la RN1, en fa",
+    "lat": 14.7464189529419,
+    "lon": -17.4041805267334,
+    "volume_total": 134419
+  },
+  {
+    "id": "SECT0120004",
+    "site": "Rte Nationale 1 (Croiseme",
+    "lat": 14.7479057312012,
+    "lon": -17.3269271850586,
+    "volume_total": 118169
+  },
+  {
+    "id": "SECT0110001",
+    "site": "Route de la Corniche ( en",
+    "lat": 14.6720285415649,
+    "lon": -17.4474391937256,
+    "volume_total": 116946
+  },
+  {
+    "id": "SECT0110015",
+    "site": "VDN(en face NOKIA en vena",
+    "lat": 14.7142925262451,
+    "lon": -17.4720134735107,
+    "volume_total": 110457
+  },
+  {
+    "id": "SECT0120002",
+    "site": "Thiaroye, Station Shell, ",
+    "lat": 14.7432851791382,
+    "lon": -17.3884105682373,
+    "volume_total": 93386
+  },
+  {
+    "id": "SECT0110018",
+    "site": "Sortie Ave Bourguiba Aprè",
+    "lat": 14.7264633178711,
+    "lon": -17.4445915222168,
+    "volume_total": 91964
+  },
+  {
+    "id": "SECT0110021",
+    "site": "Route de l'aeroport1",
+    "lat": 14.752631187439,
+    "lon": -17.4662647247314,
+    "volume_total": 78779
+  },
+  {
+    "id": "SECT0110022",
+    "site": "Route de l'aeroport",
+    "lat": 14.7587738037109,
+    "lon": -17.4840278625488,
+    "volume_total": 74462
+  },
+  {
+    "id": "SECT0110024",
+    "site": "Almadies, Rue près siège ",
+    "lat": 14.7501497268677,
+    "lon": -17.5037498474121,
+    "volume_total": 73820
+  },
+  {
+    "id": "SECT0110023",
+    "site": "Ngor, Rue en face de Chak",
+    "lat": 14.7340774536133,
+    "lon": -17.5088291168213,
+    "volume_total": 71712
+  },
+  {
+    "id": "SECT0110026",
+    "site": "Route de Ouakam",
+    "lat": 14.7160272598267,
+    "lon": -17.4838218688965,
+    "volume_total": 70047
+  },
+  {
+    "id": "SECT0140001",
+    "site": "casebi sur la station Tot",
+    "lat": 14.7561368942261,
+    "lon": -17.4295024871826,
+    "volume_total": 68848
+  },
+  {
+    "id": "SECT0110003",
+    "site": "Allées Papa Gueye Fall, f",
+    "lat": 14.6793556213379,
+    "lon": -17.4431762695313,
+    "volume_total": 67608
+  },
+  {
+    "id": "SECT0110013",
+    "site": "Corniche(en phace pharmac",
+    "lat": 14.7091684341431,
+    "lon": -17.4865283966064,
+    "volume_total": 63355
+  },
+  {
+    "id": "SECT0130004",
+    "site": "Sortie Rufisque Nord-Oues",
+    "lat": 14.7553110122681,
+    "lon": -17.286506652832,
+    "volume_total": 62645
+  },
+  {
+    "id": "SECT0110025",
+    "site": "Route de Ouakam2",
+    "lat": 14.7189044952393,
+    "lon": -17.4892654418945,
+    "volume_total": 59231
+  },
+  {
+    "id": "SECT0110014",
+    "site": "Route de Ouakam(en face d",
+    "lat": 14.7091856002808,
+    "lon": -17.4815540313721,
+    "volume_total": 51985
+  },
+  {
+    "id": "SECT0110007",
+    "site": "Avenue Cheikh Anta Diop",
+    "lat": 14.6898288726807,
+    "lon": -17.4583282470703,
+    "volume_total": 48250
+  },
+  {
+    "id": "SECT0110002",
+    "site": "Ave Blaise D. Stat Total ",
+    "lat": 14.6770057678223,
+    "lon": -17.4458045959473,
+    "volume_total": 45845
+  },
+  {
+    "id": "SECT0110020",
+    "site": "Rte  de Fann(Lycée commer",
+    "lat": 14.6832914352417,
+    "lon": -17.4605388641357,
+    "volume_total": 45549
+  },
+  {
+    "id": "SECT0110008",
+    "site": "Bd Dial Diop",
+    "lat": 14.696722984314,
+    "lon": -17.451379776001,
+    "volume_total": 44054
+  },
+  {
+    "id": "SECT0110009",
+    "site": "Ave Cheikh A, Bamab (Rue ",
+    "lat": 14.6980562210083,
+    "lon": -17.4474411010742,
+    "volume_total": 39327
+  },
+  {
+    "id": "SECT0110027",
+    "site": "ROUTE DE RUFISQUE",
+    "lat": 14.6837892532349,
+    "lon": -17.4373416900635,
+    "volume_total": 37085
+  },
+  {
+    "id": "SECT0110033",
+    "site": "Plage Cambérène près du c",
+    "lat": 14.7695960998535,
+    "lon": -17.43310546875,
+    "volume_total": 36431
+  },
+  {
+    "id": "SECT0130006",
+    "site": "Route Nationale 1 (Rufisq",
+    "lat": 14.7159328460693,
+    "lon": -17.1914234161377,
+    "volume_total": 33321
+  },
+  {
+    "id": "SECT0110029",
+    "site": "Route de Rufisque (Usine ",
+    "lat": 14.7185192108154,
+    "lon": -17.43288230896,
+    "volume_total": 33223
+  },
+  {
+    "id": "SECT0120001",
+    "site": "Rufisque, Sur RN a hauteu",
+    "lat": 14.7380247116089,
+    "lon": -17.31032371521,
+    "volume_total": 32601
+  },
+  {
+    "id": "SECT0110016",
+    "site": "Au niveau de l'école BEM",
+    "lat": 14.71764087677,
+    "lon": -17.4663429260254,
+    "volume_total": 32511
+  },
+  {
+    "id": "SECT0110030",
+    "site": "Route de Rufisque angle R",
+    "lat": 14.7330541610718,
+    "lon": -17.4200553894043,
+    "volume_total": 30800
+  },
+  {
+    "id": "SECT0120006",
+    "site": "Entrée Village Keur Massa",
+    "lat": 14.7852544784546,
+    "lon": -17.3090400695801,
+    "volume_total": 30398
+  },
+  {
+    "id": "SECT0110012",
+    "site": "Route de Rufisque(1ere ru",
+    "lat": 14.6971635818481,
+    "lon": -17.4370174407959,
+    "volume_total": 30355
+  },
+  {
+    "id": "SECT0110028",
+    "site": "Rue 34",
+    "lat": 14.6939744949341,
+    "lon": -17.4541244506836,
+    "volume_total": 29728
+  },
+  {
+    "id": "SECT0110017",
+    "site": "Derklé (en face Ecole pri",
+    "lat": 14.7282876968384,
+    "lon": -17.4565582275391,
+    "volume_total": 29427
+  },
+  {
+    "id": "SECT0120005",
+    "site": "Station Shell Keur Massar",
+    "lat": 14.7732019424438,
+    "lon": -17.3171482086182,
+    "volume_total": 28894
+  },
+  {
+    "id": "SECT0130002",
+    "site": "Bargny, Station EDK Oil v",
+    "lat": 14.6998653411865,
+    "lon": -17.2436542510986,
+    "volume_total": 26006
+  },
+  {
+    "id": "SECT0130005",
+    "site": "Sebikotane",
+    "lat": 14.7349529266357,
+    "lon": -17.1510028839111,
+    "volume_total": 25488
+  },
+  {
+    "id": "SECT0110035",
+    "site": "SGBS Khar Yalla",
+    "lat": 14.7277345657349,
+    "lon": -17.4524688720703,
+    "volume_total": 25456
+  },
+  {
+    "id": "SECT0110034",
+    "site": "Félix Eboué",
+    "lat": 14.6977806091309,
+    "lon": -17.4264430999756,
+    "volume_total": 22649
+  },
+  {
+    "id": "SECT0130001",
+    "site": "Route de Toubab Dialao",
+    "lat": 14.7061767578125,
+    "lon": -17.1652584075928,
+    "volume_total": 20875
+  },
+  {
+    "id": "SECT0130003",
+    "site": "Sortie Rufisque Nord-EST,",
+    "lat": 14.7416334152222,
+    "lon": -17.2466449737549,
+    "volume_total": 19393
+  },
+  {
+    "id": "SECT0110032",
+    "site": "Parcelles Assainies entre",
+    "lat": 14.7589311599731,
+    "lon": -17.4293098449707,
+    "volume_total": 16999
+  },
+  {
+    "id": "SECT0110005",
+    "site": "Lamine Gueye",
+    "lat": 14.6839551925659,
+    "lon": -17.4378719329834,
+    "volume_total": 8627
+  },
+  {
+    "id": "SECT0110010",
+    "site": "Rue 14 de la caserne Samb",
+    "lat": 14.6976757049561,
+    "lon": -17.4441604614258,
+    "volume_total": 8152
+  },
+  {
+    "id": "SECT0130007",
+    "site": "ENTREE VILLAGE NIAGA",
+    "lat": 14.8050394058228,
+    "lon": -17.25266456604,
+    "volume_total": 6821
+  }
+]

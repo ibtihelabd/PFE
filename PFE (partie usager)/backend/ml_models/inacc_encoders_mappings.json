@@ -1,0 +1,104 @@
+{
+  "I2": {
+    "BAMBYLOR/SANGALKAM": 0,
+    "BARGNY": 1,
+    "BISCUITERIE": 2,
+    "CA MERMOZ/SACRE COEUR": 3,
+    "CAMBERENE": 4,
+    "COLOBANE/FASS/GUEULE TAPEE": 5,
+    "DALIFORD": 6,
+    "DIACK SAO/THIAROYE GARE": 7,
+    "DIAMAGUENE/SICAP M’BAO": 8,
+    "DIAMNIADIO/SEBIKOTANE": 9,
+    "DIEUPPEUL DERKLE": 10,
+    "DJIDAH/THIAROYE/KAO/YEUMB SUD": 11,
+    "FANN/POINT E/AMITIE": 12,
+    "GOLFE SUD": 13,
+    "GRAND DAKAR": 14,
+    "GRAND YOFF": 15,
+    "GUINAW RAIL N – S/PIKINE OUEST": 16,
+    "HANN/BEL AIR": 17,
+    "HLM": 18,
+    "JAXAAY PARCELLE NIAKOUL RAP TIVAOUANE PEULH-NIAGHA": 19,
+    "KEUR MASSAR": 20,
+    "MALIKA/YEUMBEUL NORD": 21,
+    "MBAO": 22,
+    "MEDINA": 23,
+    "MEDINA/GOUNASS": 24,
+    "N’DIAREME LIMAMOULAYE": 25,
+    "N’GOR": 26,
+    "OUAKAM": 27,
+    "PARCELLES ASSAINIES": 28,
+    "PATTE D’OIE": 29,
+    "PIKINE EST – SUD/": 30,
+    "PLATEAU": 31,
+    "RUFISQUE CENTRE (NORD)": 32,
+    "RUFISQUE EST": 33,
+    "RUFISQUE OUEST": 34,
+    "SAM NOTAIRES": 35,
+    "SENDOU/YENE": 36,
+    "SICAP LIBERTE": 37,
+    "THIAROYE SUR MER": 38,
+    "WAKHINANE NIMZATT": 39,
+    "YOFF": 40
+  },
+  "M26": {
+    "Appartement dans immeuble": 0,
+    "Autre  ": 1,
+    "Inconnu": 2,
+    "Maison a etages": 3,
+    "Maison basse": 4
+  },
+  "M28": {
+    "Autre  ": 0,
+    "Heberge gratuitement": 1,
+    "Inconnu": 2,
+    "Locataire": 3,
+    "Proprietaire": 4
+  },
+  "M29": {
+    "Autre  ": 0,
+    "Ciment": 1,
+    "Ciment + autre materiau": 2,
+    "Inconnu": 3
+  },
+  "M30": {
+    "Autre  ": 0,
+    "Beton/ciment": 1,
+    "Inconnu": 2,
+    "Tuile/ardoise": 3,
+    "Zinc": 4
+  },
+  "M31": {
+    "Inconnu": 0,
+    "Non": 1,
+    "Oui": 2
+  },
+  "M37": {
+    "Inconnu": 0,
+    "Non": 1,
+    "OuI": 2
+  },
+  "M55": {
+    "Inconnu": 0,
+    "Non": 1,
+    "Oui": 2
+  },
+  "M56": {
+    "Inconnu": 0,
+    "Non": 1,
+    "Oui": 2
+  },
+  "M57": {
+    "Inconnu": 0,
+    "Non": 1,
+    "Oui": 2
+  },
+  "M68": {
+    "Inconnu": 0,
+    "Jamais ": 1,
+    "Rarement": 2,
+    "Souvent": 3,
+    "Tous les jours ou presque": 4
+  }
+}

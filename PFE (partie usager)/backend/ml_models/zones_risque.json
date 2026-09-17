@@ -1,0 +1,412 @@
+[
+  {
+    "rang": 1,
+    "zone": "DALIFORD",
+    "niveau_risque": "ELEVE",
+    "prob_risque": 0.7502704508467269,
+    "nb_menages": 70,
+    "pct_risque": 81.42857142857143,
+    "tc_disponibles": 1.7857142857142858,
+    "dur_sante": 15.757142857142858
+  },
+  {
+    "rang": 2,
+    "zone": "JAXAAY PARCELLE NIAKOUL RAP TIVAOUANE PEULH-NIAGHA",
+    "niveau_risque": "ELEVE",
+    "prob_risque": 0.7381238774955665,
+    "nb_menages": 70,
+    "pct_risque": 80.0,
+    "tc_disponibles": 4.742857142857143,
+    "dur_sante": 14.82857142857143
+  },
+  {
+    "rang": 3,
+    "zone": "THIAROYE SUR MER",
+    "niveau_risque": "ELEVE",
+    "prob_risque": 0.7305947975808863,
+    "nb_menages": 70,
+    "pct_risque": 85.71428571428571,
+    "tc_disponibles": 2.757142857142857,
+    "dur_sante": 13.557142857142857
+  },
+  {
+    "rang": 4,
+    "zone": "BAMBYLOR/SANGALKAM",
+    "niveau_risque": "ELEVE",
+    "prob_risque": 0.7257618763636596,
+    "nb_menages": 70,
+    "pct_risque": 78.57142857142857,
+    "tc_disponibles": 5.314285714285714,
+    "dur_sante": 15.1
+  },
+  {
+    "rang": 5,
+    "zone": "MALIKA/YEUMBEUL NORD",
+    "niveau_risque": "ELEVE",
+    "prob_risque": 0.6608681045681213,
+    "nb_menages": 145,
+    "pct_risque": 74.48275862068967,
+    "tc_disponibles": 3.9586206896551723,
+    "dur_sante": 15.420689655172414
+  },
+  {
+    "rang": 6,
+    "zone": "KEUR MASSAR",
+    "niveau_risque": "MODERE",
+    "prob_risque": 0.6414938903456837,
+    "nb_menages": 145,
+    "pct_risque": 64.82758620689654,
+    "tc_disponibles": 4.731034482758621,
+    "dur_sante": 14.682758620689656
+  },
+  {
+    "rang": 7,
+    "zone": "MEDINA/GOUNASS",
+    "niveau_risque": "MODERE",
+    "prob_risque": 0.6408494332558891,
+    "nb_menages": 70,
+    "pct_risque": 80.0,
+    "tc_disponibles": 4.128571428571429,
+    "dur_sante": 11.985714285714286
+  },
+  {
+    "rang": 8,
+    "zone": "DIAMNIADIO/SEBIKOTANE",
+    "niveau_risque": "MODERE",
+    "prob_risque": 0.6232437371919232,
+    "nb_menages": 70,
+    "pct_risque": 65.71428571428571,
+    "tc_disponibles": 4.114285714285714,
+    "dur_sante": 15.0
+  },
+  {
+    "rang": 9,
+    "zone": "DIAMAGUENE/SICAP M’BAO",
+    "niveau_risque": "MODERE",
+    "prob_risque": 0.6000531144894743,
+    "nb_menages": 101,
+    "pct_risque": 58.415841584158414,
+    "tc_disponibles": 4.396039603960396,
+    "dur_sante": 13.405940594059405
+  },
+  {
+    "rang": 10,
+    "zone": "DIACK SAO/THIAROYE GARE",
+    "niveau_risque": "MODERE",
+    "prob_risque": 0.5918325660131273,
+    "nb_menages": 70,
+    "pct_risque": 62.857142857142854,
+    "tc_disponibles": 3.4857142857142858,
+    "dur_sante": 12.057142857142857
+  },
+  {
+    "rang": 11,
+    "zone": "GUINAW RAIL N – S/PIKINE OUEST",
+    "niveau_risque": "MODERE",
+    "prob_risque": 0.5821518230038429,
+    "nb_menages": 95,
+    "pct_risque": 54.736842105263165,
+    "tc_disponibles": 3.168421052631579,
+    "dur_sante": 12.778947368421052
+  },
+  {
+    "rang": 12,
+    "zone": "DJIDAH/THIAROYE/KAO/YEUMB SUD",
+    "niveau_risque": "MODERE",
+    "prob_risque": 0.5689014243310665,
+    "nb_menages": 139,
+    "pct_risque": 68.34532374100719,
+    "tc_disponibles": 3.1366906474820144,
+    "dur_sante": 11.158273381294965
+  },
+  {
+    "rang": 13,
+    "zone": "HANN/BEL AIR",
+    "niveau_risque": "MODERE",
+    "prob_risque": 0.5494090467483096,
+    "nb_menages": 70,
+    "pct_risque": 62.857142857142854,
+    "tc_disponibles": 4.1,
+    "dur_sante": 14.471428571428572
+  },
+  {
+    "rang": 14,
+    "zone": "RUFISQUE OUEST",
+    "niveau_risque": "MODERE",
+    "prob_risque": 0.5328490168137957,
+    "nb_menages": 70,
+    "pct_risque": 47.14285714285714,
+    "tc_disponibles": 4.957142857142857,
+    "dur_sante": 15.842857142857143
+  },
+  {
+    "rang": 15,
+    "zone": "RUFISQUE CENTRE (NORD)",
+    "niveau_risque": "MODERE",
+    "prob_risque": 0.5144214408408111,
+    "nb_menages": 70,
+    "pct_risque": 52.85714285714286,
+    "tc_disponibles": 5.414285714285715,
+    "dur_sante": 11.157142857142857
+  },
+  {
+    "rang": 16,
+    "zone": "RUFISQUE EST",
+    "niveau_risque": "MODERE",
+    "prob_risque": 0.48720282354859673,
+    "nb_menages": 70,
+    "pct_risque": 48.57142857142857,
+    "tc_disponibles": 4.742857142857143,
+    "dur_sante": 14.442857142857143
+  },
+  {
+    "rang": 17,
+    "zone": "MBAO",
+    "niveau_risque": "MODERE",
+    "prob_risque": 0.48387241108725204,
+    "nb_menages": 70,
+    "pct_risque": 45.714285714285715,
+    "tc_disponibles": 4.128571428571429,
+    "dur_sante": 13.242857142857142
+  },
+  {
+    "rang": 18,
+    "zone": "SENDOU/YENE",
+    "niveau_risque": "MODERE",
+    "prob_risque": 0.4819408315118793,
+    "nb_menages": 70,
+    "pct_risque": 55.714285714285715,
+    "tc_disponibles": 5.942857142857143,
+    "dur_sante": 12.714285714285714
+  },
+  {
+    "rang": 19,
+    "zone": "CAMBERENE",
+    "niveau_risque": "MODERE",
+    "prob_risque": 0.4560407195363329,
+    "nb_menages": 70,
+    "pct_risque": 52.85714285714286,
+    "tc_disponibles": 4.628571428571429,
+    "dur_sante": 9.67142857142857
+  },
+  {
+    "rang": 20,
+    "zone": "SICAP LIBERTE",
+    "niveau_risque": "FAIBLE",
+    "prob_risque": 0.4234876656409577,
+    "nb_menages": 70,
+    "pct_risque": 40.0,
+    "tc_disponibles": 3.357142857142857,
+    "dur_sante": 12.571428571428571
+  },
+  {
+    "rang": 21,
+    "zone": "HLM",
+    "niveau_risque": "FAIBLE",
+    "prob_risque": 0.413046530005334,
+    "nb_menages": 70,
+    "pct_risque": 34.285714285714285,
+    "tc_disponibles": 2.8857142857142857,
+    "dur_sante": 10.971428571428572
+  },
+  {
+    "rang": 22,
+    "zone": "GRAND YOFF",
+    "niveau_risque": "FAIBLE",
+    "prob_risque": 0.40381197225274174,
+    "nb_menages": 100,
+    "pct_risque": 44.0,
+    "tc_disponibles": 3.84,
+    "dur_sante": 12.19
+  },
+  {
+    "rang": 23,
+    "zone": "SAM NOTAIRES",
+    "niveau_risque": "FAIBLE",
+    "prob_risque": 0.3845304756966217,
+    "nb_menages": 70,
+    "pct_risque": 37.142857142857146,
+    "tc_disponibles": 3.4857142857142858,
+    "dur_sante": 12.042857142857143
+  },
+  {
+    "rang": 24,
+    "zone": "N’DIAREME LIMAMOULAYE",
+    "niveau_risque": "FAIBLE",
+    "prob_risque": 0.3825816167665561,
+    "nb_menages": 70,
+    "pct_risque": 40.0,
+    "tc_disponibles": 2.4714285714285715,
+    "dur_sante": 9.685714285714285
+  },
+  {
+    "rang": 25,
+    "zone": "BISCUITERIE",
+    "niveau_risque": "FAIBLE",
+    "prob_risque": 0.3730989681003973,
+    "nb_menages": 70,
+    "pct_risque": 40.0,
+    "tc_disponibles": 2.4857142857142858,
+    "dur_sante": 10.014285714285714
+  },
+  {
+    "rang": 26,
+    "zone": "BARGNY",
+    "niveau_risque": "FAIBLE",
+    "prob_risque": 0.36948466587801926,
+    "nb_menages": 70,
+    "pct_risque": 27.142857142857142,
+    "tc_disponibles": 3.8142857142857145,
+    "dur_sante": 10.242857142857142
+  },
+  {
+    "rang": 27,
+    "zone": "YOFF",
+    "niveau_risque": "FAIBLE",
+    "prob_risque": 0.35672626281189346,
+    "nb_menages": 70,
+    "pct_risque": 34.285714285714285,
+    "tc_disponibles": 3.642857142857143,
+    "dur_sante": 11.5
+  },
+  {
+    "rang": 28,
+    "zone": "WAKHINANE NIMZATT",
+    "niveau_risque": "FAIBLE",
+    "prob_risque": 0.33414179827864415,
+    "nb_menages": 71,
+    "pct_risque": 28.169014084507044,
+    "tc_disponibles": 2.7746478873239435,
+    "dur_sante": 10.507042253521126
+  },
+  {
+    "rang": 29,
+    "zone": "PATTE D’OIE",
+    "niveau_risque": "FAIBLE",
+    "prob_risque": 0.3299297083676101,
+    "nb_menages": 70,
+    "pct_risque": 38.57142857142858,
+    "tc_disponibles": 2.2714285714285714,
+    "dur_sante": 9.457142857142857
+  },
+  {
+    "rang": 30,
+    "zone": "PARCELLES ASSAINIES",
+    "niveau_risque": "FAIBLE",
+    "prob_risque": 0.3279935450980708,
+    "nb_menages": 70,
+    "pct_risque": 25.71428571428571,
+    "tc_disponibles": 3.4857142857142858,
+    "dur_sante": 13.042857142857143
+  },
+  {
+    "rang": 31,
+    "zone": "PLATEAU",
+    "niveau_risque": "FAIBLE",
+    "prob_risque": 0.32393539852634956,
+    "nb_menages": 70,
+    "pct_risque": 25.71428571428571,
+    "tc_disponibles": 4.685714285714286,
+    "dur_sante": 11.957142857142857
+  },
+  {
+    "rang": 32,
+    "zone": "PIKINE EST – SUD/",
+    "niveau_risque": "FAIBLE",
+    "prob_risque": 0.3061380166091816,
+    "nb_menages": 70,
+    "pct_risque": 35.714285714285715,
+    "tc_disponibles": 2.2142857142857144,
+    "dur_sante": 10.185714285714285
+  },
+  {
+    "rang": 33,
+    "zone": "N’GOR",
+    "niveau_risque": "FAIBLE",
+    "prob_risque": 0.2731706662285735,
+    "nb_menages": 70,
+    "pct_risque": 20.0,
+    "tc_disponibles": 3.5,
+    "dur_sante": 10.457142857142857
+  },
+  {
+    "rang": 34,
+    "zone": "FANN/POINT E/AMITIE",
+    "niveau_risque": "FAIBLE",
+    "prob_risque": 0.2419249150277672,
+    "nb_menages": 70,
+    "pct_risque": 18.571428571428573,
+    "tc_disponibles": 4.128571428571429,
+    "dur_sante": 8.657142857142857
+  },
+  {
+    "rang": 35,
+    "zone": "DIEUPPEUL DERKLE",
+    "niveau_risque": "FAIBLE",
+    "prob_risque": 0.23103750360832528,
+    "nb_menages": 70,
+    "pct_risque": 11.428571428571429,
+    "tc_disponibles": 3.0285714285714285,
+    "dur_sante": 11.614285714285714
+  },
+  {
+    "rang": 36,
+    "zone": "OUAKAM",
+    "niveau_risque": "FAIBLE",
+    "prob_risque": 0.23088257706475218,
+    "nb_menages": 70,
+    "pct_risque": 11.428571428571429,
+    "tc_disponibles": 3.5714285714285716,
+    "dur_sante": 10.128571428571428
+  },
+  {
+    "rang": 37,
+    "zone": "GOLFE SUD",
+    "niveau_risque": "FAIBLE",
+    "prob_risque": 0.2278302483058119,
+    "nb_menages": 70,
+    "pct_risque": 10.0,
+    "tc_disponibles": 2.9285714285714284,
+    "dur_sante": 9.857142857142858
+  },
+  {
+    "rang": 38,
+    "zone": "COLOBANE/FASS/GUEULE TAPEE",
+    "niveau_risque": "FAIBLE",
+    "prob_risque": 0.2005661373483975,
+    "nb_menages": 70,
+    "pct_risque": 10.0,
+    "tc_disponibles": 3.0285714285714285,
+    "dur_sante": 9.314285714285715
+  },
+  {
+    "rang": 39,
+    "zone": "CA MERMOZ/SACRE COEUR",
+    "niveau_risque": "FAIBLE",
+    "prob_risque": 0.1906989409048045,
+    "nb_menages": 70,
+    "pct_risque": 11.428571428571429,
+    "tc_disponibles": 3.2285714285714286,
+    "dur_sante": 10.514285714285714
+  },
+  {
+    "rang": 40,
+    "zone": "GRAND DAKAR",
+    "niveau_risque": "FAIBLE",
+    "prob_risque": 0.19062979302048647,
+    "nb_menages": 70,
+    "pct_risque": 15.714285714285714,
+    "tc_disponibles": 3.3857142857142857,
+    "dur_sante": 11.485714285714286
+  },
+  {
+    "rang": 41,
+    "zone": "MEDINA",
+    "niveau_risque": "FAIBLE",
+    "prob_risque": 0.17500179923620088,
+    "nb_menages": 70,
+    "pct_risque": 4.285714285714286,
+    "tc_disponibles": 3.4857142857142858,
+    "dur_sante": 9.442857142857143
+  }
+]

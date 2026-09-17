@@ -1,0 +1,114 @@
+\chapter{Conception de la solution décisionnelle}
+\label{ch:conception}
+
+\section{Introduction}
+Conformément à la deuxième étape de la méthodologie GIMSI (conception), ce chapitre présente la conception globale de la solution~: l'architecture générale retenue, les choix technologiques opérés à chaque niveau de la chaîne, les architectures fonctionnelle, technique et logicielle, ainsi que la modélisation UML de la solution.
+
+\section{Architecture globale proposée}
+La solution repose sur une architecture en chaîne décisionnelle complète, allant des sources de données brutes jusqu'à leur restitution, doublée d'une couche applicative web exposant les résultats à deux publics distincts (citoyens et décideurs). Cette architecture s'articule autour de quatre grands blocs~:
+
+\begin{enumerate}
+\item un bloc \textbf{Sources \& ETL}~: fichiers sources EMD et comptages de trafic, nettoyés en Python, puis intégrés dans l'entrepôt de données via des jobs Talend~;
+\item un bloc \textbf{Entrepôt de données}~: base PostgreSQL structurée selon un modèle décisionnel multidimensionnel (chapitre~\ref{ch:decisionnel})~;
+\item un bloc \textbf{Restitution et intelligence}~: cockpit Knowage BI pour le reporting et la visualisation, complété par des modèles de Machine Learning entraînés directement sur les sources nettoyées~;
+\item un bloc \textbf{Application web}~: backend FastAPI exposant une API REST, consommée par un frontend React, qui intègre à la fois les pages applicatives et le cockpit Knowage.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{ml/architecture_pfe.png}
+\caption{Architecture complète de la solution -- pipelines BI (décisionnel) et Machine Learning (prédictif)}
+\label{fig:archi_globale}
+\end{figure}
+
+\section{Choix technologiques}
+Le tableau~\ref{tab:choix_tech} récapitule les choix technologiques retenus pour chaque maillon de la chaîne, ainsi que leur justification.
+
+\begin{table}[H]
+\centering
+\caption{Choix technologiques de la solution}
+\label{tab:choix_tech}
+\begin{tabular}{p{2.8cm}p{3cm}p{6.5cm}}
+\toprule
+\textbf{Couche} & \textbf{Technologie} & \textbf{Justification} \\
+\midrule
+Préparation des données & Python / Pandas (Colab) & Écosystème mature pour le nettoyage et l'exploration de données tabulaires volumineuses \\
+ETL & Talend Open Studio & Outil graphique gratuit, composants prêts à l'emploi (tMap, tDBOutput) adaptés à un projet académique \\
+Entrepôt de données & PostgreSQL & SGBDR open source, robuste, bien documenté, compatible avec Knowage et Talend \\
+Restitution BI & Knowage BI & Suite BI open source complète (datasets, cockpits, widgets) sans coût de licence \\
+Machine Learning & Python / scikit-learn & Bibliothèque de référence pour les algorithmes de classification, clustering et détection d'anomalies, avec un bon compromis simplicité/performance \\
+Backend applicatif & FastAPI & Framework Python moderne, performant, génération automatique de documentation interactive (Swagger), validation native via Pydantic \\
+Frontend applicatif & React.js & Bibliothèque la plus répandue pour la construction d'interfaces utilisateur réactives et composables \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Les bibliothèques de Machine Learning mobilisées incluent notamment \texttt{scikit-learn} (K-Means, Random Forest, Isolation Forest, Local Outlier Factor, DBSCAN, Gradient Boosting), \texttt{imbalanced-learn} (SMOTE) et \texttt{joblib} pour la sérialisation des modèles entraînés.
+
+
+
+\begin{figure}[H]
+\centering
+\begin{tabular}{cccccc}
+\includegraphics[height=1.3cm]{logo_python_colab.png} &
+\includegraphics[height=1.3cm]{logo_talend.jpg} &
+\includegraphics[height=1.3cm]{logo_postgres.png} &
+\includegraphics[height=1.3cm]{logo_knowage.png} &
+\includegraphics[height=1.3cm]{logo_fastapi.jpg} &
+\includegraphics[height=1.3cm]{logo_react.png} \\
+\small Python / Colab &
+\small Talend &
+\small PostgreSQL &
+\small Knowage BI &
+\small FastAPI &
+\small React.js \\
+\end{tabular}
+\caption{Technologies retenues dans la solution}
+\label{fig:logos_tech}
+\end{figure}
+
+
+\section{Architecture fonctionnelle}
+D'un point de vue fonctionnel, la solution distingue trois grandes fonctions~: la \textbf{fonction décisionnelle classique} (ETL, entrepôt, cockpit Knowage), qui répond aux besoins de reporting et de suivi des KPI~; la \textbf{fonction prédictive} (modèles de Machine Learning), qui enrichit l'analyse par des capacités de segmentation, de détection d'anomalies et de prédiction~; et la \textbf{fonction applicative}, qui expose ces deux fonctions à travers des interfaces adaptées à chaque type d'utilisateur (citoyen, chef d'exploitation, directeur de planification). Ces trois fonctions communiquent entre elles~: le cockpit Knowage lit l'entrepôt de données, tandis que les modèles de Machine Learning lisent directement les sources nettoyées (ce choix est justifié au chapitre~\ref{ch:ml}), et l'application web orchestre l'accès à l'ensemble via son backend.
+
+\section{Architecture technique}
+Sur le plan technique, la solution est déployée selon une architecture en couches~:
+
+\begin{itemize}
+\item une couche \textbf{stockage} (PostgreSQL, schéma \texttt{DW})~;
+\item une couche \textbf{intégration} (Talend, exécuté en mode batch pour alimenter l'entrepôt)~;
+\item une couche \textbf{intelligence} (scripts Python entraînant et sérialisant les modèles de Machine Learning au format \texttt{.pkl})~;
+\item une couche \textbf{services} (serveur FastAPI exposant l'API REST et chargeant les modèles en mémoire au démarrage)~;
+\item une couche \textbf{présentation} (application React consommant l'API REST et intégrant le cockpit Knowage par \textit{embedding})~;
+\item une couche \textbf{restitution BI} (serveur Knowage, consulté directement ou via le frontend React).
+\end{itemize}
+
+Cette séparation en couches permet à chaque composant d'évoluer indépendamment et facilite la maintenance de la solution dans son ensemble.
+
+\section{Architecture logicielle}
+L'architecture logicielle de l'application web suit un modèle client-serveur classique à trois couches~: une couche de \textbf{présentation} (composants React organisés en pages publiques et pages décideurs protégées), une couche \textbf{métier/API} (endpoints FastAPI organisés par domaine fonctionnel~: recommandation, zones à risque, anomalies, segmentation, authentification), et une couche \textbf{données} (modèles de Machine Learning sérialisés, accès à l'entrepôt PostgreSQL). La communication entre le frontend et le backend s'effectue exclusivement via des requêtes HTTP au format JSON, ce qui découple complètement les deux couches et permettrait, à terme, de remplacer l'une ou l'autre sans impact sur le reste du système.
+
+\section{Modélisation UML}
+
+\subsection{Diagramme de cas d'utilisation}
+La modélisation UML de la solution s'appuie sur un diagramme de cas d'utilisation (figure~\ref{fig:uc_conception}), qui synthétise les interactions entre les trois acteurs identifiés au chapitre précédent (citoyen, chef d'exploitation, directeur de planification) et les fonctionnalités du système. Ce diagramme met en évidence~:
+
+\begin{itemize}
+\item les fonctionnalités publiques (sans authentification)~: recommandation de mode de transport (UC1), consultation de l'application (UC2) et dépôt d'avis citoyens (UC3)~;
+\item les fonctionnalités décideurs~: toutes dépendantes de l'authentification (UC4)~: consultation des tableaux de bord trafic (UC5), déplacements (UC6), démographie (UC7), accessibilité (UC8), zones à risque (UC9), anomalies de trafic (UC10), segmentation des usagers (UC11), simulation de risque (UC12), évolution temporelle (UC13), satisfaction (UC14), et export PDF (UC16)~;
+\item la fonctionnalité d'audit des modèles de Machine Learning (UC15), réservée au seul directeur de planification, conformément à son rôle de gouvernance des décisions automatisées.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{use_case_diagram.png}
+\caption{Diagramme de cas d'utilisation de la solution décisionnelle TransportDakar}
+\label{fig:uc_conception}
+\end{figure}
+
+Ce choix de se concentrer sur le diagramme de cas d'utilisation, plutôt que de multiplier les diagrammes UML (séquence, classes, composants, déploiement), répond à un objectif de clarté~: le diagramme de cas d'utilisation est le plus pertinent pour exprimer le périmètre fonctionnel réel de l'application et les droits d'accès associés à chaque acteur, et constitue la base de référence pour le développement présenté au chapitre~\ref{ch:dev}.
+
+\section{Conclusion}
+Ce chapitre a présenté la conception globale de la solution décisionnelle~: son architecture, les technologies retenues à chaque niveau, et sa modélisation par cas d'utilisation. Les chapitres suivants détaillent successivement la mise en œuvre de chacun des blocs de cette architecture~: la conception décisionnelle (chapitre~\ref{ch:decisionnel}), l'intégration du Machine Learning (chapitre~\ref{ch:ml}) et le développement de la plateforme (chapitre~\ref{ch:dev}).
+
+\clearpage

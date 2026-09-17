@@ -1,0 +1,91 @@
+{
+  "features_cluster": [
+    "age",
+    "sexe",
+    "niveau_instruction",
+    "actif",
+    "etudiant",
+    "permis",
+    "freq_tc",
+    "nb_deplacements",
+    "duree_principale",
+    "cout_principal"
+  ],
+  "features_rf": [
+    "age",
+    "sexe",
+    "niveau_instruction",
+    "actif",
+    "etudiant",
+    "permis",
+    "freq_tc",
+    "nb_deplacements",
+    "nb_vehicules",
+    "revenu",
+    "duree_principale",
+    "cout_principal"
+  ],
+  "segment_labels": {
+    "0": "Étudiants mobilité douce",
+    "1": "Actifs motorisés",
+    "2": "Travailleurs informels"
+  },
+  "segment_conseils": {
+    "Actifs TC réguliers": "Vous utilisez quotidiennement les transports en commun. Un abonnement mensuel (DDD, car rapide) réduit vos dépenses. Privilégiez les départs avant 7h30 pour éviter la saturation.",
+    "Actifs motorisés": "Vous possédez un véhicule personnel. Le covoiturage via des applications locales peut réduire vos frais et désengorger les axes Dakar-Plateau.",
+    "Étudiants mobilité douce": "Les modes doux (vélo, marche) et les TC économiques (car rapide, DDD) sont adaptés à votre budget. Les abonnements étudiants TC offrent des tarifs préférentiels.",
+    "Piétons de proximité": "Vos déplacements courts et peu coûteux sont efficaces. Pour les destinations plus éloignées, le car rapide reste l'option la plus accessible.",
+    "Travailleurs informels": "Le taxi clando et le car rapide sont vos modes les plus adaptés à vos horaires atypiques. Méfiez-vous des surcharges aux heures de pointe (7h-9h et 17h-20h)."
+  },
+  "mode_labels": {
+    "1": "A pied",
+    "2": "Calèche/Charrette",
+    "3": "Bicyclette",
+    "4": "Mobylette/Moto conducteur",
+    "5": "Mobylette/Moto passager",
+    "6": "Voiture particulière conducteur",
+    "7": "Voiture particulière passager",
+    "8": "Taxi",
+    "9": "Taxi clando",
+    "10": "Minibus (14 places)",
+    "11": "Car rapide",
+    "12": "Ndiaga Ndiaye",
+    "13": "DDD",
+    "14": "Tata",
+    "15": "PTB",
+    "16": "Bus scolaire/Ramassage employeur",
+    "17": "Car interurbain",
+    "18": "Pirogue/Bateau",
+    "19": "Autre"
+  },
+  "mode_groupes": {
+    "1": "Marche",
+    "2": "Autre",
+    "3": "Vélo",
+    "4": "Moto",
+    "5": "Moto",
+    "6": "Voiture",
+    "7": "Voiture",
+    "8": "Taxi/Clando",
+    "9": "Taxi/Clando",
+    "10": "Transport Commun",
+    "11": "Transport Commun",
+    "12": "Transport Commun",
+    "13": "Transport Commun",
+    "14": "Transport Commun",
+    "15": "Transport Commun",
+    "16": "Transport Commun",
+    "17": "Autre",
+    "18": "Autre",
+    "19": "Autre"
+  },
+  "classes_rf": [
+    "Moto",
+    "Taxi/Clando",
+    "Transport Commun",
+    "Voiture"
+  ],
+  "k_clusters": 3,
+  "rf_accuracy": 0.8015,
+  "rf_cv_f1_macro": 0.6729
+}

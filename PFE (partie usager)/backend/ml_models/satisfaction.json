@@ -1,0 +1,162 @@
+{
+  "n_individus": 13415,
+  "score_satisfaction_global": 65.8,
+  "insecurite_tc_globale": 40.1,
+  "pct_activites_non_realisees": 6.8,
+  "satisfaction_par_mode": {
+    "Taxi": {
+      "n": 909,
+      "score_global": 80.4,
+      "criteres": {
+        "prix": 55.8,
+        "proximite": 82.5,
+        "attente": 87.9,
+        "vitesse": 93.5,
+        "confort_place": 93.4,
+        "securite_accidents": 69.3
+      }
+    },
+    "Taxi clando": {
+      "n": 1867,
+      "score_global": 79.0,
+      "criteres": {
+        "prix": 80.9,
+        "proximite": 68.7,
+        "attente": 82.6,
+        "vitesse": 93.8,
+        "confort_place": 85.6,
+        "securite_accidents": 62.4
+      }
+    },
+    "Minibus": {
+      "n": 68,
+      "score_global": 67.6,
+      "criteres": {
+        "prix": 77.9,
+        "proximite": 71.3,
+        "attente": 55.9,
+        "vitesse": 72.8,
+        "confort_place": 81.6,
+        "securite_accidents": 46.1
+      }
+    },
+    "Ndiaga Ndiaye": {
+      "n": 518,
+      "score_global": 67.4,
+      "criteres": {
+        "prix": 85.5,
+        "proximite": 36.8,
+        "attente": 78.2,
+        "vitesse": 71.1,
+        "confort_place": 82.0,
+        "securite_accidents": 51.0
+      }
+    },
+    "PTB": {
+      "n": 59,
+      "score_global": 65.3,
+      "criteres": {
+        "prix": 83.6,
+        "proximite": 25.4,
+        "attente": 80.5,
+        "vitesse": 97.5,
+        "confort_place": 44.9,
+        "securite_accidents": 59.7
+      }
+    },
+    "DDD": {
+      "n": 686,
+      "score_global": 64.4,
+      "criteres": {
+        "prix": 86.9,
+        "proximite": 62.1,
+        "attente": 40.8,
+        "vitesse": 81.0,
+        "confort_place": 38.0,
+        "securite_accidents": 77.8
+      }
+    },
+    "Car rapide": {
+      "n": 1845,
+      "score_global": 62.4,
+      "criteres": {
+        "prix": 90.1,
+        "proximite": 59.3,
+        "attente": 81.1,
+        "vitesse": 46.4,
+        "confort_place": 65.6,
+        "securite_accidents": 32.2
+      }
+    },
+    "Tata": {
+      "n": 2905,
+      "score_global": 54.9,
+      "criteres": {
+        "prix": 63.9,
+        "proximite": 55.1,
+        "attente": 55.3,
+        "vitesse": 73.6,
+        "confort_place": 24.9,
+        "securite_accidents": 56.7
+      }
+    }
+  },
+  "insecurite_percue": {
+    "pied_quartier_jour": 10.8,
+    "pied_ailleurs_jour": 29.2,
+    "tc_jour": 28.4,
+    "voiture_jour": 11.9,
+    "pied_quartier_nuit": 46.0,
+    "pied_ailleurs_nuit": 68.2,
+    "tc_nuit": 51.8,
+    "voiture_nuit": 25.9
+  },
+  "incidents_subis": {
+    "vol_argent_attente": 2.8,
+    "vol_telephone_attente": 4.8,
+    "agression_verbale_attente": 4.5,
+    "agression_physique_attente": 1.3,
+    "harcelement_attente": 3.8,
+    "vol_argent_abord": 4.4,
+    "agression_verbale_abord": 8.0,
+    "agression_physique_abord": 1.4,
+    "harcelement_abord": 5.9
+  },
+  "difficultes_deplacement": {
+    "Pas d’argent pour les TC": 453,
+    "Trop loin pour y aller a pied": 208,
+    "Duree de deplacement trop longue": 168,
+    "Autre": 108,
+    "Trop d’embouteillages": 107,
+    "Attente des TC trop longue": 55,
+    "Pas de TC": 42,
+    "Voiture ou moto non disponible": 18
+  },
+  "genes_pietonnes": {
+    "encombrement_trottoirs": 59.6,
+    "mauvais_etat_trottoirs": 56.4,
+    "inondations": 56.4,
+    "manque_eclairage": 62.6,
+    "risque_accidents": 48.6,
+    "mauvaises_odeurs": 53.6,
+    "usage_passerelles": 24.4
+  },
+  "recommandations": [
+    {
+      "categorie": "Qualite de service",
+      "texte": "Le mode « Tata » obtient le score de satisfaction le plus bas (54.9/100), tire vers le bas par le critere « confort_place » (24.9/100). Prioriser une action corrective sur ce point."
+    },
+    {
+      "categorie": "Securite",
+      "texte": "40.1% des usagers craignent un vol/agression en TC. Renforcer la presence de controleurs/agents de securite sur les lignes les plus frequentees et ameliorer l'eclairage aux points d'arret."
+    },
+    {
+      "categorie": "Inclusion sociale",
+      "texte": "6.8% des usagers ont du renoncer a une activite faute de transport, la cause la plus citee etant « Pas d’argent pour les TC »."
+    },
+    {
+      "categorie": "Infrastructure pietonne",
+      "texte": "56.4% des pietons signalent des inondations genant leurs deplacements : croiser avec les zones a risque (module Zones a risque) pour cibler les investissements de drainage."
+    }
+  ]
+}

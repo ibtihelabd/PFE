@@ -104,3 +104,6 @@ Presentation_PFE/testfile.txt
 
 # ─── Captures solution (trop lourdes) ───────────────────────
 /Captures_Solution_a_ajouter/*.mp4
+
+# Modeles ML generes a la racine (memes raisons que ml_models/*.pkl : lourds, non-sources)
+/*.pkl

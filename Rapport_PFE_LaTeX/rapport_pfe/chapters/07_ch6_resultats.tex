@@ -1,0 +1,95 @@
+\chapter{Résultats et évaluation}
+\label{ch:resultats}
+
+\section{Introduction}
+Conformément à la quatrième étape de la méthodologie GIMSI (amélioration permanente), ce chapitre présente une évaluation transversale des résultats obtenus~: les tableaux de bord produits, l'analyse des indicateurs clés, les résultats des modèles de Machine Learning, une comparaison entre l'apport de la Business Intelligence classique et celui du Machine Learning, l'apport global de la solution, ainsi que ses limites et perspectives d'amélioration.
+
+\section{Présentation des dashboards}
+Le cockpit Knowage BI restitue l'ensemble des indicateurs descriptifs de l'entrepôt de données à travers cinq sheets thématiques~: \emph{Accueil} (vue de synthèse), \emph{Trafic}, \emph{Déplacements}, \emph{Démographie} et \emph{Accessibilité}, complétées par un sheet \emph{IA} restituant de façon synthétique les résultats des modèles de Machine Learning. Côté application web, les décideurs disposent en complément de tableaux de bord dédiés (\texttt{VueGenerale}, \texttt{ZonesRisquePage}, \texttt{AnomalyDashboard}, \texttt{SegmentationPage}) permettant une navigation et un drill-down plus fins que dans le cockpit BI seul.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{kpis/logo_transportdakar.png}
+\caption{Identité visuelle du cockpit décisionnel TransportDakar}
+\label{fig:logo_cockpit}
+\end{figure}
+
+\section{Analyse des KPIs}
+L'entrepôt de données alimente un ensemble cohérent d'indicateurs clés, synthétisés au tableau~\ref{tab:kpi_synth}.
+
+\begin{table}[H]
+\centering
+\caption{Synthèse des indicateurs clés produits par la solution}
+\label{tab:kpi_synth}
+\begin{tabular}{ll}
+\toprule
+\textbf{Indicateur} & \textbf{Valeur} \\
+\midrule
+Individus enquêtés (EMD) & 37\,248 \\
+Ménages enquêtés (EMD) & 4\,521 \\
+Sites de comptage de trafic & 49 \\
+Observations de trafic chargées & 775\,480 \\
+Zones géographiques référencées & 507 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+L'analyse de ces indicateurs met en évidence des disparités marquées de mobilité et d'accessibilité selon les zones~: certains quartiers périphériques cumulent un score d'accessibilité faible, une forte exposition aux inondations et une dépendance quasi exclusive à la marche, tandis que les zones centrales bénéficient d'une offre de transport diversifiée et d'un score d'accessibilité élevé.
+
+\section{Résultats des modèles ML}
+Le tableau~\ref{tab:synth_ml} récapitule les performances des quatre modèles de Machine Learning présentés au chapitre~\ref{ch:ml}.
+
+\begin{table}[H]
+\centering
+\caption{Synthèse des performances des modèles de Machine Learning}
+\label{tab:synth_ml}
+\begin{tabular}{p{3cm}p{2.8cm}p{4cm}p{3.2cm}}
+\toprule
+\textbf{Modèle} & \textbf{Type} & \textbf{Objectif} & \textbf{Performance} \\
+\midrule
+K-Means ($k=3$) & Non supervisé & Segmentation des usagers & Silhouette $\approx 0{,}240$ \\
+Random Forest & Supervisé & Recommandation de mode & Accuracy $\approx 80{,}15\,\%$ \\
+Z-Score + Isolation Forest + LOF + DBSCAN & Détection d'anomalies & Anomalies de trafic & Consensus pond\'er\'e $\geq 0{,}6$ -- Accord inter-mod\`eles $90{,}6\,\%$ \\
+XGBoost & Supervisé & Prédiction d'inaccessibilité & ROC AUC $= 0{,}89$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Ces performances témoignent de la pertinence des variables sélectionnées et de la qualité du travail de prétraitement effectué en amont~: le modèle de recommandation atteint une exactitude de 80,15\,\%, le modèle de prédiction d'inaccessibilité un ROC AUC de 0,89, et la segmentation produit un coefficient de silhouette de 0,240 pour $k=3$ clusters.
+
+\section{Comparaison BI vs ML}
+Le tableau~\ref{tab:bi_vs_ml} compare les apports respectifs du volet Business Intelligence classique (ETL, entrepôt, cockpit Knowage) et du volet Machine Learning de la solution.
+
+\begin{table}[H]
+\centering
+\caption{Comparaison des apports de la BI classique et du Machine Learning}
+\label{tab:bi_vs_ml}
+\begin{tabular}{p{3.5cm}p{5.5cm}p{5.5cm}}
+\toprule
+\textbf{Critère} & \textbf{Business Intelligence (Knowage)} & \textbf{Machine Learning} \\
+\midrule
+Nature de l'analyse & Descriptive (constat, agrégation) & Prédictive et exploratoire (anticipation, segmentation) \\
+Horizon & Passé / présent & Présent / futur probable \\
+Granularité & Agrégée (zone, période) & Individuelle (ménage, site, déplacement) \\
+Explicabilité & Élevée (requêtes SQL directes) & Variable (nécessite des outils dédiés, ex. SHAP) \\
+Mise à jour & Par lot ETL (cycle programmé) & Ré-entraînement périodique sur les sources \\
+Valeur pour le décideur & Suivi, reporting régulier & Aide à la décision, simulation, alerte \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Ces deux volets ne sont pas concurrents mais complémentaires~: la Business Intelligence répond aux besoins de suivi régulier et de gouvernance des indicateurs, tandis que le Machine Learning apporte une capacité d'anticipation que le reporting descriptif ne peut pas offrir par construction.
+
+\section{Apport global}
+La solution développée transforme la gestion de la donnée du CETUD à trois niveaux~: elle \textbf{centralise} des données auparavant dispersées et exploitées de façon ponctuelle dans un entrepôt de données structuré et documenté~; elle \textbf{automatise} la production des indicateurs clés, qui étaient auparavant recalculés manuellement à chaque besoin~; et elle \textbf{enrichit} l'analyse par des capacités prédictives (segmentation, détection d'anomalies, prédiction de risque) absentes du dispositif antérieur. L'intégration de l'ensemble dans une application web unique, accessible aussi bien au grand public qu'aux décideurs du CETUD, constitue enfin un apport en termes de diffusion et d'appropriation de la donnée, au-delà du seul cercle des experts techniques.
+
+\section{Limites}
+Le syst\`eme, conçu dans le cadre d'un projet de fin d'études, repose sur des données historiques (EMD et comptages de trafic archivés)~; l'absence d'alimentation en temps réel constitue la principale limite au regard d'un déploiement opérationnel. Par ailleurs, certaines variables de l'EMD n'ont pu être pleinement exploitées en raison de la confidentialité partielle des données mises \`a disposition par le CETUD. Ces contraintes, propres au contexte académique du projet, sont pleinement identifiées et constituent des axes de travail prioritaires pour la suite.
+
+\section{Perspectives}
+Ces éléments ouvrent plusieurs axes d'extension naturels~: l'intégration de données de trafic en temps réel pour permettre une actualisation continue de l'entrepôt et des tableaux de bord~; le développement d'une application mobile (iOS/Android) pour élargir l'accès aux citoyens en situation de mobilité~; l'extension géographique de la solution \`a d'autres agglomérations sénégalaises~; la mise en place de rapports mensuels automatisés \`a destination des décideurs du CETUD~; et, \`a plus long terme, l'exploration de mod\`eles de Deep Learning (LSTM) pour la prédiction temporelle du trafic.
+
+\section{Conclusion}
+Ce chapitre a permis d'évaluer de façon transversale les résultats du projet~: les dashboards produits, l'analyse des KPI, les performances des modèles de Machine Learning, leur complémentarité avec la Business Intelligence classique, ainsi que l'apport global de la solution et ses limites. Ces éléments alimentent directement le bilan dressé dans la conclusion générale.
+
+\clearpage

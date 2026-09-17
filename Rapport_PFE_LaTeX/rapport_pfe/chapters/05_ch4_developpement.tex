@@ -1,0 +1,263 @@
+\chapter{D\'eveloppement de la plateforme d\'ecisionnelle}
+\label{ch:dev}
+
+\section{Introduction}
+Conform\'ement \`a la troisi\`eme \'etape de la m\'ethodologie GIMSI (mise en oeuvre), ce chapitre d\'etaille le d\'eveloppement de la plateforme applicative qui expose la cha\^{\i}ne d\'ecisionnelle con\c{c}ue au chapitre pr\'ec\'edent~: son architecture, le backend FastAPI, le frontend React, l'int\'egration du cockpit Knowage, et les mesures de s\'ecurit\'e mises en place.
+
+\section{Architecture de l'application}
+L'application repose sur une architecture client-serveur classique en trois couches~: un \textbf{backend} d\'evelopp\'e avec FastAPI (Python), exposant une dix-huiti\`eme de points d'acc\`es REST avec validation des entr\'ees par sch\'emas Pydantic et documentation interactive automatique (Swagger)~; un \textbf{frontend} d\'evelopp\'e avec React~18, organis\'e autour d'un routeur central (\texttt{App.js}) et d'un contexte de th\`eme (\texttt{ThemeProvider}) g\'erant le mode clair/sombre~; et une couche de \textbf{contr\^ole d'acc\`es} (RBAC) distinguant les r\^oles \emph{citoyen}, \emph{chef d'exploitation} et \emph{directeur de planification}, chacun disposant d'un p\'erim\`etre fonctionnel diff\'erent. Les deux couches communiquent exclusivement par requ\^etes HTTP au format JSON, le frontend interrogeant le backend via l'API native \texttt{fetch} (aucune biblioth\`eque tierce de type \texttt{axios} n'est utilis\'ee).
+
+La figure~\ref{fig:archi_chaine} pr\'esente la vue d'ensemble de la cha\^{\i}ne technique compl\`ete, couvrant les deux pipelines ind\'ependants (d\'ecisionnel BI et pr\'edictif ML) et leur point de jonction dans l'application React.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\textwidth]{demo_accueil_citoyen.png}
+\caption{Page d'accueil citoyenne (WelcomePage)}
+\label{fig:demo_accueil}
+\end{figure}
+
+La page d'accueil pr\'esente la d\'emarche au grand public en langage simple et oriente vers le formulaire de recommandation. Son int\'er\^et est d'abaisser la barri\`ere d'entr\'ee pour des usagers non avertis et de garantir l'adh\'esion au dispositif de collecte de donn\'ees, condition n\'ecessaire \`a l'alimentation de l'entrep\^ot et des mod\`eles de Machine Learning.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\textwidth]{captures/demo_formulaire_recommandation.png}
+\caption{Formulaire citoyen et recommandation de mode de transport (FormPage)}
+\label{fig:demo_form}
+\end{figure}
+
+Le formulaire en quatre \'etapes (Profil, Situation, Trajet, Budget) collecte les variables n\'ecessaires \`a la recommandation et adapte dynamiquement les champs affich\'es selon les r\'eponses (par exemple, selon l'\^age d\'eclar\'e). Son int\'er\^et est double~: pour le citoyen, obtenir une recommandation personnalis\'ee de mode de transport~; pour la plateforme, constituer progressivement un jeu de donn\'ees r\'eel et qualifi\'e sur les habitudes de mobilit\'e dakaroises, compl\'ementaire \`a l'enqu\^ete EMD historique.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\textwidth]{captures/demo_avis_citoyens.png}
+\caption{Cellule d'\'ecoute publique -- d\'ep\^ot et restitution des avis citoyens (AvisCitoyenPage)}
+\label{fig:demo_avis}
+\end{figure}
+
+Cet \'ecran permet \`a tout citoyen de noter son exp\'erience de transport et de signaler un probl\`eme (attente, ponctualit\'e, confort, etc.), avec une restitution en direct de la note moyenne et des derniers commentaires. Son int\'er\^et est de fournir aux d\'ecideurs un canal de remont\'ee qualitative continu, compl\'ementaire aux indicateurs quantitatifs du cockpit, et de mat\'erialiser concr\`etement la voix de l'usager dans le dispositif d\'ecisionnel.
+
+\subsection{Authentification des d\'ecideurs}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\textwidth]{captures/login_corrigee.png}
+\caption{Page de connexion de l'espace d\'ecideurs (LoginDecideurs)}
+\label{fig:demo_login}
+\end{figure}
+
+L'espace d\'ecideurs est prot\'eg\'e par une authentification d\'edi\'ee (jeton JWT, voir section~\ref{sec:securite-app}), distincte du parcours citoyen qui ne n\'ecessite aucun compte. Cette page pr\'esente \'egalement les modules disponibles et les indicateurs cl\'es du projet, afin de contextualiser l'outil avant m\^eme la connexion.
+
+\subsection{Espace d\'ecisionnel}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\textwidth]{captures/demo_vue_generale.png}
+\caption{Vue g\'en\'erale -- tableau de bord de synth\`ese (VueGenerale)}
+\label{fig:demo_vuegen}
+\end{figure}
+
+La vue g\'en\'erale agr\`ege, en un seul \'ecran, les indicateurs cl\'es (KPI) de trafic, de d\'eplacements et les objectifs du projet. Elle constitue le point d'entr\'ee du d\'ecideur apr\`es connexion et a vocation \`a offrir une vision d'ensemble imm\'ediate, volontairement \'epur\'ee, sans d\'etailler les zones \`a risque -- ce niveau de d\'etail \'etant renvoy\'e vers les modules sp\'ecialis\'es afin de ne pas surcharger cette vue de synth\`ese.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\textwidth]{captures/demo_zones_risque.png}
+\caption{Cartographie des zones \`a risque d'inaccessibilit\'e (ZonesRisquePage)}
+\label{fig:demo_zones}
+\end{figure}
+
+Ce module visualise, sur une carte interactive (Leaflet), les zones g\'eographiques class\'ees selon leur niveau de risque d'inaccessibilit\'e (FAIBLE, MOD\'ER\'E, \'ELEV\'E) calcul\'e par le mod\`ele de Machine Learning. Son int\'er\^et est de permettre au d\'ecideur de localiser imm\'ediatement les zones prioritaires d'intervention et de croiser ce risque avec les donn\'ees de trafic ou de d\'emographie disponibles dans le cockpit.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\textwidth]{captures/demo_simulateur.png}
+\caption{Simulateur de risque d'inaccessibilit\'e (SimulateurRisque)}
+\label{fig:demo_simul}
+\end{figure}
+
+Le simulateur permet au d\'ecideur de modifier interactivement les param\`etres d'un m\'enage (distance \`a l'arr\^et, fr\'equence des inondations, revenu, etc.) et d'observer en temps r\'eel l'\'evolution de la probabilit\'e d'inaccessibilit\'e calcul\'ee par le mod\`ele ML. Son int\'er\^et est de transformer un mod\`ele pr\'edictif -- par nature opaque -- en un outil d'exploration de sc\'enarios directement utilisable dans une d\'elib\'eration ou une pr\'esentation.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\textwidth]{captures/demo_anomalies.png}
+\caption{Tableau de bord des anomalies de trafic (AnomalyDashboard)}
+\label{fig:demo_anom}
+\end{figure}
+
+Ce module restitue les anomalies de volume de trafic d\'etect\'ees par le syst\`eme (consensus de trois mod\`eles non supervis\'es~: Isolation Forest, LOF, Z-Score) et les localise sur une carte. Son int\'er\^et est de signaler les sites o\`u la circulation d\'ecroch\'e de son comportement habituel, afin d'orienter les contr\^oles terrain et les d\'ecisions op\'erationnelles du chef d'exploitation.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\textwidth]{captures/demo_segmentation.png}
+\caption{Analyse de la segmentation des usagers (SegmentationPage)}
+\label{fig:demo_seg}
+\end{figure}
+
+Ce module visualise la segmentation K-Means des usagers (profils~: Actifs TC r\'eguliers, Actifs motoris\'es, \'Etudiants mobilit\'e douce, Pi\'etons de proximit\'e, Travailleurs informels) et permet de comprendre la composition de la demande de mobilit\'e. Son int\'er\^et est de guider les politiques tarifaires, les strat\'egies de communication et l'adaptation de l'offre selon les segments d'usagers concern\'es.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\textwidth]{captures/demo_evolution.png}
+\caption{\'Evolution temporelle des indicateurs (EvolutionTemporelle)}
+\label{fig:demo_evolution}
+\end{figure}
+
+Ce module retrace l'\'evolution des indicateurs cl\'es sur la p\'eriode 2010--2023 et permet de resituer les donn\'ees EMD dans une perspective historique. Son int\'er\^et est de donner au d\'ecideur le recul n\'ecessaire pour distinguer une tendance structurelle d'une variation conjoncturelle avant toute d\'ecision d'investissement.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\textwidth]{captures/demo_satisfaction_ecoute.png}
+\caption{Satisfaction et \'ecoute citoyenne -- vue d\'ecideur agr\'eg\'ee (SatisfactionPage)}
+\label{fig:demo_satisfaction}
+\end{figure}
+
+Cet \'ecran restitue, c\^ot\'e d\'ecideur, l'agr\'egation des avis citoyens d\'epos\'es via la cellule d'\'ecoute publique (note moyenne, r\'epartition des probl\`emes signal\'es, derniers commentaires). Son int\'er\^et est de boucler le dispositif d\'ecisionnel~: les remont\'ees qualitatives des citoyens deviennent directement visibles et exploitables par les d\'ecideurs, au m\^eme titre que les indicateurs quantitatifs du cockpit.
+
+\subsection{Audit des mod\`eles de Machine Learning -- acc\`es restreint}
+\label{sec:demo-ml-insights}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\textwidth]{captures/demo_ml_insights.png}
+\caption{Transparence et audit des mod\`eles de Machine Learning (MlInsights)}
+\label{fig:demo_ml}
+\end{figure}
+
+Ce module restitue les m\'etriques de performance, l'importance des variables et les \'el\'ements de transparence des mod\`eles de Machine Learning utilis\'es par la plateforme (classification du risque, d\'etection d'anomalies, segmentation). Son int\'er\^et est de permettre un audit critique des mod\`eles avant qu'ils ne fondent des d\'ecisions op\'erationnelles, conform\'ement \`a une exigence minimale d'explicabilit\'e de l'IA dans un contexte de service public.
+
+\textbf{Ce module n'est volontairement pas accessible aux deux profils de d\'ecideurs de la m\^eme fa\c{c}on.} Comme indiqu\'e au tableau~\ref{tab:pages_frontend} et \`a la section~\ref{sec:securite-app}, seul le r\^ole \textbf{Directeur de planification} dispose de la route \texttt{/ml-insights} dans son tableau \texttt{allowedRoutes}~; le r\^ole \textbf{Chef d'exploitation} ne l'a pas. Concr\`etement, pour ce dernier, l'entr\'ee <<~Audit \& Insights ML~>> reste visible dans le menu mais appara\^{\i}t gris\'ee, non cliquable, accompagn\'ee d'un cadenas et d'une infobulle <<~Acc\`es refus\'e -- r\^ole Chef d'exploitation~>>, le contr\^ole \'etant appliqu\'e \`a la fois c\^ot\'e frontend (\texttt{canAccess}, \texttt{DecideursLayout.jsx}) et c\^ot\'e backend (d\'ependance \texttt{get\_current\_decideur} sur l'endpoint correspondant). Ce choix refl\`ete une s\'eparation des responsabilit\'es~: l'audit technique des mod\`eles rel\`eve d'une d\'ecision strat\'egique (validation de la fiabilit\'e des mod\`eles avant qu'ils n'influencent les politiques de transport), tandis que le chef d'exploitation, orient\'e vers la gestion op\'erationnelle quotidienne (trafic, anomalies, zones \`a risque), n'a pas besoin de ce niveau de d\'etail technique pour exercer ses missions. Toutes les autres pages d\'ecrites ci-dessus (vue g\'en\'erale, cockpit Knowage, zones \`a risque, simulateur, anomalies, segmentation, \'evolution temporelle, satisfaction) sont accessibles de fa\c{c}on identique aux deux profils.
+
+\subsection{Cockpit Knowage -- rendu des six sheets}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\textwidth]{cockpit_accueil_light.png}
+\caption{Sheet \emph{Accueil} du cockpit Knowage -- mode clair}
+\label{fig:demo_knowage_accueil}
+\end{figure}
+
+Le sheet \emph{Accueil} centralise les indicateurs de cadrage du projet et assure la navigation entre les sheets th\'ematiques gr\^ace \`a des boutons HTML.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.48\textwidth]{cockpit_trafic_light.png}
+\hfill
+\includegraphics[width=0.48\textwidth]{cockpit_deplacements.png}
+\caption{Sheet \emph{Trafic} (gauche) et sheet \emph{D\'eplacements} (droite)}
+\label{fig:demo_knowage_trafic}
+\end{figure}
+
+Le sheet \emph{Trafic} d\'etaille les comptages horaires, la r\'epartition par site et les heures de pointe. Le sheet \emph{D\'eplacements} analyse les dur\'ees, motifs et co\^uts des trajets d\'eclar\'es dans l'enqu\^ete EMD.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.48\textwidth]{cockpit_demographie.png}
+\hfill
+\includegraphics[width=0.48\textwidth]{cockpit_accessibilite.png}
+\caption{Sheet \emph{D\'emographie} (gauche) et sheet \emph{Accessibilit\'e} (droite)}
+\label{fig:demo_knowage_demo_acc}
+\end{figure}
+
+Le sheet \emph{D\'emographie} restitue le profil sociod\'emographique des individus enqu\^et\'es. Le sheet \emph{Accessibilit\'e} pr\'esente le score composite d'accessibilit\'e par zone g\'eographique.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\textwidth]{cockpit_ia.png}
+\caption{Sheet \emph{IA} -- restitution synth\'etique des r\'esultats de Machine Learning dans le cockpit Knowage}
+\label{fig:demo_knowage_ia}
+\end{figure}
+
+Le sheet \emph{IA} est un feuillet statique qui synth\'etise, sous forme de fiches descriptives, les principaux r\'esultats des mod\`eles de Machine Learning (pr\'ediction du risque, segmentation, anomalies), en renvoyant le d\'ecideur vers les modules interactifs de l'application pour l'exploration d\'etaill\'ee. Leur int\'er\^et commun est de d\'emontrer la capacit\'e de l'outil BI choisi \`a \^etre personnalis\'e visuellement (charte TransportDakar) au-del\`a de son habillage par d\'efaut, et \`a rester exploitable de fa\c{c}on autonome par un analyste habitu\'e \`a Knowage.
+
+
+\section{Persistance des avis citoyens en base de donn\'ees PostgreSQL}
+\label{sec:persistance-postgresql}
+
+\subsection{Motivation et choix technique}
+
+Initialement, les avis d\'epos\'es via la cellule d'\'ecoute citoyenne (page publique \texttt{/avis}) \'etaient persist\'es dans un simple fichier JSON plat (\texttt{data/feedback\_citoyens.json}). Cette approche, suffisante pour un prototype, pr\'esente trois limites principales~: absence de support des requ\^etes filtr\'ees, risque de corruption en acc\`es concurrent, et non-passabilit\'e \`a l'\'echelle. Lors de la phase de finalisation de la plateforme, le stockage des avis a \'et\'e migr\'e vers la base de donn\'ees PostgreSQL existante du projet (\texttt{CETUD\_PFE}, PostgreSQL~17), d\'ej\`a utilis\'ee pour stocker les donn\'ees issues du pipeline ETL (enqu\^ete EMD, trafic, m\'enages). Ce choix permet de mutualiser l'infrastructure de donn\'ees et de b\'en\'eficier des garanties ACID offertes par un syst\`eme de gestion de bases de donn\'ees relationnel.
+
+\subsection{Mod\`ele de donn\'ees -- table \texttt{avis\_citoyens}}
+
+La migration introduit un module Python d\'edi\'e \texttt{database.py} qui configure le moteur SQLAlchemy~2.0 et d\'efinit le mod\`ele ORM de la table \texttt{avis\_citoyens}. Celle-ci comporte sept colonnes d\'ecrites dans le tableau~\ref{tab:schema-avis}.
+
+\begin{table}[H]
+\centering
+\caption{Sch\'ema de la table \texttt{avis\_citoyens} (PostgreSQL)}
+\label{tab:schema-avis}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Colonne} & \textbf{Type SQL} & \textbf{Nullable} & \textbf{Description} \\
+\hline
+\texttt{id} & INTEGER & NON & Cl\'e primaire auto-incr\'ement\'ee \\
+\texttt{note\_satisfaction} & INTEGER & NON & Note de 1 \`a 5 \\
+\texttt{mode\_utilise} & VARCHAR(100) & NON & Mode de transport concern\'e \\
+\texttt{type\_probleme} & VARCHAR(100) & OUI & Cat\'egorie du probl\`eme signal\'e \\
+\texttt{quartier} & VARCHAR(150) & OUI & Quartier ou zone concern\'ee \\
+\texttt{commentaire} & TEXT & OUI & Commentaire libre (max. 600 car.) \\
+\texttt{date} & TIMESTAMP & OUI & Horodatage UTC de la soumission \\
+\hline
+\end{tabular}
+\end{table}
+
+La cha\^{\i}ne de connexion est configurable via la variable d'environnement \texttt{DATABASE\_URL}, avec un repli sur la valeur locale par d\'efaut pour le d\'eveloppement. La table est cr\'e\'ee automatiquement au d\'emarrage de l'application FastAPI via le gestionnaire d'\'ev\'enement \texttt{startup}, qui appelle \texttt{init\_db()} uniquement si la table est absente (cr\'eation idempotente~: aucun risque de perte de donn\'ees en cas de red\'emarrage).
+
+\begin{lstlisting}[language=Python, caption={D\'efinition ORM de la table \texttt{avis\_citoyens} (extrait de \texttt{database.py})}, label=lst:orm-avis]
+class AvisCitoyen(Base):
+    __tablename__ = "avis_citoyens"
+    id                = Column(Integer, primary_key=True, autoincrement=True)
+    note_satisfaction = Column(Integer,      nullable=False)  # 1 a 5
+    mode_utilise      = Column(String(100),  nullable=False)
+    type_probleme     = Column(String(100),  nullable=True)
+    quartier          = Column(String(150),  nullable=True)
+    commentaire       = Column(Text,         nullable=True)
+    date              = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+\end{lstlisting}
+
+\subsection{Endpoints REST mis \`a jour}
+
+L'int\'egration PostgreSQL se traduit par quatre endpoints dans \texttt{main.py}, tous utilisant la d\'ependance FastAPI \texttt{get\_db()} qui ouvre une session SQLAlchemy et la ferme proprement apr\`es chaque requ\^ete~:
+
+\begin{itemize}
+    \item \texttt{POST /api/feedback}~: re\c{c}oit un avis citoyen (accessible sans authentification), l'ins\`ere en base via une transaction et retourne l'identifiant g\'en\'er\'e.
+    \item \texttt{GET /api/feedback/stats}~: calcule les agr\'egats en temps r\'eel directement en SQL (note moyenne, r\'epartition par note, comptage par mode et probl\`eme, dix derniers avis) -- sans charger l'int\'egralit\'e de la table en m\'emoire.
+    \item \texttt{GET /api/feedback/list}~: liste pagin\'ee des avis avec filtres optionnels (mode, note, quartier)~; r\'eserv\'e aux d\'ecideurs authentifi\'es.
+    \item \texttt{GET /api/feedback/export}~: export complet des avis en JSON avec horodatage~; utile pour les rapports et l'analyse hors ligne.
+\end{itemize}
+
+La page \texttt{SatisfactionPage} (espace d\'ecideurs) et la page \texttt{AvisCitoyenPage} (acc\`es public) ne n\'ecessitent aucune modification c\^ot\'e frontend~: l'API REST expose exactement le m\^eme contrat de donn\'ees qu'avant la migration, garantissant une transition transparente.
+
+\subsection{Migration des donn\'ees existantes}
+
+Un script autonome \texttt{migrate\_feedback.py} a \'et\'e r\'ealis\'e pour transf\'erer les onze avis pr\'eexistants depuis \texttt{feedback\_citoyens.json} vers la table PostgreSQL. Ce script est con\c{c}u pour \^etre ex\'ecut\'e une seule fois~: il v\'erifie au pr\'ealable les identifiants d\'ej\`a pr\'esents en base afin d'\'eviter les doublons en cas de relance accidentelle.
+
+\subsection{Synth\`ese comparative}
+
+\begin{table}[H]
+\centering
+\caption{Comparaison avant / apr\`es migration du stockage des avis citoyens}
+\label{tab:feedback-avant-apres}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Crit\`ere} & \textbf{Avant (fichier JSON)} & \textbf{Apr\`es (PostgreSQL)} \\
+\hline
+Stockage & Fichier plat local & Table relationnelle \\
+Requ\^etes filtr\'ees & Non & Oui (SQL + ORM SQLAlchemy) \\
+Acc\`es concurrent & Risque de corruption & Transactions ACID \\
+Agr\'egats en temps r\'eel & Calculs Python en m\'emoire & Calculs SQL natifs \\
+Pagination des r\'esultats & Non & Oui (\texttt{/api/feedback/list}) \\
+Export d\'ecideur & Non & Oui (\texttt{/api/feedback/export}) \\
+Base utilis\'ee & -- & \texttt{CETUD\_PFE} (PostgreSQL~17) \\
+Driver Python & -- & \texttt{psycopg2-binary} + \texttt{SQLAlchemy~2.0} \\
+\hline
+\end{tabular}
+\end{table}
+
+
+\section{S\'ecurit\'e de l'application}
+\label{sec:securite-app}
+La s\'ecurit\'e de la plateforme repose sur trois piliers~: l'\textbf{authentification} par jeton JWT sign\'e (HS256), avec v\'erification syst\'ematique c\^ot\'e serveur pour les routes prot\'eg\'ees~; le \textbf{contr\^ole d'acc\`es bas\'e sur les r\^oles} (RBAC), distinguant citoyen, chef d'exploitation et directeur de planification, appliqu\'e \`a la fois c\^ot\'e backend (d\'ependance \texttt{get\_current\_decideur}) et c\^ot\'e frontend (\texttt{allowedRoutes}, \texttt{ProtectedRoute})~; et la \textbf{validation syst\'ematique des entr\'ees} c\^ot\'e backend par les sch\'emas Pydantic, qui rejettent automatiquement toute requ\^ete mal form\'ee avant qu'elle n'atteigne la logique m\'etier ou les mod\`eles de Machine Learning.
+
+\section{Conclusion}
+Ce chapitre a d\'etaill\'e le d\'eveloppement de la plateforme applicative~: son architecture, le backend FastAPI et ses endpoints, le frontend React et son organisation en pages publiques et prot\'eg\'ees, la migration du module de satisfaction vers PostgreSQL, l'int\'egration du cockpit Knowage, et les m\'ecanismes de s\'ecurit\'e mis en place. Le chapitre suivant pr\'esente une \'evaluation transversale des r\'esultats obtenus par la solution dans son ensemble.
+
+\clearpage

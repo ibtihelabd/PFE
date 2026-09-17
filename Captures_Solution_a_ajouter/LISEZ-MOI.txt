@@ -1,0 +1,19 @@
+Depose ici tes captures d'ecran de la solution (application web + cockpit Knowage).
+
+Suggestions de noms de fichiers (pour que je les retrouve facilement) :
+- app_welcome.png            -> page d'accueil citoyen
+- app_recommandation.png     -> formulaire + resultat de recommandation de mode
+- app_login_decideurs.png    -> page de connexion decideurs
+- app_vue_generale.png       -> VueGenerale (espace decideurs)
+- app_zones_risque.png       -> ZonesRisquePage
+- app_anomalies.png          -> AnomalyDashboard
+- app_segmentation.png       -> SegmentationPage
+- app_ml_insights.png        -> MlInsights (transparence des modeles)
+- knowage_accueil.png        -> sheet Accueil du cockpit Knowage
+- knowage_trafic.png         -> sheet Trafic
+- knowage_deplacements.png   -> sheet Deplacements
+- knowage_demographie.png    -> sheet Demographie
+- knowage_accessibilite.png  -> sheet Accessibilite
+- knowage_ia.png             -> sheet IA
+
+Une fois les captures ajoutees, dis-le moi et je les integre dans le rapport (chapitre developpement + resultats + annexes).
